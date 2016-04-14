@@ -33,19 +33,30 @@
     <jee:jndi-lookup jndi-name="mysql/address" id="mysql.address" expected-type="java.lang.String"/>
     <jee:jndi-lookup jndi-name="mysql/username" id="mysql.username" expected-type="java.lang.String"/>
     <jee:jndi-lookup jndi-name="mysql/password" id="mysql.password" expected-type="java.lang.String"/>
-    <bean id="dbDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-        <property name="defaultTransactionIsolation" value="READ_UNCOMMITTED"/>
-        <property name="driverClass" value="${mysql.driver}"/>
-        <property name="idleConnectionTestPeriodInSeconds" value="30"/>
-        <property name="idleMaxAgeInMinutes" value="5"/>
-        <property name="jdbcUrl" ref="mysql.address"/>
-        <property name="maxConnectionsPerPartition" value="${mysql.maxConnectionsPerPartition}"/>
-        <property name="minConnectionsPerPartition" value="${mysql.minConnectionsPerPartition}"/>
-        <property name="partitionCount" value="${mysql.partitionCount}"/>
-        <property name="password" ref="mysql.password"/>
-        <property name="queryExecuteTimeLimitInMs" value="6000"/>
-        <property name="statementsCacheSize" value="0"/>
+    <bean id="dbDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <!-- 基本属性 url、user、password -->
+        <property name="url" ref="mysql.address"/>
         <property name="username" ref="mysql.username"/>
+        <property name="password" ref="mysql.password"/>
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="${mysql.initialSize}"/>
+        <property name="minIdle" value="${mysql.minIdle}"/>
+        <property name="maxActive" value="${mysql.maxActive}"/>
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="60000"/>
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="300000"/>
+        <property name="validationQuery" value="SELECT 'x'"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="false"/>
+        <property name="testOnReturn" value="false"/>
+        <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+        <property name="poolPreparedStatements" value="false"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="20"/>
+        <!-- 配置监控统计拦截的filters -->
+        <property name="filters" value="stat"/>
     </bean>
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="configLocation" value="classpath:mybatis-config.xml"/>
