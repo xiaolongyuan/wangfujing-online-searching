@@ -38,7 +38,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dependency.wfj.platform-utils.version>1.0.6.RELEASE</dependency.wfj.platform-utils.version>
-        <dependency.segment-service.version>1.0.0.RELEASE</dependency.segment-service.version>
+        <dependency.segment-service.version>1.0.1.RELEASE</dependency.segment-service.version>
         <dependency.solr-home.version>1.0.0.RELEASE</dependency.solr-home.version>
         <dependency.wfj.search-utils.version>1.0.18.RELEASE</dependency.wfj.search-utils.version>
         <dependency.junit.version>4.12</dependency.junit.version>
