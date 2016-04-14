@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wfj.search.online.management.console.mapper.HotWordRecordMapper">
+    <insert id="add">
+        INSERT INTO hot_word_record (hot_word_sid, site, channel, value, link, orders, enabled, modifier, modify_time,
+                                     modify_type)
+        VALUES (
+            #{hotWord.sid},
+            #{hotWord.site},
+            #{hotWord.channel},
+            #{hotWord.value},
+            #{hotWord.link},
+            #{hotWord.orders},
+            #{hotWord.enabled},
+            #{modifier},
+            current_timestamp,
+            #{modifyType}
+        )
+    </insert>
+</mapper>

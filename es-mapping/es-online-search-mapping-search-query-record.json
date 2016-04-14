@@ -1,0 +1,36 @@
+{
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "index": "not_analyzed",
+      "doc_values": "true"
+    },
+    "trackId": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "queryTime": {
+      "type": "date",
+      "format": "yyyy-MM-dd HH:mm:ss.SSS||yyyy-MM-dd HH:mm:ss"
+    },
+    "query": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "queryPinyin": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "queryAbbre": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "channel": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "removed": {
+      "type": "boolean"
+    }
+  }
+}

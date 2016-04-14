@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd
+                           http://www.springframework.org/schema/task
+                           http://www.springframework.org/schema/task/spring-task.xsd">
+    <bean id="placeholderConfig"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:zookeeper.properties</value>
+                <value>classpath:es.properties</value>
+            </list>
+        </property>
+        <property name="fileEncoding" value="UTF-8"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
+
+    <bean id="contentNegotiationManager"
+          class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="defaultContentType" value="text/html"/>
+        <property name="favorParameter" value="true"/>
+        <property name="favorPathExtension" value="true"/>
+        <property name="ignoreAcceptHeader" value="true"/>
+        <property name="mediaTypes">
+            <map>
+                <entry key="json" value="application/json"/>
+                <entry key="html" value="text/html"/>
+                <entry key="xml" value="application/xml"/>
+                <entry key="gif" value="image/gif"/>
+                <entry key="jpg" value="image/jpeg"/>
+                <entry key="jpeg" value="image/jpeg"/>
+                <entry key="png" value="image/png"/>
+                <entry key="ico" value="image/bmp"/>
+                <entry key="js" value="text/javascript"/>
+                <entry key="djs" value="text/javascript"/>
+            </map>
+        </property>
+        <property name="parameterName" value="format"/>
+    </bean>
+
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
+        <property name="defaultViews">
+            <list>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+                    <property name="objectMapper">
+                        <bean class="com.wfj.platform.util.jackson2.Jackson2JsonViewObjectMapperFactoryBean"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="viewResolvers">
+            <list>
+            </list>
+        </property>
+    </bean>
+
+    <mvc:annotation-driven/>
+
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <!-- 定义切面开始 { -->
+    <bean id="publicKeyProvider"
+          class="com.wfj.platform.operation.record.plugin.aspect.component.CachedPublicKeyProviderImpl">
+        <property name="publicKeyAgent">
+            <bean class="com.wfj.platform.operation.record.plugin.aspect.component.CachedPublicKeyProviderImpl.PublicKeyAgent"/>
+        </property>
+    </bean>
+    <bean id="webOperationRecordAspect" class="com.wfj.search.util.web.record.WebOperationRecordAspect">
+        <property name="appName" value="${monitor.register.appName}"/>
+        <property name="instanceName" ref="instanceName"/>
+        <property name="resultHandler">
+            <bean class="com.wfj.search.util.web.record.json.PlainJsonResultHandler"/>
+        </property>
+        <property name="recorder" ref="elasticSearchRecorder"/>
+        <property name="throwableHandler">
+            <bean class="com.wfj.search.util.web.record.json.JsonResultThrowableHandler"/>
+        </property>
+    </bean>
+    <bean id="statusCodeAspect" class="com.wfj.search.utils.web.sc.StatusCodeAspect">
+        <property name="resultHandler">
+            <bean class="com.wfj.search.util.web.record.json.PlainJsonResultHandler"/>
+        </property>
+    </bean>
+    <bean id="jsonSignVerifyAspect" class="com.wfj.search.utils.web.signature.verify.JsonSignVerifyAspect">
+        <property name="publicKeyProvider" ref="publicKeyProvider"/>
+        <property name="resultHandler">
+            <bean class="com.wfj.search.util.web.record.json.PlainJsonResultHandler"/>
+        </property>
+    </bean>
+
+    <aop:config proxy-target-class="true">
+        <aop:pointcut id="webOperation"
+                      expression="@annotation(com.wfj.search.util.web.record.WebOperation)"/>
+        <aop:pointcut id="jsonSignVerifyPointcut"
+                      expression="@annotation(com.wfj.search.utils.web.signature.verify.JsonSignVerify) and execution(com.alibaba.fastjson.JSONObject *.*(..))"/>
+        <aop:aspect order="0" ref="webOperationRecordAspect">
+            <aop:around method="around" pointcut-ref="webOperation"/>
+        </aop:aspect>
+        <aop:aspect order="2" ref="jsonSignVerifyAspect">
+            <aop:around method="around" pointcut-ref="jsonSignVerifyPointcut"/>
+        </aop:aspect>
+        <aop:aspect order="3" ref="statusCodeAspect">
+            <aop:around method="around" pointcut-ref="webOperation"/>
+        </aop:aspect>
+    </aop:config>
+    <!-- } 定义切面结束 -->
+
+    <context:component-scan base-package="com.wfj.search.online.management.console.controller">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <bean id="serviceDiscoveryRegisterJob"
+          class="com.wfj.platform.util.zookeeper.discovery.SpringMvcServiceDiscoveryRegisterJobDescription"
+          init-method="register" destroy-method="close">
+        <property name="instanceAddress" ref="instanceAddress"/>
+        <property name="statusProvider" ref="statusProvider"/>
+        <property name="basePath" value="${discovery.basePath}"/>
+        <property name="client" ref="registerClient"/>
+    </bean>
+    <task:scheduled-tasks scheduler="scheduler">
+        <task:scheduled ref="serviceDiscoveryRegisterJob" method="freshRegister" initial-delay="4000"
+                        fixed-delay="30000"/>
+    </task:scheduled-tasks>
+</beans>

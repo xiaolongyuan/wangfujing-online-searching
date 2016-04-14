@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wfj.search.online.management.console.mapper.config.SearchConfigMapper">
+    <insert id="save" parameterType="map">
+        UPDATE online_search_config
+        SET value = #{value}
+        WHERE name = #{name}
+    </insert>
+    <select id="getConfigs" resultType="java.util.Map">
+        SELECT *
+        FROM online_search_config
+    </select>
+</mapper>

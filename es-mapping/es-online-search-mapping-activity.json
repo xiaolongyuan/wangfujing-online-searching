@@ -1,0 +1,17 @@
+{
+  "properties": {
+    "activeId": {
+      "type": "string",
+      "index": "not_analyzed",
+      "doc_values": "true"
+    },
+    "activeName": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "activeLabel": {
+      "type": "string",
+      "index": "not_analyzed"
+    }
+  }
+}

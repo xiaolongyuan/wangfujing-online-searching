@@ -1,0 +1,153 @@
+{
+  "properties": {
+    "itemId": {
+      "type": "string",
+      "index": "not_analyzed",
+      "doc_values": "true"
+    },
+    "supplierId": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "stockMode": {
+      "type": "integer"
+    },
+    "inventory": {
+      "type": "integer"
+    },
+    "originalPrice": {
+      "type": "double"
+    },
+    "currentPrice": {
+      "type": "double"
+    },
+    "discountRate": {
+      "type": "double"
+    },
+    "channels": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "activeId": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "activeName": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "skuId": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "title": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "subTitle": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "activeKeywords": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "colorId": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "colorName": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "colorAlias": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "pictures": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "colorMasterPicture": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "standardId": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "standardName": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "type": {
+      "type": "integer"
+    },
+    "upTime": {
+      "type": "date",
+      "format": "yyyy-MM-dd HH:mm:ss.SSS||yyyy-MM-dd HH:mm:ss"
+    },
+    "spuId": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "spuName": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "model": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "activeBit": {
+      "type": "integer"
+    },
+    "pageDescription": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "aliases": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "onSellSince": {
+      "type": "date",
+      "format": "yyyy-MM-dd HH:mm:ss.SSS||yyyy-MM-dd HH:mm:ss"
+    },
+    "brandId": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "brandName": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "brandAliases": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "tagIds": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "tags": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "itemSale": {
+      "type": "integer"
+    },
+    "skuSale": {
+      "type": "integer"
+    },
+    "spuSale": {
+      "type": "integer"
+    },
+    "spuClick": {
+      "type": "integer"
+    },
+    "operationSid": {
+      "type": "long"
+    }
+  }
+}

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wfj.search.online.management.console.mapper.popularize.BrandTopSpotMapper">
+    <resultMap id="brandPopularizePosition"
+               type="com.wfj.search.online.common.pojo.popularize.BrandPopularizePositionPojo">
+        <id property="sid" column="sid"/>
+        <result property="brandId" column="brand_id"/>
+        <result property="spuId" column="spu_id"/>
+        <result property="orders" column="orders"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createOperator" column="create_operator"/>
+    </resultMap>
+    <insert id="addBrandPosition" useGeneratedKeys="true" keyProperty="sid">
+        INSERT INTO online_top_spot_brand (brand_id, spu_id, orders, create_time, create_operator)
+        VALUES (#{brandId}, #{spuId}, #{orders}, sysdate(), #{createOperator})
+    </insert>
+    <update id="deleteBrandPosition">
+        DELETE FROM online_top_spot_brand
+        WHERE brand_id = #{brandId} AND spu_id = #{spuId}
+    </update>
+    <select id="listWithPage" resultMap="brandPopularizePosition">
+        SELECT sid, brand_id, spu_id, orders, date_format(create_time, '%Y-%m-%d %H:%i:%s') create_time, create_operator
+        FROM online_top_spot_brand
+        <where>
+            <if test="position != null">
+                <if test="position.brandId != null">
+                    AND brand_id = #{position.brandId}
+                </if>
+                <if test="position.spuId != null">
+                    AND spu_id = #{position.spuId}
+                </if>
+            </if>
+        </where>
+        ORDER BY orders DESC
+        LIMIT ${start}, ${limit}
+    </select>
+    <select id="brandPositionTotal" resultType="java.lang.Long">
+        SELECT COUNT(1)
+        FROM online_top_spot_brand
+        <where>
+            <if test="position != null">
+                <if test="position.brandId != null">
+                    AND brand_id = #{position.brandId}
+                </if>
+                <if test="position.spuId != null">
+                    AND spu_id = #{position.spuId}
+                </if>
+            </if>
+        </where>
+    </select>
+</mapper>

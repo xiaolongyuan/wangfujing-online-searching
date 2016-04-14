@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/jee
+                           http://www.springframework.org/schema/jee/spring-jee.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/task
+                           http://www.springframework.org/schema/task/spring-task.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd
+                           http://www.springframework.org/schema/cache
+                           http://www.springframework.org/schema/cache/spring-cache.xsd">
+    <bean id="placeholderConfig"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:zookeeper.properties</value>
+                <value>classpath:mysql.properties</value>
+                <value>classpath:solr.properties</value>
+                <value>classpath:pcm.properties</value>
+                <value>classpath:index_config.properties</value>
+                <value>classpath:comment.properties</value>
+                <value>classpath:edismax.properties</value>
+                <value>classpath:es.properties</value>
+            </list>
+        </property>
+        <property name="fileEncoding" value="UTF-8"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
+
+    <jee:jndi-lookup jndi-name="mysql/address" id="mysql.address" expected-type="java.lang.String"/>
+    <jee:jndi-lookup jndi-name="mysql/username" id="mysql.username" expected-type="java.lang.String"/>
+    <jee:jndi-lookup jndi-name="mysql/password" id="mysql.password" expected-type="java.lang.String"/>
+    <bean id="dbDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="defaultTransactionIsolation" value="READ_UNCOMMITTED"/>
+        <property name="driverClass" value="${mysql.driver}"/>
+        <property name="idleConnectionTestPeriodInSeconds" value="30"/>
+        <property name="idleMaxAgeInMinutes" value="5"/>
+        <property name="jdbcUrl" ref="mysql.address"/>
+        <property name="maxConnectionsPerPartition" value="${mysql.maxConnectionsPerPartition}"/>
+        <property name="minConnectionsPerPartition" value="${mysql.minConnectionsPerPartition}"/>
+        <property name="partitionCount" value="${mysql.partitionCount}"/>
+        <property name="password" ref="mysql.password"/>
+        <property name="queryExecuteTimeLimitInMs" value="6000"/>
+        <property name="statementsCacheSize" value="0"/>
+        <property name="username" ref="mysql.username"/>
+    </bean>
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="dataSource" ref="dbDataSource"/>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.wfj.search.online.index.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.wfj.platform.operation.record.common.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dbDataSource"/>
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <import resource="spring-cache.xml"/>
+    <bean id="clusterConnection" factory-bean="clusterClient" factory-method="connectCluster" destroy-method="close"/>
+    <bean id="cacheManager" class="com.wfj.platform.cache.lettuce.cluster.LettuceClusterCache2Manager">
+        <constructor-arg ref="clusterConnection"/>
+        <property name="prefix" value="com.wfj.search"/>
+    </bean>
+    <bean id="stringRedisKeyGenerator" class="com.wfj.platform.util.cache.SimpleParamStringKeyGenerator"/>
+    <cache:annotation-driven key-generator="stringRedisKeyGenerator" cache-manager="cacheManager"/>
+
+    <jee:jndi-lookup jndi-name="service/address" id="instanceAddress" expected-type="java.lang.String"/>
+    <jee:jndi-lookup jndi-name="service/instance" id="instanceName" expected-type="java.lang.String"/>
+    <bean id="registerClientFactory" class="com.wfj.platform.util.zookeeper.ZookeeperClientFactory">
+        <property name="zkAddresses" value="${monitor.zkAddresses}"/>
+    </bean>
+    <bean id="registerClient" factory-bean="registerClientFactory"
+          factory-method="createClient" destroy-method="close" init-method="start"/>
+    <bean id="statusProvider"
+          class="com.wfj.platform.util.zookeeper.monitor.register.CommonInstanceStatusProvider"/>
+    <bean id="appInstanceRegister"
+          class="com.wfj.platform.util.zookeeper.monitor.register.AppInstanceRegister">
+        <constructor-arg name="client" ref="registerClient"/>
+        <property name="appName" value="${monitor.register.appName}"/>
+        <property name="instanceName" ref="instanceName"/>
+        <property name="namespace" value="${monitor.register.namespace}"/>
+        <property name="statusProvider" ref="statusProvider"/>
+    </bean>
+    <bean id="instanceStatusUpdateRegisterJobDescription"
+          class="com.wfj.platform.util.zookeeper.monitor.register.InstanceStatusUpdateRegisterJobDescription">
+        <property name="appInstanceRegister" ref="appInstanceRegister"/>
+    </bean>
+
+    <import resource="classpath:spring-es.xml"/>
+    <bean id="solrClient" class="org.apache.solr.client.solrj.impl.CloudSolrClient" init-method="connect">
+        <constructor-arg name="zkHost" value="${solr.zkHost}"/>
+        <property name="requestWriter">
+            <bean class="org.apache.solr.client.solrj.impl.BinaryRequestWriter"/>
+        </property>
+        <property name="parser">
+            <bean class="org.apache.solr.client.solrj.impl.BinaryResponseParser"/>
+        </property>
+    </bean>
+
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <!-- 定义切面开始 { -->
+    <bean id="elasticSearchRecorder" class="com.wfj.search.util.record.elasticsearch.ElasticSearchRecorder">
+        <property name="esClient" ref="esClient"/>
+        <property name="index" value="${es.index}"/>
+        <property name="sidGenerator">
+            <bean class="com.wfj.search.util.record.zookeeper.ZkCounterSidGenerator">
+                <property name="versionNoCounterPath" value="${operation.versionNoCounterPath}"/>
+                <property name="zkClient" ref="registerClient"/>
+            </bean>
+        </property>
+    </bean>
+    <bean id="operationPojoParamRecordAspect" class="com.wfj.search.utils.record.bg.OperationPojoParamRecordAspect">
+        <property name="recorder" ref="elasticSearchRecorder"/>
+    </bean>
+    <aop:config proxy-target-class="true">
+        <aop:pointcut id="operationParamOperation"
+                      expression="execution(public * com.wfj.search.online.index.operation.IOperation.operate(com.wfj.search.util.record.pojo.Operation))"/>
+        <aop:aspect order="4" ref="operationPojoParamRecordAspect">
+            <aop:around method="around" pointcut-ref="operationParamOperation"/>
+        </aop:aspect>
+    </aop:config>
+    <!-- } 定义切面结束 -->
+
+    <context:component-scan base-package="com.wfj.search.online.index">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <bean id="indexFullyRebuildJob" class="com.wfj.search.online.index.cron.IndexFullyRebuildJobDescription"/>
+    <bean id="spellRebuildJob" class="com.wfj.search.online.index.cron.SpellRebuildJob"/>
+    <bean id="itemPriceChangesFetchJob" class="com.wfj.search.online.index.cron.ItemPriceChangesFetchJob"/>
+    <bean id="activeActivitiesRefreshJob" class="com.wfj.search.online.index.cron.ActiveActivitiesRefreshJob"/>
+    <bean id="activitiesUpdateJob" class="com.wfj.search.online.index.cron.ActivitiesUpdateJob"/>
+    <bean id="suggestionUpdateJob" class="com.wfj.search.online.index.cron.SuggestionUpdateJob"/>
+    <task:scheduler id="scheduler" pool-size="10"/>
+    <task:scheduled-tasks scheduler="scheduler">
+        <task:scheduled ref="instanceStatusUpdateRegisterJobDescription" method="work" initial-delay="1000"
+                        fixed-delay="30000"/>
+        <task:scheduled ref="indexFullyRebuildJob" method="fullyRebuildIndex" cron="0 0 2 * * *"/>
+        <task:scheduled ref="spellRebuildJob" method="rebuildSpell" initial-delay="60000" fixed-delay="900000"/>
+        <task:scheduled ref="retrySaveJob" method="retrySaveItem" initial-delay="4000" fixed-delay="900000"/>
+        <task:scheduled ref="retrySaveJob" method="retrySaveComment" initial-delay="4000" fixed-delay="900000"/>
+        <task:scheduled ref="retryIndexJob" method="retryIndexItem" initial-delay="4000" fixed-delay="900000"/>
+        <task:scheduled ref="retryIndexJob" method="retryIndexComment" initial-delay="4000" fixed-delay="900000"/>
+        <task:scheduled ref="itemPriceChangesFetchJob" method="fetchItemPriceChanges" cron="${index.config.priceFetchCron}"/>
+        <task:scheduled ref="activeActivitiesRefreshJob" method="refreshActiveActivities" initial-delay="4000" fixed-rate="60000"/>
+        <task:scheduled ref="activitiesUpdateJob" method="updateActivities" cron="${index.config.updateActivityCron}"/>
+        <task:scheduled ref="suggestionUpdateJob" method="updateSuggestions" cron=" 0 0 * * * *"/>
+    </task:scheduled-tasks>
+
+    <bean id="springDataSourceBeanPostProcessor"
+          class="com.wfj.netty.servlet.handler.spring.SpringDataSourceBeanPostProcessor"/>
+    <bean id="wrappedDataSource" class="com.wfj.netty.servlet.handler.factory.SpringDataSourceFactoryBean">
+        <property name="targetName" value="dbDataSource"/>
+    </bean>
+</beans>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <bean id="mvcPlaceholderConfig"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:zookeeper.properties</value>
+                <value>classpath:member.properties</value>
+                <value>classpath:search_config.properties</value>
+                <value>classpath:cart.properties</value>
+                <value>classpath:cookie.properties</value>
+                <value>classpath:hosts.properties</value>
+            </list>
+        </property>
+        <property name="fileEncoding" value="UTF-8"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
+
+    <bean id="contentNegotiationManager"
+          class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="defaultContentType" value="text/html"/>
+        <property name="favorParameter" value="true"/>
+        <property name="favorPathExtension" value="true"/>
+        <property name="ignoreAcceptHeader" value="true"/>
+        <property name="mediaTypes">
+            <map>
+                <entry key="json" value="application/json"/>
+                <entry key="jsonp" value="application/javascript"/>
+                <entry key="js" value="text/javascript"/>
+                <entry key="html" value="text/html"/>
+            </map>
+        </property>
+        <property name="parameterName" value="format"/>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="templateLoaderPaths">
+            <list>
+                <value>/</value>
+            </list>
+        </property>
+        <property name="freemarkerSettings">
+            <props>
+                <prop key="number_format">#.##</prop>
+                <prop key="date_format">yyyy-MM-dd</prop>
+                <prop key="time_format">HH:mm:ss</prop>
+                <prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+                <prop key="template_update_delay">3</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
+        <property name="defaultViews">
+            <list>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+                    <property name="objectMapper">
+                        <bean class="com.wfj.platform.util.jackson2.Jackson2JsonViewObjectMapperFactoryBean"/>
+                    </property>
+                    <property name="jsonpParameterNames">
+                        <set>
+                            <value>jsonp</value>
+                            <value>callback</value>
+                        </set>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="viewResolvers">
+            <list>
+                <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+                    <property name="cache" value="true"/>
+                    <property name="contentType" value="text/html; charset=utf-8"/>
+                    <property name="prefix" value="WEB-INF/ftl/html/"/>
+                    <property name="suffix" value=".ftl"/>
+                    <property name="viewClass" value="com.wfj.search.online.web.view.PreProcessFreeMarkerView"/>
+                    <property name="requestContextAttribute" value="context"/>
+                </bean>
+                <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+                    <property name="cache" value="true"/>
+                    <property name="contentType" value="text/javascript; charset=utf-8"/>
+                    <property name="prefix" value="WEB-INF/ftl/js/"/>
+                    <property name="suffix" value=".ftl"/>
+                    <property name="viewClass" value="com.wfj.search.online.web.view.PreProcessFreeMarkerView"/>
+                    <property name="requestContextAttribute" value="context"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**/*"/>
+            <bean id="commonVariableInjectInterceptor"
+                  class="com.wfj.search.online.web.interceptor.CommonVariableInjectInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/**/*"/>
+            <bean id="trackCookieInterceptor"
+                  class="com.wfj.search.online.web.interceptor.TrackCookieInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/search/*"/>
+            <bean id="searchQueryRecordInterceptor"
+                  class="com.wfj.search.online.web.interceptor.SearchQueryRecordInterceptor"/>
+        </mvc:interceptor>
+        <!--
+        <mvc:interceptor>
+            <mvc:mapping path="/**/*.html"/>
+            <bean id="urlCodeInterceptor"
+                  class="com.wfj.search.online.web.interceptor.UrlCodeInterceptor"/>
+        </mvc:interceptor>
+        -->
+        <mvc:interceptor>
+            <mvc:mapping path="/**/*.html"/>
+            <mvc:exclude-mapping path="/tbar.html"/>
+            <mvc:exclude-mapping path="/header.html"/>
+            <mvc:exclude-mapping path="/footer.html"/>
+            <bean id="htmlCommonPartInterceptor"
+                  class="com.wfj.search.online.web.interceptor.HtmlCommonPartInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <mvc:annotation-driven/>
+
+    <context:component-scan base-package="com.wfj.search.online.web.controller" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+</beans>

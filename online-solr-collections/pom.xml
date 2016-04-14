@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>online-searching</artifactId>
+        <groupId>com.wfj.search</groupId>
+        <version>1.0.30-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>online-solr-collections</artifactId>
+    <packaging>pom</packaging>
+
+    <description>Solr Collections</description>
+
+    <modules>
+        <module>online-solr-collection-item</module>
+        <module>online-solr-collection-comment</module>
+        <module>online-solr-collection-suggestion</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-core</artifactId>
+            <version>${dependency.solr.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>xyz.dowenliu.lucene</groupId>
+            <artifactId>scopeExpandTokenFilter</artifactId>
+            <version>${dependency.scopeExpandTokenFilter.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>xyz.dowenliu.lucene</groupId>
+            <artifactId>pinyinTokenFilter</artifactId>
+            <version>${dependency.pinyinTokenFilter.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search.base</groupId>
+            <artifactId>traditional2simplified-chinese-char-filter</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <outputDirectory>target/conf</outputDirectory>
+    </build>
+</project>

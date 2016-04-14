@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/jee
+                           http://www.springframework.org/schema/jee/spring-jee.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <bean id="placeholderConfig"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:zookeeper.properties</value>
+                <value>classpath:mysql.properties</value>
+                <value>classpath:es.properties</value>
+            </list>
+        </property>
+        <property name="fileEncoding" value="UTF-8"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
+
+    <import resource="classpath:spring-es.xml"/>
+
+    <jee:jndi-lookup jndi-name="mysql/address" id="mysql.address" expected-type="java.lang.String"/>
+    <jee:jndi-lookup jndi-name="mysql/username" id="mysql.username" expected-type="java.lang.String"/>
+    <jee:jndi-lookup jndi-name="mysql/password" id="mysql.password" expected-type="java.lang.String"/>
+    <bean id="dbDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="defaultTransactionIsolation" value="READ_UNCOMMITTED"/>
+        <property name="driverClass" value="${mysql.driver}"/>
+        <property name="idleConnectionTestPeriodInSeconds" value="30"/>
+        <property name="idleMaxAgeInMinutes" value="5"/>
+        <property name="jdbcUrl" ref="mysql.address"/>
+        <property name="maxConnectionsPerPartition" value="${mysql.maxConnectionsPerPartition}"/>
+        <property name="minConnectionsPerPartition" value="${mysql.minConnectionsPerPartition}"/>
+        <property name="partitionCount" value="${mysql.partitionCount}"/>
+        <property name="password" ref="mysql.password"/>
+        <property name="queryExecuteTimeLimitInMs" value="6000"/>
+        <property name="statementsCacheSize" value="0"/>
+        <property name="username" ref="mysql.username"/>
+    </bean>
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="dataSource" ref="dbDataSource"/>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.wfj.search.online.statistics.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dbDataSource"/>
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <jee:jndi-lookup jndi-name="service/address" id="instanceAddress" expected-type="java.lang.String"/>
+    <jee:jndi-lookup jndi-name="service/instance" id="instanceName" expected-type="java.lang.String"/>
+    <bean id="registerClientFactory" class="com.wfj.platform.util.zookeeper.ZookeeperClientFactory">
+        <property name="zkAddresses" value="${monitor.zkAddresses}"/>
+    </bean>
+    <bean id="registerClient" factory-bean="registerClientFactory"
+          factory-method="createClient" destroy-method="close"/>
+    <bean id="statusProvider"
+          class="com.wfj.platform.util.zookeeper.monitor.register.CommonInstanceStatusProvider"/>
+    <bean id="appInstanceRegister"
+          class="com.wfj.platform.util.zookeeper.monitor.register.AppInstanceRegister">
+        <constructor-arg name="client" ref="registerClient"/>
+        <property name="appName" value="${monitor.register.appName}"/>
+        <property name="instanceName" ref="instanceName"/>
+        <property name="namespace" value="${monitor.register.namespace}"/>
+        <property name="statusProvider" ref="statusProvider"/>
+    </bean>
+    <bean id="instanceStatusUpdateRegisterJob"
+          class="com.wfj.platform.util.zookeeper.monitor.register.InstanceStatusUpdateRegisterJobDescription">
+        <property name="appInstanceRegister" ref="appInstanceRegister"/>
+    </bean>
+    <bean id="serviceDiscoveryRegisterJob"
+          class="com.wfj.platform.util.zookeeper.discovery.SpringMvcServiceDiscoveryRegisterJobDescription"
+          init-method="register" destroy-method="close">
+        <property name="instanceAddress" ref="instanceAddress"/>
+        <property name="statusProvider" ref="statusProvider"/>
+        <property name="basePath" value="${discovery.basePath}"/>
+        <property name="client" ref="registerClient"/>
+    </bean>
+
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <context:component-scan base-package="com.wfj.search.online.statistics"/>
+</beans>

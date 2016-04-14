@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wfj.search.online.management.console.mapper.interval.IntervalContentMapper">
+    <resultMap id="intervalContent" type="com.wfj.search.online.common.pojo.interval.IntervalContentPojo">
+        <id property="sid" column="sid"/>
+        <result property="field" column="field"/>
+        <result property="showText" column="show_text"/>
+        <result property="channel" column="channel"/>
+        <result property="selected" column="selected"/>
+    </resultMap>
+    <insert id="addIntervalContent" parameterType="com.wfj.search.online.common.pojo.interval.IntervalContentPojo"
+            useGeneratedKeys="true" keyProperty="sid">
+        INSERT INTO online_interval_content (field, show_text, channel, selected)
+        VALUES (#{field}, #{showText}, #{channel}, #{selected})
+    </insert>
+    <update id="updateIntervalContent">
+        UPDATE online_interval_content
+        SET field = #{field},
+        show_text = #{showText},
+        channel = #{channel}
+        WHERE sid = #{sid}
+    </update>
+    <delete id="deleteIntervalContent">
+        DELETE FROM online_interval_content
+        WHERE sid = #{sid}
+    </delete>
+    <update id="unselected">
+        UPDATE online_interval_content
+        SET selected = FALSE
+        WHERE channel = (SELECT c.channel
+                         FROM (SELECT channel
+                               FROM online_interval_content
+                               WHERE sid = #{sid}) c)
+    </update>
+    <update id="doSelected">
+        UPDATE online_interval_content
+        SET selected = TRUE
+        WHERE sid = #{sid}
+    </update>
+    <select id="getIntervalContentList" resultMap="intervalContent">
+        SELECT *
+        FROM online_interval_content
+        <where>
+            <if test="sid != null">
+                sid = #{sid}
+            </if>
+            <if test="field != null">
+                AND field = #{field}
+            </if>
+        </where>
+    </select>
+    <select id="getIntervalContentBySid" parameterType="string" resultMap="intervalContent">
+        SELECT *
+        FROM online_interval_content
+        WHERE sid = #{sid}
+    </select>
+    <select id="intervalContentListWithPage" resultMap="intervalContent">
+        SELECT *
+        FROM online_interval_content
+        <where>
+            <if test="intervalContent != null">
+                <if test="intervalContent.sid != null">
+                    sid = #{intervalContent.sid}
+                </if>
+                <if test="intervalContent.field != null">
+                    AND field = #{intervalContent.field}
+                </if>
+                <if test="intervalContent.showText != null">
+                    AND show_text = #{intervalContent.showText}
+                </if>
+                <if test="intervalContent.channel != null">
+                    AND channel = #{intervalContent.channel}
+                </if>
+            </if>
+        </where>
+        LIMIT ${start}, ${limit}
+    </select>
+    <select id="intervalContentTotal" resultType="java.lang.Long">
+        SELECT COUNT(1)
+        FROM online_interval_content
+        <where>
+            <if test="intervalContent != null">
+                <if test="intervalContent.sid != null">
+                    sid = #{intervalContent.sid}
+                </if>
+                <if test="intervalContent.field != null">
+                    AND field = #{intervalContent.field}
+                </if>
+                <if test="intervalContent.showText != null">
+                    AND show_text = #{intervalContent.showText}
+                </if>
+                <if test="intervalContent.channel != null">
+                    AND channel = #{intervalContent.channel}
+                </if>
+            </if>
+        </where>
+    </select>
+</mapper>

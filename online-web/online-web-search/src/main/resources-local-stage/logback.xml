@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="log.home" value="/data/logs"/>
+
+    <property name="log.name" value="online-web-search"/>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-5le %d [%t] %C{30}.%M\(\) \(%F:%L\) - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="filelog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 必须指定JVM参数 app.port -->
+        <file>${log.home}/${log.name}-${app.port}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.home}/${log.name}-${app.port}_%d{yyyy-MM-dd}_log.zip</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%-5le %d [%t] %C{30}.%M\(\) \(%F:%L\) - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.springframework" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="filelog"/>
+    </logger>
+
+    <logger name="com.wfj" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="filelog"/>
+    </logger>
+
+    <root level="WARN">
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="filelog"/>
+    </root>
+</configuration>

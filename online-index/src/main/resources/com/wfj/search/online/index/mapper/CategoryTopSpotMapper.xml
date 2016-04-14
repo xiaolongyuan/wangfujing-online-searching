@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wfj.search.online.index.mapper.CategoryTopSpotMapper">
+    <resultMap id="Spot" type="com.wfj.search.online.index.pojo.Spot">
+        <result column="spu_id" property="spuId"/>
+        <result column="orders" property="orders"/>
+    </resultMap>
+    <select id="listSpot" resultMap="Spot">
+        SELECT spu_id, orders
+        FROM online_top_spot_category
+        WHERE category_id = #{catId}
+        ORDER BY orders DESC
+    </select>
+</mapper>

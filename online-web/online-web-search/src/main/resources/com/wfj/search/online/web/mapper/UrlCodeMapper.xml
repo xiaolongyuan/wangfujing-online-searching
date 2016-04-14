@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wfj.search.online.web.mapper.UrlCodeMapper">
+    <insert id="createCode" parameterType="com.wfj.search.online.web.common.pojo.UrlCodePojo" keyProperty="sid"
+            useGeneratedKeys="true">
+        INSERT INTO online_statistics_url_dict (url)
+        VALUES (#{url})
+    </insert>
+    <select id="getCodeOfUrl" resultType="long" parameterType="string">
+        SELECT sid
+        FROM online_statistics_url_dict
+        WHERE url = #{url}
+    </select>
+</mapper>

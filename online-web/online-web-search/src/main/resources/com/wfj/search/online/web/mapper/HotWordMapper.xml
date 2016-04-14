@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wfj.search.online.web.mapper.HotWordMapper">
+    <resultMap id="hotWords" type="com.wfj.search.online.web.pojo.HotWordsOfChannelPojo">
+        <result property="siteId" column="siteId"/>
+        <result property="channelId" column="channelId"/>
+        <collection property="hotWords" ofType="com.wfj.search.online.common.pojo.HotWordPojo"
+                    column="{site=siteId,channel=channelId}" select="listHotWord"/>
+    </resultMap>
+    <resultMap id="hotWord" type="com.wfj.search.online.web.pojo.HotWord">
+        <id column="site"/>
+        <id column="channel"/>
+        <result property="value" column="value"/>
+        <result property="link" column="link"/>
+    </resultMap>
+    <select id="listHotWords" resultMap="hotWords">
+        SELECT
+            DISTINCT
+            (CONCAT(site, '-', hot_word.channel)),
+            site siteId,
+            channel channelId
+        FROM hot_word
+        WHERE enabled = TRUE
+        <if test="siteId != null">
+            AND site = #{siteId}
+            <if test="channelId != null">
+                AND channel = #{channelId}
+            </if>
+        </if>
+        ORDER BY site, channel, orders
+    </select>
+    <select id="listHotWord" resultMap="hotWord">
+        SELECT
+            value,
+            link
+        FROM hot_word
+        WHERE enabled = TRUE
+              AND site = #{site}
+              AND channel = #{channel}
+        ORDER BY site, channel, orders
+    </select>
+    <resultMap id="hotWordPages" type="com.wfj.search.online.web.pojo.HotWord">
+        <result property="siteId" column="site"/>
+        <result property="channelId" column="channel"/>
+        <result property="value" column="value"/>
+        <result property="link" column="link"/>
+    </resultMap>
+    <select id="listHotWordPages" resultMap="hotWordPages">
+        SELECT
+            site,
+            channel,
+            value,
+            link
+        FROM hot_word
+        WHERE enabled = TRUE
+        <if test="siteId != null">
+            AND site = #{siteId}
+        </if>
+        <if test="channelId != null">
+            AND channel = #{channelId}
+        </if>
+        <if test="value != null">
+            AND value LIKE CONCAT('%', #{value},'%' )
+        </if>
+        ORDER BY site, channel, orders
+        LIMIT ${start}, ${limit}
+    </select>
+    <select id="count" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM hot_word
+        WHERE enabled = TRUE
+        <if test="siteId != null">
+            AND site = #{siteId}
+        </if>
+        <if test="channelId != null">
+            AND channel = #{channelId}
+        </if>
+        <if test="value != null">
+            AND value LIKE CONCAT('%', #{value},'%' )
+        </if>
+        ORDER BY site, channel, orders
+    </select>
+</mapper>

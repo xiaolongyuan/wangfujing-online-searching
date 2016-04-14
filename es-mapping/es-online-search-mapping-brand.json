@@ -1,0 +1,29 @@
+{
+  "properties": {
+    "brandId": {
+      "type": "string",
+      "index": "not_analyzed",
+      "doc_values": "true"
+    },
+    "brandName": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "brandDesc": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "brandLogo": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "brandPicture": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "brandAliases": {
+      "type": "string",
+      "index": "not_analyzed"
+    }
+  }
+}

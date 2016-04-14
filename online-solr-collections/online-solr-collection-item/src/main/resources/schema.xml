@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ To improve performance one could
+  - set stored="false" for all fields possible (esp large fields) when you
+    only need to search on the field but don't need to return the original
+    value.
+  - set indexed="false" if you don't need to search on the field, but only
+    return the field as a result of searching on other indexed fields.
+  - remove all unneeded copyField statements
+  - for best index size and searching performance, set "index" to false
+    for all general text fields, use copyField to copy them to the
+    catchall "searchAll" field, and use that for searching.
+  - use the ConcurrentUpdateSolrServer java client.
+-->
+<schema name="online-item" version="1.5">
+    <!--
+         1.1: multiValued attribute introduced, false by default
+         1.2: omitTermFreqAndPositions attribute introduced, true by default
+              except for text fields.
+         1.4: autoGeneratePhraseQueries attribute introduced to drive QueryParser
+              behavior when a single string produces multiple tokens.  Defaults
+              to off for version >= 1.4
+         1.5: omitNorms defaults to true for primitive field types
+              (int, float, boolean, string...)
+       -->
+    <!-- Valid attributes for fields:
+      name: mandatory - the name for the field
+      type: mandatory - the name of a field type
+      indexed: true if this field should be indexed (searchable or sortable)
+      stored: true if this field should be retrievable
+      docValues: true if this field should have doc values. Doc values are
+        useful for faceting, grouping, sorting and function queries. Although not
+        required, doc values will make the index faster to load, more
+        NRT-friendly and more memory-efficient. They however come with some
+        limitations: they are currently only supported by StrField, UUIDField
+        and all Trie*Fields, and depending on the field type, they might
+        require the field to be single-valued, be required or have a default
+        value (check the documentation of the field type you're interested in
+        for more information)
+      multiValued: true if this field may contain multiple values per document
+      omitNorms: (expert) set to true to omit the norms associated with
+        this field (this disables length normalization and index-time
+        boosting for the field, and saves some memory).  Only full-text
+        fields or fields that need an index-time boost need norms.
+        Norms are omitted for primitive (non-analyzed) types by default.
+      termVectors: [false] set to true to store the term vector for a
+        given field.
+        When using MoreLikeThis, fields used for similarity should be
+        stored for best performance.
+      termPositions: Store position information with the term vector.
+        This will increase storage costs.
+      termOffsets: Store offset information with the term vector. This
+        will increase storage costs.
+      termPayloads: Store payload information with the term vector. This
+        will increase storage costs.
+      required: The field is required.  It will throw an error if the
+        value does not exist
+      default: a value that should be used if no value is specified
+        when adding a document.
+    -->
+    <!-- field names should consist of alphanumeric or underscore characters only and
+       not start with a digit.  This is not currently strictly enforced,
+       but other field names will not have first class support from all components
+       and back compatibility is not guaranteed.  Names with both leading and
+       trailing underscores (e.g. _version_) are reserved.
+    -->
+    <!-- If you remove this field, you must _also_ disable the update log in solrconfig.xml
+       or Solr won't start. _version_ and update log are required for SolrCloud
+    -->
+    <!-- 此字段不能删除，SolrCloud必需。 -->
+    <field name="_version_" type="long" indexed="true" stored="true"/>
+
+    <!-- points to the root document of a block of nested documents. Required for nested
+       document support, may be removed otherwise
+    -->
+    <field name="_root_" type="string" indexed="true" stored="false"/>
+
+    <!-- catchall field, containing all other searchable text fields (implemented
+         via copyField further on in this schema  -->
+    <field name="searchAll" type="text_dmseg" indexed="true" stored="false" multiValued="true"/>
+    <field name="spellCheck" type="text_spell_check" indexed="true" stored="false" multiValued="true"/>
+    <field name="suggestion" type="text_auto" indexed="true" stored="false" multiValued="true"/>
+    <field name="keywords" type="text_keywords" indexed="true" stored="false" multiValued="true"/>
+    <field name="payloads" type="payloads" indexed="true" stored="true"/>
+    <field name="keywordCollect" type="string" indexed="true" stored="false" multiValued="true"/>
+
+    <!-- Only remove the "productId" field if you have a very good reason to. While not strictly
+      required, it is highly recommended. A <uniqueKey> is present in almost all Solr
+      installations. See the <uniqueKey> declaration below where <uniqueKey> is set to "sid".
+      Do NOT change the type and apply index-time analysis to the <uniqueKey> as it will likely
+      make routing in SolrCloud and document replacement in general fail. Limited _query_ time
+      analysis is possible as long as the indexing process is guaranteed to index the term
+      in a compatible way. Any analysis applied to the <uniqueKey> should _not_ produce multiple
+      tokens
+    -->
+    <!-- 商品编码 -->
+    <field name="itemId" type="string" indexed="true" stored="true" required="true" multiValued="false"
+           docValues="true"/>
+    <!-- 供应商编码 -->
+    <field name="supplierId" type="string" indexed="true" stored="true" required="true" multiValued="false"
+           docValues="true"/>
+    <!-- 门店编码 -->
+    <field name="shopId" type="string" indexed="true" stored="true" required="false" multiValued="false"
+           docValues="true"/>
+    <!-- 门店名称 -->
+    <field name="shopName" type="text_dmseg" indexed="false" stored="true" required="false" multiValued="false"/>
+    <copyField source="shopName" dest="searchAll"/>
+    <copyField source="shopName" dest="spellCheck"/>
+    <!-- 库存方式：自库、虚库、不管库存 -->
+    <field name="stockMode" type="int" indexed="true" stored="true" required="false" multiValued="false"
+           docValues="true"/>
+    <!-- 可售库存数 -->
+    <field name="inventory" type="int" indexed="true" stored="true" required="false" multiValued="false"/>
+    <!-- 原价 -->
+    <field name="originalPrice" type="double" indexed="true" stored="true" required="true" multiValued="false"
+           docValues="true"/>
+    <!-- 现价 -->
+    <field name="currentPrice" type="double" indexed="true" stored="true" required="true" multiValued="false"
+           docValues="true"/>
+    <!-- 折扣率 -->
+    <field name="discountRate" type="double" indexed="true" stored="true" required="true" multiValued="false"
+           docValues="true"/>
+    <!-- 可售渠道编码 -->
+    <field name="channels" type="string" indexed="true" stored="true" required="true" multiValued="true"/>
+    <!-- 活动标签编码 -->
+    <field name="activeId" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
+    <!-- 活动名 -->
+    <field name="activeName" type="text_dmseg" indexed="true" stored="true" required="false" multiValued="true"/>
+    <copyField source="activeName" dest="searchAll"/>
+    <copyField source="activeName" dest="spellCheck"/>
+    <copyField source="activeName" dest="suggestion"/>
+    <copyField source="activeName" dest="keywords"/>
+    <copyField source="activeName" dest="keywordCollect"/>
+    <!-- 按渠道加权量 -->
+    <dynamicField name="boost_*" type="float" indexed="true" stored="true" required="false" multiValued="false"/>
+    <!-- 品牌坑位权重 popSpotWeightBrand_[channel] -->
+    <dynamicField name="popSpotWeightBrand_*" type="int" indexed="true" stored="true" required="false"
+                  multiValued="false"/>
+    <!-- 分类坑位权重 popSpotWeightCategory_[catId] -->
+    <dynamicField name="popSpotWeightCategory_*" type="int" indexed="true" stored="true" required="false"
+                  multiValued="false"/>
+    <!-- 所属SKU编码 -->
+    <field name="skuId" type="string" indexed="true" stored="true" required="true" multiValued="false"
+           docValues="true"/>
+    <!-- 长标题 -->
+    <field name="title" type="text_dmseg" indexed="true" stored="true" required="false" multiValued="false"/>
+    <copyField source="title" dest="searchAll"/>
+    <copyField source="title" dest="suggestion"/>
+    <copyField source="title" dest="keywords"/>
+    <!-- 短标题/副标题 -->
+    <field name="subTitle" type="text_dmseg" indexed="true" stored="true" required="false" multiValued="false"/>
+    <copyField source="subTitle" dest="searchAll"/>
+    <copyField source="subTitle" dest="suggestion"/>
+    <copyField source="subTitle" dest="keywords"/>
+    <!-- 活动关键字 -->
+    <field name="activeKeywords" type="lowercase" indexed="true" stored="true" required="false" multiValued="true"/>
+    <copyField source="activeKeywords" dest="searchAll"/>
+    <copyField source="activeKeywords" dest="suggestion"/>
+    <copyField source="activeKeywords" dest="keywords"/>
+    <copyField source="activeKeywords" dest="keywordCollect"/>
+    <!-- 色系编码 -->
+    <field name="colorId" type="string" indexed="true" stored="true" required="true" multiValued="false"
+           docValues="true"/>
+    <!-- 色系名称 -->
+    <field name="colorName" type="text_dmseg" indexed="true" stored="true" required="true" multiValued="false"/>
+    docValues="true"/>
+    <copyField source="colorName" dest="searchAll"/>
+    <copyField source="colorName" dest="spellCheck"/>
+    <copyField source="colorName" dest="suggestion"/>
+    <copyField source="colorName" dest="keywords"/>
+    <!-- 颜色别名 -->
+    <field name="colorAlias" type="text_dmseg" indexed="true" stored="true" required="true" multiValued="false"/>
+    <copyField source="colorAlias" dest="searchAll"/>
+    <copyField source="colorAlias" dest="suggestion"/>
+    <!-- 图片信息, 格式：展示顺序号-是否颜色主图（0/1）-图片地址 -->
+    <field name="pictures" type="string" indexed="false" stored="true" required="true" multiValued="true"/>
+    <!-- 颜色主图 -->
+    <field name="colorMasterPicture" type="string" indexed="false" stored="true" required="true" multiValued="false"/>
+    <!-- 颜色主图（按分辨率） -->
+    <dynamicField name="colorMasterPictureOfPix_*" type="string" indexed="false" stored="true" required="false"
+                  multiValued="false"/>
+    <!-- 规格编码 -->
+    <field name="standardId" type="string" indexed="true" stored="true" multiValued="false" required="true"
+           docValues="true"/>
+    <!-- 规格名称 -->
+    <field name="standardName" type="text_dmseg" indexed="true" stored="true" multiValued="false" required="true"/>
+    <field name="standardName_facet" type="lowercase" indexed="true" stored="true" multiValued="false"
+           required="false"/>
+    <copyField source="standardName" dest="searchAll"/>
+    <copyField source="standardName" dest="standardName_facet"/>
+    <copyField source="standardName" dest="suggestion"/>
+    <!-- 销售类型， 正常/礼品/赠品 -->
+    <field name="type" type="int" indexed="true" stored="true" required="true" multiValued="false" docValues="true"/>
+    <!-- SKU上架时间 -->
+    <field name="upTime" type="date" indexed="true" stored="true" multiValued="false" required="true" docValues="true"/>
+    <!-- 所属SPU编码 -->
+    <field name="spuId" type="string" indexed="true" stored="true" required="true" multiValued="false"
+           docValues="true"/>
+    <!-- 所属SPU名称 -->
+    <field name="spuName" type="text_dmseg" indexed="true" stored="true" required="true" multiValued="false"/>
+    <copyField source="spuName" dest="searchAll"/>
+    <copyField source="spuName" dest="suggestion"/>
+    <copyField source="spuName" dest="keywords"/>
+    <!-- 款号 -->
+    <field name="model" type="lowercase" indexed="true" stored="true" required="true" multiValued="false"/>
+    <copyField source="model" dest="searchAll"/>
+    <copyField source="model" dest="spellCheck"/>
+    <copyField source="model" dest="suggestion"/>
+    <copyField source="model" dest="keywords"/>
+    <!-- 所属SPU活动标识位 -->
+    <field name="activeBit" type="int" indexed="true" stored="true" required="false" multiValued="false"/>
+    <!-- 所属SPU页面介绍 -->
+    <field name="pageDescription" type="string" indexed="false" stored="true" required="false" multiValued="false"/>
+    <!-- 所属SPU别名 -->
+    <field name="aliases" type="text_dmseg" indexed="true" stored="true" required="false" multiValued="true"/>
+    <copyField source="aliases" dest="searchAll"/>
+    <copyField source="aliases" dest="spellCheck"/>
+    <copyField source="aliases" dest="suggestion"/>
+    <copyField source="aliases" dest="keywords"/>
+    <!-- 所属SPU上架时间 -->
+    <field name="onSellSince" type="date" indexed="true" stored="true" required="false" multiValued="false"/>
+    <!-- 品牌编码 -->
+    <field name="brandId" type="string" indexed="true" stored="true" required="true" multiValued="false"
+           docValues="true"/>
+    <!-- 品牌名称 -->
+    <field name="brandName" type="text_dmseg" indexed="true" stored="true" required="true" multiValued="false"/>
+    <copyField source="brandName" dest="searchAll"/>
+    <copyField source="brandName" dest="spellCheck"/>
+    <copyField source="brandName" dest="suggestion"/>
+    <copyField source="brandName" dest="keywords"/>
+    <copyField source="brandName" dest="keywordCollect"/>
+    <!-- 品牌别名 -->
+    <field name="brandAliases" type="text_dmseg" indexed="true" stored="true" required="false" multiValued="true"/>
+    <copyField source="brandAliases" dest="searchAll"/>
+    <copyField source="brandAliases" dest="spellCheck"/>
+    <copyField source="brandAliases" dest="suggestion"/>
+    <copyField source="brandAliases" dest="keywords"/>
+    <!-- 各级所有分类编码（按渠道） -->
+    <dynamicField name="allLevelCategoryIds_*" type="string" indexed="true" stored="true" required="false"
+                  multiValued="true"/>
+    <!-- 各级所有分类名称（按渠道） -->
+    <dynamicField name="allLevelCategoryNames_*" type="text_dmseg" indexed="true" stored="true" required="false"
+                  multiValued="true"/>
+    <copyField source="allLevelCategoryNames_*" dest="searchAll"/>
+    <copyField source="allLevelCategoryNames_*" dest="spellCheck"/>
+    <copyField source="allLevelCategoryNames_*" dest="suggestion"/>
+    <copyField source="allLevelCategoryNames_*" dest="keywords"/>
+    <copyField source="allLevelCategoryNames_*" dest="keywordCollect"/>
+    <!-- 当前SPU从属的分类路径中的子类关系 -->
+    <dynamicField name="categoryIdUnderCategory_*" type="string" indexed="true" stored="true" required="false"
+                  multiValued="true"/>
+    <!-- 标签ID -->
+    <field name="tagIds" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
+    <!-- 标签值 -->
+    <field name="tags" type="text_dmseg" indexed="true" stored="true" required="false" multiValued="true"/>
+    <copyField source="tags" dest="searchAll"/>
+    <copyField source="tags" dest="spellCheck"/>
+    <copyField source="tags" dest="suggestion"/>
+    <copyField source="tags" dest="keywords"/>
+    <copyField source="tags" dest="keywordCollect"/>
+    <!-- 属性值（按渠道） -->
+    <dynamicField name="propertyValues_*" type="text_dmseg" indexed="true" stored="true" required="false"
+                  multiValued="true"/>
+    <copyField source="propertyValues_*" dest="searchAll"/>
+    <copyField source="propertyValues_*" dest="spellCheck"/>
+    <copyField source="propertyValues_*" dest="suggestion"/>
+    <copyField source="propertyValues_*" dest="keywords"/>
+    <!-- 属性编码（按渠道） -->
+    <dynamicField name="propertyIds_*" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
+    <!-- 属性属性值关系 -->
+    <dynamicField name="propertyValueIdOfPropertyId_*" type="string" indexed="true" stored="true" required="false"
+                  multiValued="false"/>
+    <field name="itemSale" type="int" indexed="true" stored="true" required="true" multiValued="false"
+           docValues="true"/>
+    <field name="skuSale" type="int" indexed="true" stored="true" required="true" multiValued="false" docValues="true"/>
+    <field name="spuSale" type="int" indexed="true" stored="true" required="true" multiValued="false" docValues="true"/>
+    <field name="spuClick" type="int" indexed="true" stored="true" required="true" multiValued="false"
+           docValues="true"/>
+    <!-- 操作记录号 -->
+    <field name="operationSid" type="long" indexed="true" stored="true" required="true" multiValued="false"/>
+
+    <!-- Dynamic field definitions allow using convention over configuration
+        for fields via the specification of patterns to match field names.
+        EXAMPLE:  name="*_i" will match any field ending in _i (like myid_i, z_i)
+        RESTRICTION: the glob-like pattern in the name attribute must have
+        a "*" only at the start or the end.  -->
+
+    <dynamicField name="random_*" type="random"/>
+
+    <!-- uncomment the following to ignore any fields that don't already match an existing
+         field name or dynamic field, rather than reporting them as an error.
+         alternately, change the type="ignored" to some other type e.g. "searchAll" if you want
+         unknown fields indexed and/or stored by default -->
+    <!--dynamicField name="*" type="ignored" multiValued="true" /-->
+
+
+    <!-- Field to use to determine and enforce document uniqueness.
+         Unless this field is marked with required="false", it will be a required field
+      -->
+    <uniqueKey>itemId</uniqueKey>
+
+    <!-- copyField commands copy one field to another at the time a document
+          is added to the index.  It's used either to index the same field differently,
+          or to add multiple fields to the same field for easier/faster searching.  -->
+
+    <!-- Above, multiple source fields are copied to the [text] field.
+       Another way to map multiple source fields to the same
+       destination field is to use the dynamic field syntax.
+       copyField also supports a maxChars to copy setting.  -->
+
+    <!-- <copyField source="*_t" dest="searchAll" maxChars="3000"/> -->
+
+    <!-- copy name to alphaNameSort, a field designed for sorting by name -->
+    <!-- <copyField source="name" dest="alphaNameSort"/> -->
+
+
+    <!-- field type definitions. The "name" attribute is
+       just a label to be used by field definitions.  The "class"
+       attribute and any other attributes determine the real
+       behavior of the fieldType.
+         Class names starting with "solr" refer to java classes in a
+       standard package such as org.apache.solr.analysis
+    -->
+
+    <!-- The StrField type is not analyzed, but indexed/stored verbatim.
+       It supports doc values but in that case the field needs to be
+       single-valued and either required or have a default value.
+      -->
+    <fieldType name="string" class="solr.StrField" sortMissingLast="true"/>
+
+    <!-- boolean type: "true" or "false" -->
+    <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
+
+    <!-- sortMissingLast and sortMissingFirst attributes are optional attributes are
+         currently supported on types that are sorted internally as strings
+         and on numeric types.
+         This includes "string","boolean", and, as of 3.5 (and 4.x),
+         int, float, long, date, double, including the "Trie" variants.
+       - If sortMissingLast="true", then a sort on this field will cause documents
+         without the field to come after documents with the field,
+         regardless of the requested sort order (asc or desc).
+       - If sortMissingFirst="true", then a sort on this field will cause documents
+         without the field to come before documents with the field,
+         regardless of the requested sort order.
+       - If sortMissingLast="false" and sortMissingFirst="false" (the default),
+         then default lucene sorting will be used which places docs without the
+         field first in an ascending sort and last in a descending sort.
+    -->
+
+    <!--
+     Numeric field types that index each value at various levels of precision
+     to accelerate range queries when the number of values between the range
+     endpoints is large. See the javadoc for NumericRangeQuery for internal
+     implementation details.
+
+     Smaller precisionStep values (specified in bits) will lead to more tokens
+     indexed per value, slightly larger index size, and faster range queries.
+     A precisionStep of 0 disables indexing at different precision levels.
+    -->
+    <fieldType name="int" class="solr.TrieIntField" precisionStep="8" positionIncrementGap="0"/>
+    <fieldType name="float" class="solr.TrieFloatField" precisionStep="8" positionIncrementGap="0"/>
+    <fieldType name="long" class="solr.TrieLongField" precisionStep="8" positionIncrementGap="0"/>
+    <fieldType name="double" class="solr.TrieDoubleField" precisionStep="8" positionIncrementGap="0"/>
+
+    <!-- The format for this date field is of the form 1995-12-31T23:59:59Z, and
+         is a more restricted form of the canonical representation of dateTime
+         http://www.w3.org/TR/xmlschema-2/#dateTime    
+         The trailing "Z" designates UTC time and is mandatory.
+         Optional fractional seconds are allowed: 1995-12-31T23:59:59.999Z
+         All other components are mandatory.
+
+         Expressions can also be used to denote calculations that should be
+         performed relative to "NOW" to determine the value, ie...
+
+               NOW/HOUR
+                  ... Round to the start of the current hour
+               NOW-1DAY
+                  ... Exactly 1 day prior to now
+               NOW/DAY+6MONTHS+3DAYS
+                  ... 6 months and 3 days in the future from the start of
+                      the current day
+                      
+         Consult the TrieDateField javadocs for more information.
+
+         Note: For faster range queries, consider the tdate type
+      -->
+    <fieldType name="date" class="solr.TrieDateField" precisionStep="6" positionIncrementGap="0"/>
+
+
+    <!--Binary data type. The data should be sent/retrieved in as Base64 encoded Strings -->
+    <fieldType name="binary" class="solr.BinaryField"/>
+
+    <!-- The "RandomSortField" is not used to store or search any
+         data.  You can declare fields of this type it in your schema
+         to generate pseudo-random orderings of your docs for sorting 
+         or function purposes.  The ordering is generated based on the field
+         name and the version of the index. As long as the index version
+         remains unchanged, and the same field name is reused,
+         the ordering of the docs will be consistent.  
+         If you want different psuedo-random orderings of documents,
+         for the same version of the index, use a dynamicField and
+         change the field name in the request.
+     -->
+    <fieldType name="random" class="solr.RandomSortField" indexed="true"/>
+
+    <!-- solr.TextField allows the specification of custom text analyzers
+         specified as a tokenizer and a list of token filters. Different
+         analyzers may be specified for indexing and querying.
+
+         The optional positionIncrementGap puts space between multiple fields of
+         this type on the same document, with the purpose of preventing false phrase
+         matching across fields.
+
+         For more info on customizing your analyzer chain, please see
+         http://wiki.apache.org/solr/AnalyzersTokenizersTokenFilters
+     -->
+
+    <!-- One can also specify an existing Analyzer class that has a
+         default constructor via the class attribute on the analyzer element.
+         Example:
+    <fieldType name="text_greek" class="solr.TextField"
+      <analyzer class="org.apache.lucene.analysis.el.GreekAnalyzer"/>
+    </fieldType>
+    -->
+
+    <fieldType name="text_dmseg" class="solr.TextField" positionIncrementGap="100">
+        <analyzer type="index">
+            <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-FoldToASCII.txt"/>
+            <charFilter class="com.wfj.search.lucene.charFilter.SBC2DBCCaseCharFilterFactory"/>
+            <charFilter class="com.wfj.search.lucene.charFilter.Traditional2SimplifiedCharFilterFactory"/>
+            <tokenizer class="com.wfj.search.lucene.tokenizer.DmsegZkTokenizerFactory"
+                       type="index"
+                       zkDictProfile="index.zdp"/>
+            <filter class="xyz.dowenliu.lucene.analyzer.ScopeExpandTokenFilterFactory" expands="ce-index.txt"/>
+            <filter class="solr.WordDelimiterFilterFactory"
+                    splitOnCaseChange="1"
+                    splitOnNumerics="1"
+                    stemEnglishPossessive="1"
+                    generateWordParts="1"
+                    generateNumberParts="1"
+                    catenateWords="1"
+                    catenateNumbers="1"
+                    catenateAll="1"
+                    preserveOriginal="1"
+                    protected="protwords.txt"/>
+            <filter class="xyz.dowenliu.lucene.analyzer.PinyinTransformTokenFilterFactory"
+                    firstChar="true" minTermLength="2"/>
+            <filter class="xyz.dowenliu.lucene.analyzer.PinyinTransformTokenFilterFactory"
+                    firstChar="false" minTermLength="2"/>
+            <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+        </analyzer>
+        <analyzer type="query">
+            <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+            <charFilter class="com.wfj.search.lucene.charFilter.SBC2DBCCaseCharFilterFactory"/>
+            <charFilter class="com.wfj.search.lucene.charFilter.Traditional2SimplifiedCharFilterFactory"/>
+            <tokenizer class="com.wfj.search.lucene.tokenizer.DmsegZkTokenizerFactory"
+                       type="query"
+                       zkDictProfile="query.zdp"/>
+            <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"/>
+            <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+        </analyzer>
+    </fieldType>
+
+    <fieldType name="text_spell_check" class="solr.TextField" positionIncrementGap="100">
+        <analyzer type="index">
+            <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-FoldToASCII.txt"/>
+            <charFilter class="com.wfj.search.lucene.charFilter.SBC2DBCCaseCharFilterFactory"/>
+            <charFilter class="com.wfj.search.lucene.charFilter.Traditional2SimplifiedCharFilterFactory"/>
+            <tokenizer class="com.wfj.search.lucene.tokenizer.DmsegZkTokenizerFactory"
+                       type="index"
+                       zkDictProfile="index.zdp"/>
+            <filter class="solr.LengthFilterFactory" min="2" max="20"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"/>
+            <filter class="solr.StandardFilterFactory"/>
+            <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+        </analyzer>
+        <analyzer type="query">
+            <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-FoldToASCII.txt"/>
+            <charFilter class="com.wfj.search.lucene.charFilter.SBC2DBCCaseCharFilterFactory"/>
+            <charFilter class="com.wfj.search.lucene.charFilter.Traditional2SimplifiedCharFilterFactory"/>
+            <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt"/>
+            <filter class="solr.StandardFilterFactory"/>
+            <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+        </analyzer>
+    </fieldType>
+
+    <fieldType name="text_keywords" class="solr.TextField" positionIncrementGap="100">
+        <analyzer type="index">
+            <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-FoldToASCII.txt"/>
+            <charFilter class="com.wfj.search.lucene.charFilter.SBC2DBCCaseCharFilterFactory"/>
+            <charFilter class="com.wfj.search.lucene.charFilter.Traditional2SimplifiedCharFilterFactory"/>
+            <tokenizer class="com.wfj.search.lucene.tokenizer.DmsegZkTokenizerFactory"
+                       type="index"
+                       zkDictProfile="index.zdp"/>
+            <filter class="solr.LengthFilterFactory" min="2" max="20"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="com.wfj.search.lucene.tokenFilter.PinyinPrefixTokenFilterFactory"
+                    firstChar="true" minTermLength="2"/>
+            <filter class="com.wfj.search.lucene.tokenFilter.PinyinPrefixTokenFilterFactory"
+                    firstChar="false" minTermLength="2"/>
+            <filter class="solr.StandardFilterFactory"/>
+            <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+        </analyzer>
+        <analyzer type="query">
+            <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-FoldToASCII.txt"/>
+            <charFilter class="com.wfj.search.lucene.charFilter.SBC2DBCCaseCharFilterFactory"/>
+            <charFilter class="com.wfj.search.lucene.charFilter.Traditional2SimplifiedCharFilterFactory"/>
+            <tokenizer class="com.wfj.search.lucene.tokenizer.DmsegZkTokenizerFactory"
+                       type="index"
+                       zkDictProfile="query.zdp"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.StandardFilterFactory"/>
+            <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
+        </analyzer>
+    </fieldType>
+
+    <fieldType name="text_auto" class="solr.TextField" positionIncrementGap="100">
+        <analyzer>
+            <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+            <filter class="solr.WordDelimiterFilterFactory"
+                    splitOnCaseChange="1"
+                    splitOnNumerics="1"
+                    stemEnglishPossessive="1"
+                    generateWordParts="1"
+                    generateNumberParts="1"
+                    catenateWords="1"
+                    catenateNumbers="1"
+                    catenateAll="1"
+                    preserveOriginal="1"
+                    protected="protwords.txt"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+        </analyzer>
+    </fieldType>
+
+    <!-- charFilter + WhitespaceTokenizer  -->
+    <!--
+    <fieldType name="text_char_norm" class="solr.TextField" positionIncrementGap="100" >
+      <analyzer>
+        <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+      </analyzer>
+    </fieldType>
+    -->
+
+    <fieldType name="phonetic" stored="false" indexed="true" class="solr.TextField">
+        <analyzer>
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.DoubleMetaphoneFilterFactory" inject="false"/>
+        </analyzer>
+    </fieldType>
+
+    <fieldType name="payloads" stored="false" indexed="true" class="solr.TextField">
+        <analyzer>
+            <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+            <!--
+            The DelimitedPayloadTokenFilter can put payloads on tokens... for example,
+            a token of "foo|1.4"  would be indexed as "foo" with a payload of 1.4f
+            Attributes of the DelimitedPayloadTokenFilterFactory :
+             "delimiter" - a one character delimiter. Default is | (pipe)
+         "encoder" - how to encode the following value into a playload
+            float -> org.apache.lucene.analysis.payloads.FloatEncoder,
+            integer -> o.a.l.a.p.IntegerEncoder
+            identity -> o.a.l.a.p.IdentityEncoder
+                Fully Qualified class name implementing PayloadEncoder, Encoder must have a no arg constructor.
+             -->
+            <filter class="solr.DelimitedPayloadTokenFilterFactory" encoder="float"/>
+        </analyzer>
+    </fieldType>
+
+    <!-- lowercases the entire field value, keeping it as a single token.  -->
+    <fieldType name="lowercase" class="solr.TextField" positionIncrementGap="100">
+        <analyzer>
+            <tokenizer class="solr.KeywordTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.TrimFilterFactory"/>
+        </analyzer>
+    </fieldType>
+
+    <fieldType name="lowercaseAlphaOnly" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+        <analyzer>
+            <tokenizer class="solr.KeywordTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.TrimFilterFactory"/>
+            <filter class="solr.PatternReplaceFilterFactory"
+                    pattern="([^a-z0-9\.]+)" replacement=" " replace="all"/>
+        </analyzer>
+    </fieldType>
+
+    <!-- since fields of this type are by default not stored or indexed,
+         any data added to them will be ignored outright.  -->
+    <fieldType name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField"/>
+
+    <!-- Similarity is the scoring routine for each document vs. a query.
+         A custom Similarity or SimilarityFactory may be specified here, but
+         the default is fine for most applications.
+         For more info: http://wiki.apache.org/solr/SchemaXml#Similarity
+      -->
+    <!--
+       <similarity class="com.example.solr.CustomSimilarityFactory">
+         <str name="paramkey">param value</str>
+       </similarity>
+      -->
+
+</schema>

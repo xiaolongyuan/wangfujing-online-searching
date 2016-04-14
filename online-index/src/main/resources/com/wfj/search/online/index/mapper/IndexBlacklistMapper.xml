@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wfj.search.online.index.mapper.IndexBlacklistMapper">
+    <select id="listOfType" resultType="string" parameterType="string">
+        SELECT `id`
+        FROM `online_index_blacklist`
+        WHERE `type` = #{type}
+    </select>
+</mapper>

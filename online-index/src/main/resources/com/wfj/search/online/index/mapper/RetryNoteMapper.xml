@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wfj.search.online.index.mapper.RetryNoteMapper">
+    <resultMap id="onlineRetryNote" type="com.wfj.search.online.common.pojo.OnlineRetryNotePojo">
+        <id property="sid" column="sid"/>
+        <result property="code" column="code"/>
+        <result property="resolved" column="resolved"/>
+        <result property="step" column="step"/>
+        <result property="type" column="type"/>
+        <result property="action" column="action"/>
+        <result property="version" column="version"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="comment" column="comment"/>
+    </resultMap>
+    <insert id="addRetryNote">
+        INSERT INTO online_retry_note (code, step, type, action) VALUES (#{code}, #{step}, #{type}, #{action})
+    </insert>
+    <update id="unresolvedRetryNote">
+        UPDATE online_retry_note
+        SET resolved = FALSE,
+            version  = version + 1,
+            step     = #{step},
+            action   = #{action}
+        WHERE code = #{code}
+              AND type = #{type}
+    </update>
+    <update id="rewriteRetryNote">
+        UPDATE online_retry_note
+        SET resolved = #{resolved},
+            step     = #{step},
+            action   = #{action}
+        WHERE code = #{code}
+              AND version = ${version}
+              AND type = #{type}
+    </update>
+    <update id="cleanRetryNote">
+        UPDATE online_retry_note
+        SET comment  = concat(ifnull(comment, ''), #{comment}),
+            version  = version + 1,
+            resolved = TRUE
+        WHERE code = #{code}
+              AND type = #{type}
+    </update>
+    <select id="listUnresolvedNote" resultMap="onlineRetryNote">
+        SELECT *
+        FROM online_retry_note
+        WHERE resolved = FALSE
+        AND type = #{type}
+        <if test="step != null">
+            AND step = #{step}
+        </if>
+        <if test="action != null">
+            AND action = #{action}
+        </if>
+        ORDER BY version
+    </select>
+    <select id="getRetryNote" resultMap="onlineRetryNote">
+        SELECT *
+        FROM online_retry_note
+        WHERE code = #{code}
+    </select>
+</mapper>

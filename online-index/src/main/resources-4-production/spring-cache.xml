@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/jee
+                           http://www.springframework.org/schema/jee/spring-jee.xsd">
+    <jee:jndi-lookup jndi-name="redis/password" id="redis.password" expected-type="java.lang.String"/>
+    <bean id="clusterClient" class="com.wfj.platform.cache.lettuce.util.RedisClusterClientFactory" destroy-method="shutdown">
+        <constructor-arg name="redisURIs">
+            <list>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.89" p:port="6383"
+                      p:password-ref="redis.password"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.90" p:port="6383"
+                      p:password-ref="redis.password"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.91" p:port="6383"
+                      p:password-ref="redis.password"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.92" p:port="6383"
+                      p:password-ref="redis.password"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.93" p:port="6383"
+                      p:password-ref="redis.password"/>
+                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.168" p:port="6383"
+                      p:password-ref="redis.password"/>
+            </list>
+        </constructor-arg>
+    </bean>
+</beans>

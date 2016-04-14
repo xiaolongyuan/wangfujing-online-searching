@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wfj.search.online.management.console.mapper.blacklist.BlackListMapper">
+    <resultMap id="blacklist" type="com.wfj.search.online.common.pojo.blacklist.BlacklistPojo">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="createTime" column="create_time"/>
+        <result property="creator" column="creator"/>
+    </resultMap>
+    <insert id="add">
+        INSERT INTO online_index_blacklist (id, type, create_time, creator)
+        VALUES (#{id}, #{type}, now(), #{creator})
+    </insert>
+    <delete id="del">
+        DELETE FROM online_index_blacklist
+        WHERE id = #{id} AND type = #{type}
+    </delete>
+    <select id="getBlacklist" resultMap="blacklist">
+        SELECT id, type, date_format(create_time, '%Y-%m-%d %H:%i:%s') create_time, creator
+        FROM online_index_blacklist
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+        </where>
+        LIMIT ${start}, ${limit}
+    </select>
+    <select id="getCount" resultType="int">
+        SELECT COUNT(1) FROM online_index_blacklist
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+        </where>
+    </select>
+</mapper>

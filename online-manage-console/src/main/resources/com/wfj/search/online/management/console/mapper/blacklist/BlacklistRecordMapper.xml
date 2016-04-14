@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wfj.search.online.management.console.mapper.blacklist.BlacklistRecordMapper">
+    <resultMap id="record" type="com.wfj.search.online.common.pojo.blacklist.BlacklistRecordPojo">
+        <id property="sid" column="sid"/>
+        <result property="type" column="type"/>
+        <result property="modifyTime" column="modify_time"/>
+        <result property="modifier" column="modifier"/>
+        <result property="modifyType" column="modify_type"/>
+    </resultMap>
+    <insert id="addRecord" useGeneratedKeys="true" keyProperty="sid">
+        INSERT INTO online_index_blacklist_record (id, type, modify_time, modifier, modify_type)
+        VALUES (#{id}, #{type}, now(), #{modifier}, #{modifyType})
+    </insert>
+    <select id="listRecord" resultMap="record">
+        SELECT *
+        FROM online_index_blacklist_record
+    </select>
+</mapper>

@@ -1,0 +1,18 @@
+.errordiv{/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#fff1f6+0,fff7fa+100 */
+    background: #fff1f6; /* Old browsers */
+    background: -moz-linear-gradient(top,  #fff1f6 0%, #fff7fa 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  #fff1f6 0%,#fff7fa 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  #fff1f6 0%,#fff7fa 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff1f6', endColorstr='#fff7fa',GradientType=0 ); /* IE6-9 */
+}
+
+.errordiv .imgs{width: 40%;margin: 0px auto;}
+.errordiv .imgs .er-img{width: 100%;}
+.errordiv .er-text{margin-top: 30px;}
+.er-text .er-e .gray{color:#666; font-size: 24px;}
+.er-text .er-e .red{color: #E51A59;font-size: 24px;font-weight: bold;}
+.er-text .er-c{color:#666; font-size: 18px;line-height: 40px;margin: 15px 0;}
+.er-text .er-btn{width:130px;border: 2px solid #E51A59;color: #E51A59;height: 30px;line-height: 30px;margin: 0px auto;display: block;}
+
+
+

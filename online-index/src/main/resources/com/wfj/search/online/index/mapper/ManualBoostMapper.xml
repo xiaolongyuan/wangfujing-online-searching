@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wfj.search.online.index.mapper.ManualBoostMapper">
+    <resultMap id="ManualBoostPojo" type="com.wfj.search.online.common.pojo.boost.ManualBoostPojo">
+        <id column="sku_id" property="skuId"/>
+        <result column="boost" property="boost"/>
+    </resultMap>
+    <select id="listAll" resultMap="ManualBoostPojo">
+        SELECT *
+        FROM `online_index_manual_boost`
+    </select>
+</mapper>

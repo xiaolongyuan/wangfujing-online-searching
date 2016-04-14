@@ -1,0 +1,41 @@
+{
+  "properties": {
+    "categoryId": {
+      "type": "string",
+      "index": "not_analyzed",
+      "doc_values": "true"
+    },
+    "categoryName": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "leafLevel": {
+      "type": "boolean"
+    },
+    "selfBuilt": {
+      "type": "boolean"
+    },
+    "rootCategoryId": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "parentCategoryId": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "level": {
+      "type": "integer"
+    },
+    "order": {
+      "type": "integer"
+    },
+    "idPath": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "channel": {
+      "type": "string",
+      "index": "not_analyzed"
+    }
+  }
+}

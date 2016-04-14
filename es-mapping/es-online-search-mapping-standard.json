@@ -1,0 +1,13 @@
+{
+  "properties": {
+    "standardId": {
+      "type": "string",
+      "index": "not_analyzed",
+      "doc_values": "true"
+    },
+    "standardName": {
+      "type": "string",
+      "index": "not_analyzed"
+    }
+  }
+}

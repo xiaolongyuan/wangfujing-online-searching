@@ -1,0 +1,12 @@
+{
+  "properties": {
+    "skuId": {
+      "type": "string",
+      "index": "not_analyzed",
+      "doc_values": "true"
+    },
+    "sales": {
+      "type": "integer"
+    }
+  }
+}

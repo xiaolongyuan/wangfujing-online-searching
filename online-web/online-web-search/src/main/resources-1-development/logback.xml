@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-5le %d [%t] %C{30}.%M\(\) \(%F:%L\) - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.springframework" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout" />
+    </logger>
+
+    <logger name="org.apache.zookeeper" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="stdout" />
+    </logger>
+
+    <logger name="org.apache.curator" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout" />
+    </logger>
+
+    <logger name="org.quartz" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.apache.ibatis" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.apache.solr" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.mybatis" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.springframework" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="io.netty" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="com.lambdaworks" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="freemarker.template" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="freemarker.cache" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="com.wfj.platform.cache.lettuce.cluster.LettuceClusterCache2" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="com.wfj.platform.cache.Jackson2Serializer2" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="com.wfj.search.online.web.mapper" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <root level="DEBUG">
+        <appender-ref ref="stdout"/>
+    </root>
+</configuration>

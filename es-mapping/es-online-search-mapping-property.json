@@ -1,0 +1,19 @@
+{
+  "properties": {
+    "propertyId": {
+      "type": "string",
+      "index": "not_analyzed",
+      "doc_values": "true"
+    },
+    "propertyName": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "enumProperty": {
+      "type": "boolean"
+    },
+    "propertyOrder": {
+      "type": "integer"
+    }
+  }
+}

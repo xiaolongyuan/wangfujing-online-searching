@@ -1,0 +1,59 @@
+
+/*商品分类*/
+.arrowC{ border-top-style:solid; border-width:16px;}
+.mrgt4{ margin-top:4px;}
+.mrgt15{ margin-top:15px;}
+.fs14{ font-size:14px;}
+.fs12{ font-size:12px;}
+.disL{display:inline-block;*display:inline;*zoom:1;}
+.list-box a:hover,.brand-widget a:hover{ text-decoration:underline; color:#c51100;}
+.all-title{ background-color:#c51100; width:120px; height:30px; line-height:30px; text-align:center; color:#fff;}
+.all-title i { position:absolute;left:35%;bottom:-25px;border-top-color: #c51100;}
+.all-list{ margin-top:15px; margin-bottom:40px; width:100%;}
+.list-wrap{ width:560px; padding-left:25px; float:left; overflow:hidden;}
+.list-title{ color:#333; line-height:30px; padding-left:20px;}
+.list-box{ min-height:350px; height:350px; background-color:#fafafa; border-top:2px solid #333; padding-left:20px;}
+.list-name{color:#333; margin:2px 10px 0 0; width:80px; text-align:right; float:left;}
+.list-cont{ width:430px; padding-right:20px; float:left;}
+.list-cont a{ padding:0 8px; color:#333; border-left:2px solid #c0c0c0; height:14px; line-height:14px; margin:5px 0; display:inline-block;}
+.all-brand{ height:2100px; margin-top:40px;}
+.brand-widget{ position:absolute; width:200px; overflow:hidden;}
+.brand-title{ color:#333; font-size:14px;}
+.brand-widget a{ color:#333; line-height:24px; display:block;}
+.posA{ left:125px; top:30px;}
+.posB{ left:325px; top:30px;}
+.posC{ left:525px; top:30px;}
+.posD{ left:725px; top:30px;}
+.posE{ left:925px; top:30px;}
+.posF{ left:925px; top:310px;}
+.posG{ left:725px; top:450px;}
+.posH{ left:325px; top:520px;}
+.posI{ left:125px; top:600px;}
+.posJ{ left:125px; top:740px;}
+.posK{ left:525px; top:730px;}
+.posL{ left:925px; top:760px;}
+.posM{ left:725px; top:830px;}
+.posN{ left:525px; top:990px;}
+.posO{ left:325px; top:1020px;}
+.posP{ left:125px; top:1240px;}
+.posQ{ left:525px; top:1300px;}
+.posR{ left:925px; top:1300px;}
+.posS{ left:325px; top:1320px;}
+.posT{ left:525px; top:1420px;}
+.posV{ left:925px; top:1530px;}
+.posW{ left:125px; top:1570px;}
+.posX{ left:725px; top:1640px;}
+.posY{ left:125px; top:1710px;}
+.posZ{ left:325px; top:1700px;}
+.posNum{ left:925px; top:1720px;}
+
+
+
+
+
+
+
+
+
+
+

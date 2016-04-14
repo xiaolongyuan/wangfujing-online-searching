@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/jee
+                           http://www.springframework.org/schema/jee/spring-jee.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd">
+    <bean id="placeholderConfig"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:mysql.properties</value>
+            </list>
+        </property>
+        <property name="fileEncoding" value="UTF-8"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
+
+    <jee:jndi-lookup jndi-name="mysql/address" id="mysql.address" expected-type="java.lang.String"/>
+    <jee:jndi-lookup jndi-name="mysql/username" id="mysql.username" expected-type="java.lang.String"/>
+    <jee:jndi-lookup jndi-name="mysql/password" id="mysql.password" expected-type="java.lang.String"/>
+
+    <bean id="dbDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="defaultTransactionIsolation" value="READ_UNCOMMITTED"/>
+        <property name="driverClass" value="${mysql.driver}"/>
+        <property name="idleConnectionTestPeriodInSeconds" value="30"/>
+        <property name="idleMaxAgeInMinutes" value="5"/>
+        <property name="jdbcUrl" ref="mysql.address"/>
+        <property name="maxConnectionsPerPartition" value="${mysql.maxConnectionsPerPartition}"/>
+        <property name="minConnectionsPerPartition" value="${mysql.minConnectionsPerPartition}"/>
+        <property name="partitionCount" value="${mysql.partitionCount}"/>
+        <property name="password" ref="mysql.password"/>
+        <property name="queryExecuteTimeLimitInMs" value="6000"/>
+        <property name="statementsCacheSize" value="0"/>
+        <property name="username" ref="mysql.username"/>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="dataSource" ref="dbDataSource"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.wfj.search.online.management.console.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+
+    <context:component-scan base-package="com.wfj.search.online.management.console.mapper"/>
+</beans>

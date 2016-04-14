@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wfj.search.online.management.console.mapper.boost.ManualBoostMapper">
+    <resultMap id="manualBoost" type="com.wfj.search.online.common.pojo.boost.ManualBoostPojo">
+        <id property="skuId" column="sku_id"/>
+        <result property="boost" column="boost"/>
+    </resultMap>
+    <insert id="save">
+        REPLACE INTO online_index_manual_boost (sku_id, boost)
+        VALUES (#{skuId}, ${boost})
+    </insert>
+    <delete id="delete">
+        DELETE FROM online_index_manual_boost
+        WHERE sku_id = #{skuId}
+    </delete>
+    <select id="list" resultMap="manualBoost">
+        SELECT *
+        FROM online_index_manual_boost
+        <where>
+            <if test="skuId != null">
+                sku_id = #{skuId}
+            </if>
+        </where>
+        LIMIT ${start}, ${limit}
+    </select>
+    <select id="count" resultType="java.lang.Integer">
+        SELECT COUNT(sku_id)
+        FROM online_index_manual_boost
+        <where>
+            <if test="skuId != null">
+                sku_id = #{skuId}
+            </if>
+        </where>
+    </select>
+</mapper>
