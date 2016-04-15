@@ -146,24 +146,23 @@ public class CommentEsServiceImpl implements ICommentEsService {
         List<CommentIndexPojo> list = comments.stream()
                 .map(comment -> PojoUtils.toIndexPojo(comment, version))
                 .collect(Collectors.toList());
-        int size = list.size();
-        try {
-            for (CommentIndexPojo commentIndexPojo : list) {
+        for (CommentIndexPojo commentIndexPojo : list) {
+            try {
                 this.commentEsIao.upsert(commentIndexPojo);
+                multiFailure.addSuccess(1);
+            } catch (Exception e) {
+                multiFailure.addFail(1);
+                String msg = "向ES保存数据出错，出错信息：" + list.stream()
+                        .map(ci -> {
+                            String commentId = ci.getCommentId();
+                            retryService.addUnresolvedRetryNote(commentId, Step.es, Type.comment, Action.save);
+                            multiFailure
+                                    .addFailure(new Failure(DataType.comment, FailureType.save2ES, commentId));
+                            return commentId;
+                        })
+                        .collect(Collectors.toList());
+                logger.error(msg, e);
             }
-            multiFailure.addSuccess(size);
-        } catch (Exception e) {
-            multiFailure.addFail(size);
-            String msg = "向ES保存数据出错，出错信息：" + list.stream()
-                    .map(ci -> {
-                        String commentId = ci.getCommentId();
-                        retryService.addUnresolvedRetryNote(commentId, Step.es, Type.comment, Action.save);
-                        multiFailure
-                                .addFailure(new Failure(DataType.comment, FailureType.save2ES, commentId));
-                        return commentId;
-                    })
-                    .collect(Collectors.toList());
-            logger.error(msg, e);
         }
         return multiFailure;
     }
