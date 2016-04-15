@@ -6,6 +6,7 @@ import com.wfj.search.utils.signature.json.rsa.JsonSigner;
 import com.wfj.search.utils.signature.json.rsa.StandardizingUtil;
 import com.wfj.search.utils.signature.ras.KeyUtils;
 import okhttp3.*;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.springframework.context.ResourceLoaderAware;
@@ -47,7 +48,7 @@ public abstract class CallerBase implements ResourceLoaderAware {
 
     protected void loadPrivateKey() throws IOException, InvalidKeySpecException {
         this.privateKey = KeyUtils.base64String2RSAPrivateKey(IOUtils.toString(
-                        this.resourceLoader.getResource("classpath:" + getPrivateKeyFile()).getInputStream()));
+                this.resourceLoader.getResource("classpath:" + getPrivateKeyFile()).getInputStream()));
     }
 
     @PostConstruct
@@ -57,24 +58,24 @@ public abstract class CallerBase implements ResourceLoaderAware {
 
     protected String requestWithSignature(String url, JSONObject messageBody)
             throws URISyntaxException, IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        String signed = StandardizingUtil.standardize(JsonSigner.wrapSignature(messageBody, privateKey, getCaller(), ""));
+        String signed = StandardizingUtil
+                .standardize(JsonSigner.wrapSignature(messageBody, privateKey, getCaller(), ""));
         MediaType mediaTypeJson = MediaType.parse("application/json; charset=utf-8");
         Request request = new Request.Builder().url(url)
                 .post(RequestBody.create(mediaTypeJson, signed)).build();
-        OkHttpClient okHttpClient = new OkHttpClient();
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor().setLevel(
+                HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addNetworkInterceptor(loggingInterceptor).build();
         Response response = okHttpClient.newCall(request).execute();
-        String respStr = response.body().string();
-        getLogger().debug(respStr);
-        return respStr;
+        return response.body().string();
     }
 
     protected void testTemplate(String serviceName, JSONObject messageBody) {
         try {
             String url = this.getServiceProvider().provideServiceAddress(serviceName);
-            this.getLogger().info("request url: {}", url);
             String resp = requestWithSignature(url, messageBody);
             assertNotNull(resp);
-            this.getLogger().info(resp);
             JSONObject res = JSONObject.parseObject(resp);
             assertTrue(res.getBoolean("success"));
         } catch (Exception e) {

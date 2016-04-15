@@ -1,7 +1,8 @@
-package com.wfj.search.online.index.controller.caller;
+package com.wfj.search.online.index.controller.caller.ops;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wfj.platform.util.zookeeper.discovery.SpringMvcServiceProvider;
+import com.wfj.search.online.index.controller.caller.CallerBase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:spring-caller.xml"})
-public class FullyRebuildEsControllerCaller extends CallerBase {
+public class FullyRebuildIndexControllerCaller extends CallerBase {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Value("${caller.caller}")
     private String caller;
@@ -49,8 +50,8 @@ public class FullyRebuildEsControllerCaller extends CallerBase {
     }
 
     @Test
-    public void testFullyRebuildEsManually() {
-        String serviceName = "online-fullyRebuildES";
+    public void testFullyRebuildIndexManuallyFromEs() {
+        String serviceName = "online-fullyRebuildIndexFromEs";
         testTemplate(serviceName, new JSONObject());
     }
 }

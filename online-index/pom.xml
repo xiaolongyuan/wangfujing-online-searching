@@ -181,5 +181,14 @@
             <artifactId>lucene-analyzers-common</artifactId>
             <version>${dependency.elasticsearch.lucene.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>logging-interceptor</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
