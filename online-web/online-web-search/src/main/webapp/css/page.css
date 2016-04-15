@@ -1,0 +1,14 @@
+/*weixin*/
+.pay_wx{ background: url("../css/img/weixin.jpg") no-repeat;width: 320px;height: 400px; text-align: center;display: inline-block;}
+.intro{font-size: 15px;color: #fff;margin-top: 30px;}
+.wxnum{font-size: 13px;color: #000;margin-top: 196px;}
+.search{margin:0 10px;margin-top: 50px;height: 40px;line-height: 40px;text-align: left;padding: 0 20px;font-size: 13px;}
+.search input{width:180px;height: 38px;line-height: 36px;border: none;outline: none;vertical-align: 2px;}
+/*end weixin*/
+/*404页面*/
+.w-404{background-color: #EFEEEA;}
+#div404{height: 460px; background: url("img/404.jpg") no-repeat top center;}
+.refresh{ width: 300px; height: 40px; background-color: #c42605; text-align: center;line-height: 40px; display: block; text-decoration: none; position: absolute;left:50%; bottom: 70px;margin-left:-150px;}
+.refresh:hover{color:#fff;}
+.font{font-size: 18px; color: #FFF;}
+/* end 404页面*/

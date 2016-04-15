@@ -6,7 +6,7 @@
 
     <groupId>com.wfj.search</groupId>
     <artifactId>online-searching</artifactId>
-    <version>1.0.30.RELEASE</version>
+    <version>1.0.31.RELEASE</version>
     <packaging>pom</packaging>
 
     <description>王府井线上搜索项目</description>
@@ -38,7 +38,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dependency.wfj.platform-utils.version>1.0.6.RELEASE</dependency.wfj.platform-utils.version>
-        <dependency.segment-service.version>1.0.0.RELEASE</dependency.segment-service.version>
+        <dependency.segment-service.version>1.0.1.RELEASE</dependency.segment-service.version>
         <dependency.solr-home.version>1.0.0.RELEASE</dependency.solr-home.version>
         <dependency.wfj.search-utils.version>1.0.18.RELEASE</dependency.wfj.search-utils.version>
         <dependency.junit.version>4.12</dependency.junit.version>
@@ -74,6 +74,7 @@
         <dependency.aspectj.version>1.8.5</dependency.aspectj.version>
         <dependency.elasticsearch.version>2.2.0</dependency.elasticsearch.version>
         <dependency.elasticsearch.lucene.version>5.4.1</dependency.elasticsearch.lucene.version>
+        <dependency.okhttp.version>3.2.0</dependency.okhttp.version>
     </properties>
 
     <dependencies>
@@ -470,6 +471,18 @@
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
                 <version>${dependency.elasticsearch.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${dependency.okhttp.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>logging-interceptor</artifactId>
+                <version>${dependency.okhttp.version}</version>
+                <scope>compile</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -44,7 +44,11 @@ $(function(){
 
     /**选择颜色--尺码*/
     $(".detail-sale-prop li").click(function(){
+        if($(this).find("a").hasClass("off")||$(this).find("div").hasClass("offbg")){
+            $(this).unbind("click");
+        }else{
         $(this).addClass("selected").append('<i class="posa icon_detail3"></i>').siblings().removeClass("selected").find(".icon_detail3").remove(".icon_detail3");
+        }
     });
 
     //五角星的百分比显示
@@ -54,9 +58,9 @@ $(function(){
     num = per * 5 / 100;
     num = num.toFixed(1);
     if (per == 100) {
-        m = (per * 640 / 100) - 30;
+        m = (per * 400 / 100) - 30;
     } else {
-        m = per * 640 / 100;
+        m = per * 400 / 100;
     }
     m = m.toFixed(2);
     $("#j_star").css("width", n + "px");
@@ -84,9 +88,24 @@ $(function(){
             title: false,
             preloadText: "false"
 
-        }, b = function () {
+        }, b = function (event) {
+            //event.stopPropagation();
             $('.jqzoom').jqzoom(jqzoomOpt);
+            return false;
         }
         b();
+
+    $("#js_detailBuy").click(function(){
+        $("#ui-login-page").show();
+    })
+    $(".block-close").click(function(){
+        $("#ui-login-page").hide();
+    });
+    $("#thumb-list").slide($.extend({},slide_opt,{
+        effect:"left",
+        vis:6,
+        pnLoop:false,
+        stepEffect:true
+    }));
 
 })

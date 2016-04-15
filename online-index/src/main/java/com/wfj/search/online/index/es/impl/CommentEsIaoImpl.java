@@ -73,8 +73,11 @@ public class CommentEsIaoImpl implements CommentEsIao {
             scrollPage.setList(Lists.newArrayListWithExpectedSize(hits.length));
             for (SearchHit hit : hits) {
                 try {
-                    scrollPage.getList()
-                            .add(this.objectMapper.readValue(hit.getSourceAsString(), CommentIndexPojo.class));
+                    String source = hit.getSourceAsString();
+                    if (source != null) {
+                        scrollPage.getList()
+                                .add(this.objectMapper.readValue(source, CommentIndexPojo.class));
+                    }
                 } catch (IOException e) {
                     logger.error("JSON反序列化失败", e);
                     throw new IndexException("从JSON反序列化评论信息失败", e);
@@ -104,8 +107,11 @@ public class CommentEsIaoImpl implements CommentEsIao {
             scrollPage.setList(Lists.newArrayListWithExpectedSize(hits.length));
             for (SearchHit hit : hits) {
                 try {
-                    scrollPage.getList()
-                            .add(this.objectMapper.readValue(hit.getSourceAsString(), CommentIndexPojo.class));
+                    String source = hit.getSourceAsString();
+                    if (source != null) {
+                        scrollPage.getList()
+                                .add(this.objectMapper.readValue(source, CommentIndexPojo.class));
+                    }
                 } catch (IOException e) {
                     logger.error("JSON反序列化失败", e);
                     throw new IndexException("从JSON反序列化评论信息失败", e);

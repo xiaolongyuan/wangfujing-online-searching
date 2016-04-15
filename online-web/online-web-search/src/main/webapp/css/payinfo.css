@@ -1,0 +1,75 @@
+
+
+.icon_pay_01, .icon_pay_02, .icon_pay_03, .icon_pay_04, .icon_pay_05, .icon_pay_06, .icon_pay_07, .icon_pay_08, .icon_pay_09, .icon_pay_10{background: url(img/public/icon_pay.png) no-repeat top left;}
+.icon_pay_01{ background-position: 0 0; width: 80px; height: 80px; }
+.icon_pay_02{ background-position: 0 -90px; width: 71px; height: 80px; }
+.icon_pay_03{ background-position: 0 -180px; width: 71px; height: 80px; }
+.icon_pay_04{ background-position: 0 -270px; width: 24px; height: 20px; }
+.icon_pay_05{ background-position: 0 -300px; width: 16px; height: 16px; }
+.icon_pay_06{ background-position: 0 -326px; width: 606px; height: 30px; }
+.icon_pay_07{ background-position: 0 -366px; width: 606px; height: 30px; }
+.icon_pay_08{ background-position: 0 -406px; width: 606px; height: 30px; }
+.icon_pay_09{ background-position: 0 -446px; width: 43px; height: 22px; }
+.icon_pay_10{ background-position: 0 -478px; width: 31px; height: 33px; }
+
+.titbar{float: right;margin: 10px 0;width: 606px;height: 30px;line-height: 30px;font-size: 14px;color: #333;}
+.titbar span{width: 202px;text-align: center;float: left;}
+.titbar .on{color: #fff;}
+
+.blockbody{border: 2px solid #bfbfbf;padding: 30px;margin-bottom: 10px;}
+.blockbody .tsinfo{margin-bottom: 40px;}
+.blockbody .tsinfo .icon_pay_01,.blockbody .tsinfo .icon_pay_02,.blockbody .tsinfo .icon_pay_03,.blockbody .tsinfo .icon_pay_05{display: block;}
+.blockbody .tsinfo .ts_box{margin-left: 20px;}
+.blockbody .tsinfo .ts_box p{margin-bottom: 10px;}
+.blockbody .tsinfo .ts_box .describe{font-size: 18px;color:#c22605;}
+.blockbody .typeBank .titlist{}
+.blockbody .typeBank .titlist li{padding: 8px 30px;border: 2px solid #D3D3D3;float: left;background-color: #fff;margin-bottom: -2px;border-bottom: none;position: relative;cursor: pointer;}
+.blockbody .typeBank .titlist li.left{border-right: none;}
+.blockbody .typeBank .titlist li.right{border-left: none;}
+.blockbody .typeBank .titlist li.on{border: 2px solid #c22605;}
+.blockbody .typeBank .titlist li.on .barfff{width: 100%;height: 2px;font-size: 0px;background-color: #fff;left: 0px;bottom: -2px;}
+.blockbody .typeBank .bankbox{border: 2px solid #c22605;min-height: 100px;padding: 20px 30px;}
+.blockbody .typeBank .bankList{width: 80%;}
+.blockbody .typeBank .bankList li{float: left;margin-right: 20px;margin-bottom: 20px;}
+.blockbody .typeBank .bankList li input{margin-top: 10px;}
+.blockbody .typeBank .bankList li label{width: 115px;height: 38px;}
+.blockbody .bankbtn{color: #fff;background-color: #ff6600;width: 110px;padding: 8px;text-align: center;font-size: 14px;}
+.blockbody .typeBank .bankbox .bankbtn{margin-left: 16px;}
+.orderInfo,.chooseBank{padding: 0px 0 20px 94px;}
+.orderInfo .o_table{min-width: 600px;border: 1px solid #bfbfbf;border-spacing: inherit;}
+.orderInfo .o_table td{border: 1px solid #bfbfbf;padding-left: 20px;}
+.orderInfo .o_table td.red_bg{text-align: center;background-color: #ffe6e2;height: 30px;line-height: 30px;}
+.choose{margin: 10px 0 0 20px;}
+
+.wrapper .paydiv{width:380px;overflow:hidden;position:fixed;_position:relative;background-color:#FFF;border:2px solid #BF3019;margin:-108px 0 0 -230px;left:50%;top:50%;height: 136px;padding: 40px;}
+
+.iconbg{width: 90px;height: 90px;background-color: #c51100;border-radius: 5px;text-align: center;color: #fff;}
+.iconbg b{display: block;margin: 24px auto 10px auto;}
+.iconbg b.icon_pay_10{margin: 14px auto 10px auto;}
+.chooseBank .imgs li{margin-left:20px; }
+.chooseBank .imgs img{width: 90px;height: 90px;border-radius: 5px;border: 1px solid #fff;overflow: hidden;}
+.chooseBank .imgs img:hover{border: 1px solid #c22605;}
+
+
+/**wap站css**/
+.w-header{font-size: 1.5rem;padding: 0 1rem;}
+.w-header .fa{font-size: 2rem;margin-top: 1rem;}
+.w-main .icon_pay_01{display: block;margin: 2rem auto;}
+.w-main .w-ts{font-size: 1.5rem;}
+.w-orderPay{padding: 1rem;}
+.w-orderPay dl{font-size: 1.2rem;margin-bottom: 1rem;}
+.w-orderPay dl dt{width: 72px;}
+.paylist{}
+.paylist li{width: 40%; height:30px;line-height:30px;margin: 1rem auto;text-align: center;border: 1px solid #c3c3c3;padding: 1px;font-size: 1.2rem;font-weight: bold;}
+.paylist li.on{border: 2px solid #c22605;padding: 0;}
+.ui-btn.on{background-color: #c22605 !important;color: #fff !important;text-shadow: none !important;}
+
+/***wap支付成功页***/
+.w-pay{margin: 40px auto;}
+.w-pay .ui-btn{display: inline-block;width: 40%;margin: 0 10px;}
+.icon_pay_fail{width: 80px;height: 80px;background: url("img/icon_pay_fail.png") no-repeat;display: block;margin: 10px auto;}
+
+/***wap货到付款***/
+.w-c{}
+.w-c .w-list{width: 300px;margin: 10px auto;}
+.w-c .w-list li{margin: 10px 0;}

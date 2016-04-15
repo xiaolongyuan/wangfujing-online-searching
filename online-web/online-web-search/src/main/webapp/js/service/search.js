@@ -1,11 +1,25 @@
 $(function () {
     /*鼠标划过显示*/
+
     $(".itemList li").hover(function(){
-        $(this).find(".showinfo").toggle();
+        var html = $(this).find(".showinfo").find(".bd-data").html();
+        $(this).find(".showinfo").show().find(".bd").append(html);
+        $(".colorBox").slide({mainCell:".bd ul",autoPage:true,effect:"top",vis:4});
+    },function(){
+        $(this).find(".showinfo").hide().find(".bd").html("");
     });
+
+
     /*判断每行最后一个换位置*/
     $(".itemList li").each(function(k,v){
-        if(k%5==4){
+        var w=$(".itemList").width();
+        if(k%5==4 && w ==1200){
+            $(this).find(".showinfo").addClass("s-info-right");
+        }else if(k%4==3 && w == 1000){
+            $(this).find(".showinfo").addClass("s-info-right");
+        }else if(k%3==2 && w == 768){
+            $(this).find(".showinfo").addClass("s-info-right");
+        }else if(k%2==1 && w == 640){
             $(this).find(".showinfo").addClass("s-info-right");
         }
     });
@@ -73,35 +87,81 @@ $(function () {
             });
         };
     });
-    /*/
-    $("#j_classTable tr:gt(1)").hide();
+    $("#j_classTable tr:gt(0)").hide();
     var t=1;
     $(".mor_t").click(function(){
         if(t){
-            $("#j_classTable tr:gt(1)").show();
+            $("#j_classTable tr:gt(0)").show();
             $(this).html('<i class="arroB arroT"></i>收起');
             t = 0;
         }else{
-            $("#j_classTable tr:gt(1)").hide();
+            $("#j_classTable tr:gt(0)").hide();
             $(this).html('<i class="arroB"></i>更多');
             t = 1;
         }
         return false;
     });
-    /*/
-    $(".sctdn").hide();
-    var t=1;
-    $(".mor_t").click(function(){
-        if(t){
-            $(".sctdn").show();
-            $(this).html('<i class="arroB arroT"></i>收起');
-            t = 0;
-        }else{
-            $(".sctdn").hide();
-            $(this).html('<i class="arroB"></i>更多');
-            t = 1;
-        }
-        return false;
-    });
-    //*/
+
+
+
 })
+
+
+/*头搜索*/
+
+
+
+var $o = function(a){
+    var $b = $("#key"),$a=$("#shelper");
+    var a = '<li id="d_0" title="手机壳6" onclick="clickItem(this)"><div class="search-item">手机壳<strong>6</strong></div><div class="search-count">搜索历史</div></li>',
+        b = '<li id="d_1" title="冰箱" onclick="clickItem(this)"><div class="search-item">冰箱<strong>18</strong></div><div class="search-count">约715485个商品</div></li>',
+        c = '<li onclick="$o.hideTip()" class="close">关闭</li>',
+        d = '<a style="color:#005AA0">删除</a>';
+
+    if(!(b.length<1)){
+        function x(obj){
+            this.init();
+        }
+        x.prototype={
+            constructor :x,
+            init:function(){
+                $b.focus(function(){
+                    $("#shelper").show().append(a+a+a+a+b+b+b+b+b+b+c).find("li").hover(function(){
+                        if($(this).find(".search-count").text()=="搜索历史"){
+                            $(this).find(".search-count").text("").append(d);
+                            $(this).find("a").click(function(e){
+                                $(this).parents("li").remove();
+                                stopEventBubble(e);
+                            });
+                        }
+                    },function(){
+                        if($(this).find(".search-count").text()=="删除"){
+                            $(this).find(".search-count").text("搜索历史");
+                        }
+                    });
+                });
+            }
+        }
+        new x();
+    }
+}(window);
+
+
+
+function clickItem(e){
+
+
+}
+
+//阻止事件冒泡
+function stopEventBubble(event){
+    var e=event || window.event;
+
+    if (e && e.stopPropagation){
+        e.stopPropagation();
+    }
+    else{
+        e.cancelBubble=true;
+    }
+}
+
