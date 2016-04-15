@@ -87,7 +87,10 @@ public class ItemEsIaoImpl implements ItemEsIao {
             scrollPage.setList(Lists.newArrayListWithExpectedSize(hits.length));
             for (SearchHit hit : hits) {
                 try {
-                    scrollPage.getList().add(this.objectMapper.readValue(hit.getSourceAsString(), ItemIndexPojo.class));
+                    String source = hit.getSourceAsString();
+                    if (source != null) {
+                        scrollPage.getList().add(this.objectMapper.readValue(source, ItemIndexPojo.class));
+                    }
                 } catch (IOException e) {
                     logger.error("JSON反序列化失败", e);
                     throw new IndexException("从JSON反序列化商品信息失败", e);
@@ -117,7 +120,10 @@ public class ItemEsIaoImpl implements ItemEsIao {
             scrollPage.setList(Lists.newArrayListWithExpectedSize(hits.length));
             for (SearchHit hit : hits) {
                 try {
-                    scrollPage.getList().add(this.objectMapper.readValue(hit.getSourceAsString(), ItemIndexPojo.class));
+                    String source = hit.getSourceAsString();
+                    if (source != null) {
+                        scrollPage.getList().add(this.objectMapper.readValue(source, ItemIndexPojo.class));
+                    }
                 } catch (IOException e) {
                     logger.error("JSON反序列化失败", e);
                     throw new IndexException("从JSON反序列化评论信息失败", e);
@@ -149,7 +155,10 @@ public class ItemEsIaoImpl implements ItemEsIao {
             scrollPage.setList(Lists.newArrayListWithExpectedSize(hits.length));
             for (SearchHit hit : hits) {
                 try {
-                    scrollPage.getList().add(this.objectMapper.readValue(hit.getSourceAsString(), ItemIndexPojo.class));
+                    String source = hit.getSourceAsString();
+                    if (source != null) {
+                        scrollPage.getList().add(this.objectMapper.readValue(source, ItemIndexPojo.class));
+                    }
                 } catch (IOException e) {
                     logger.error("JSON反序列化失败", e);
                     throw new IndexException("从JSON反序列化商品信息失败", e);
@@ -167,7 +176,9 @@ public class ItemEsIaoImpl implements ItemEsIao {
         List<ItemIndexPojo> pojos = Lists.newArrayListWithExpectedSize(itemIds.size());
         for (MultiGetItemResponse multiGetItemResponse : multiGetItemResponses) {
             String source = multiGetItemResponse.getResponse().getSourceAsString();
-            pojos.add(this.objectMapper.readValue(source, ItemIndexPojo.class));
+            if (source != null) {
+                pojos.add(this.objectMapper.readValue(source, ItemIndexPojo.class));
+            }
         }
         return pojos;
     }
@@ -181,7 +192,10 @@ public class ItemEsIaoImpl implements ItemEsIao {
             SearchHit[] hits = resp.getHits().getHits();
             List<ItemIndexPojo> pojos = Lists.newArrayListWithExpectedSize(hits.length);
             for (SearchHit searchHitFields : hits) {
-                pojos.add(this.objectMapper.readValue(searchHitFields.getSourceAsString(), ItemIndexPojo.class));
+                String source = searchHitFields.getSourceAsString();
+                if (source != null) {
+                    pojos.add(this.objectMapper.readValue(source, ItemIndexPojo.class));
+                }
             }
             return pojos;
         } catch (Exception e) {
@@ -199,7 +213,10 @@ public class ItemEsIaoImpl implements ItemEsIao {
             SearchHit[] hits = resp.getHits().getHits();
             List<ItemIndexPojo> pojos = Lists.newArrayListWithExpectedSize(hits.length);
             for (SearchHit searchHitFields : hits) {
-                pojos.add(this.objectMapper.readValue(searchHitFields.getSourceAsString(), ItemIndexPojo.class));
+                String source = searchHitFields.getSourceAsString();
+                if (source != null) {
+                    pojos.add(this.objectMapper.readValue(source, ItemIndexPojo.class));
+                }
             }
             return pojos;
         } catch (Exception e) {
@@ -230,7 +247,10 @@ public class ItemEsIaoImpl implements ItemEsIao {
             scrollPage.setList(Lists.newArrayListWithExpectedSize(hits.length));
             for (SearchHit hit : hits) {
                 try {
-                    scrollPage.getList().add(this.objectMapper.readValue(hit.getSourceAsString(), ItemIndexPojo.class));
+                    String source = hit.getSourceAsString();
+                    if (source != null) {
+                        scrollPage.getList().add(this.objectMapper.readValue(source, ItemIndexPojo.class));
+                    }
                 } catch (IOException e) {
                     logger.error("JSON反序列化失败", e);
                     throw new IndexException("从JSON反序列化商品信息失败", e);
@@ -262,7 +282,10 @@ public class ItemEsIaoImpl implements ItemEsIao {
             scrollPage.setList(Lists.newArrayListWithExpectedSize(hits.length));
             for (SearchHit hit : hits) {
                 try {
-                    scrollPage.getList().add(this.objectMapper.readValue(hit.getSourceAsString(), ItemIndexPojo.class));
+                    String source = hit.getSourceAsString();
+                    if (source != null) {
+                        scrollPage.getList().add(this.objectMapper.readValue(source, ItemIndexPojo.class));
+                    }
                 } catch (IOException e) {
                     logger.error("JSON反序列化失败", e);
                     throw new IndexException("从JSON反序列化商品信息失败", e);
@@ -332,7 +355,10 @@ public class ItemEsIaoImpl implements ItemEsIao {
             scrollPage.setList(Lists.newArrayListWithExpectedSize(hits.length));
             for (SearchHit hit : hits) {
                 try {
-                    scrollPage.getList().add(this.objectMapper.readValue(hit.getSourceAsString(), ItemIndexPojo.class));
+                    String source = hit.getSourceAsString();
+                    if (source != null) {
+                        scrollPage.getList().add(this.objectMapper.readValue(source, ItemIndexPojo.class));
+                    }
                 } catch (IOException e) {
                     logger.error("JSON反序列化失败", e);
                     throw new IndexException("从JSON反序列化商品信息失败", e);
