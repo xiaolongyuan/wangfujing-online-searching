@@ -1,9 +1,8 @@
 package com.wfj.search.online.web.es.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wfj.search.online.index.pojo.CategoryIndexPojo;
 import com.wfj.search.online.web.es.CategoryEsIao;
-import org.elasticsearch.action.get.GetResponse;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,18 +24,11 @@ public class CategoryEsIaoImpl implements CategoryEsIao {
     private Client esClient;
     @Value("${es.index}")
     private String index;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public CategoryIndexPojo get(String catId) {
         try {
-            GetResponse resp = this.esClient.prepareGet(this.index, TYPE, catId).get();
-            String source = resp.getSourceAsString();
-            if (source != null) {
-                return this.objectMapper.readValue(source, CategoryIndexPojo.class);
-            } else {
-                logger.warn("GET分类[{}]信息失败", catId);
-            }
+            EsUtil.get(esClient, catId, index, TYPE, CategoryIndexPojo.class);
         } catch (Exception e) {
             logger.warn("GET分类[{}]信息失败", catId, e);
         }

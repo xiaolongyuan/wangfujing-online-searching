@@ -1,8 +1,8 @@
 package com.wfj.search.online.index.es.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wfj.search.online.index.es.TagEsIao;
 import com.wfj.search.online.index.pojo.TagIndexPojo;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +24,11 @@ public class TagEsIaoImpl implements TagEsIao {
     private Client esClient;
     @Value("${es.index}")
     private String index;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void upsert(TagIndexPojo tagIndexPojo) {
         try {
-            String source = this.objectMapper.writeValueAsString(tagIndexPojo);
-            this.esClient.prepareUpdate(this.index, TYPE, tagIndexPojo.getTagId()).setDoc(source)
-                    .setUpsert(source).get();
+            EsUtil.upsert(this.esClient, tagIndexPojo, tagIndexPojo.getTagId(), index, TYPE);
         } catch (Exception e) {
             logger.warn("保存标签[{}]到ES失败", tagIndexPojo.getTagId(), e);
         }

@@ -1,10 +1,8 @@
 package com.wfj.search.online.index.es.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wfj.search.online.common.pojo.ActivityPojo;
 import com.wfj.search.online.index.es.ActivityEsIao;
-import org.elasticsearch.action.get.GetResponse;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,18 +24,11 @@ public class ActivityEsIaoImpl implements ActivityEsIao {
     private Client esClient;
     @Value("${es.index}")
     private String index;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public ActivityPojo get(String activeId) {
         try {
-            GetResponse resp = this.esClient.prepareGet(this.index, TYPE, activeId).get();
-            String source = resp.getSourceAsString();
-            if (source != null) {
-                return this.objectMapper.readValue(source, ActivityPojo.class);
-            } else {
-                logger.warn("GET活动[{}]信息失败", activeId);
-            }
+            EsUtil.get(this.esClient, activeId, index, TYPE, ActivityPojo.class);
         } catch (Exception e) {
             logger.warn("GET活动[{}]信息失败", activeId, e);
         }
@@ -47,10 +38,8 @@ public class ActivityEsIaoImpl implements ActivityEsIao {
     @Override
     public void upsert(ActivityPojo activityPojo) {
         try {
-            String source = objectMapper.writeValueAsString(activityPojo);
-            this.esClient.prepareUpdate(this.index, TYPE, activityPojo.getActiveId()).setDoc(source).setUpsert(source)
-                    .get();
-        } catch (JsonProcessingException e) {
+            EsUtil.upsert(this.esClient, activityPojo, activityPojo.getActiveId(), this.index, TYPE);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

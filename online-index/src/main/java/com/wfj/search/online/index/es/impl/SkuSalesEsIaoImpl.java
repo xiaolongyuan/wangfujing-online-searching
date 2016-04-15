@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wfj.search.online.index.es.SkuSalesEsIao;
 import com.wfj.search.online.index.iao.IndexException;
 import com.wfj.search.online.index.pojo.SkuSalesPojo;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.action.ActionWriteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.update.UpdateResponse;
@@ -33,26 +34,17 @@ public class SkuSalesEsIaoImpl implements SkuSalesEsIao {
 
     @Override
     public void upsert(SkuSalesPojo skuSalesPojo) throws JsonProcessingException, IndexException {
-        String source = this.objectMapper.writeValueAsString(skuSalesPojo);
-        UpdateResponse resp = this.esClient.prepareUpdate(this.index, TYPE, skuSalesPojo.getSkuId()).setDoc(source)
-                .setUpsert(source).get();
-        ActionWriteResponse.ShardInfo shardInfo = resp.getShardInfo();
-        if (shardInfo.getFailed() == shardInfo.getTotal() && shardInfo.getTotal() > 0) {
-            logger.error("写入SKU销量[{}]失败，所有节点都写入失败！", skuSalesPojo.getSkuId());
-            throw new IndexException("所有节点都写入失败！");
+        try {
+            EsUtil.upsert(this.esClient, skuSalesPojo, skuSalesPojo.getSkuId(), index, TYPE);
+        } catch (IllegalStateException e) {
+            throw new IndexException(e);
         }
     }
 
     @Override
     public SkuSalesPojo get(String skuId) {
         try {
-            GetResponse resp = this.esClient.prepareGet(this.index, TYPE, skuId).get();
-            String source = resp.getSourceAsString();
-            if (source != null) {
-                return this.objectMapper.readValue(source, SkuSalesPojo.class);
-            } else {
-                logger.warn("查找SKU[{}]销量失败", skuId);
-            }
+            EsUtil.get(esClient, skuId, index, TYPE, SkuSalesPojo.class);
         } catch (Exception e) {
             logger.warn("查找SKU[{}]销量失败", skuId, e);
         }

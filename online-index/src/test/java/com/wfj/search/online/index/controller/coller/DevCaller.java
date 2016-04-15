@@ -237,21 +237,6 @@ public class DevCaller extends CallerBase {
     }
 
     @Test
-    public void callFullyRebuildComment(){
-        String url = "http://127.0.0.1:9080/online-index/ops/comment/fullyRebuildComment.json";
-        JSONArray messageBody = new JSONArray();
-        String message = JsonSigner.wrapSignature(messageBody, this.keyPair.getPrivate(), this.getCaller(), "admin");
-        logger.debug(message);
-        try {
-            String s = HttpRequester.getSimpleHttpRequester().httpPostString(url, message);
-            assertNotNull(s);
-        } catch (Exception e) {
-            logger.error("调用错误", e);
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
     public void callIndexComments() {
         String url = "http://127.0.0.1:9080/online-index/mq/comment/indexComments.json";
         JSONArray messageBody = new JSONArray();

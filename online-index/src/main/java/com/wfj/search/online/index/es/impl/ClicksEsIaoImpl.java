@@ -1,9 +1,8 @@
 package com.wfj.search.online.index.es.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wfj.search.online.index.es.ClicksEsIao;
 import com.wfj.search.online.index.pojo.ClickCountPojo;
-import org.elasticsearch.action.get.GetResponse;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,18 +24,11 @@ public class ClicksEsIaoImpl implements ClicksEsIao {
     private Client esClient;
     @Value("${es.index}")
     private String index;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public ClickCountPojo get(String spuId) {
         try {
-            GetResponse resp = this.esClient.prepareGet(this.index, TYPE, spuId).get();
-            String source = resp.getSourceAsString();
-            if (source != null) {
-                return this.objectMapper.readValue(source, ClickCountPojo.class);
-            } else {
-                logger.warn("GET SPU点击数[{}]信息失败", spuId);
-            }
+            return EsUtil.get(this.esClient, spuId, index, TYPE, ClickCountPojo.class);
         } catch (Exception e) {
             logger.warn("GET SPU点击数[{}]信息失败", spuId, e);
         }

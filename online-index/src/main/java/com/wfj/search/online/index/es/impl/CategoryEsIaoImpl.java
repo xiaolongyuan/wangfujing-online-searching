@@ -6,13 +6,11 @@ import com.google.common.collect.Lists;
 import com.wfj.search.online.index.es.CategoryEsIao;
 import com.wfj.search.online.index.iao.IndexException;
 import com.wfj.search.online.index.pojo.CategoryIndexPojo;
+import com.wfj.search.utils.es.EsUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.action.ActionWriteResponse;
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.get.MultiGetItemResponse;
 import org.elasticsearch.action.get.MultiGetRequestBuilder;
 import org.elasticsearch.action.get.MultiGetResponse;
-import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,13 +41,10 @@ public class CategoryEsIaoImpl implements CategoryEsIao {
 
     @Override
     public void upsert(CategoryIndexPojo category) throws JsonProcessingException, IndexException {
-        String source = this.objectMapper.writeValueAsString(category);
-        UpdateResponse resp = this.esClient.prepareUpdate(this.index, TYPE, category.getCategoryId()).setDoc(source)
-                .setUpsert(source).get();
-        ActionWriteResponse.ShardInfo shardInfo = resp.getShardInfo();
-        if (shardInfo.getFailed() == shardInfo.getTotal() && shardInfo.getTotal() > 0) {
-            logger.error("写入分类[{}]失败，所有节点都写入失败！", category.getCategoryId());
-            throw new IndexException("所有节点都写入失败！");
+        try {
+            EsUtil.upsert(this.esClient, category, category.getCategoryId(), this.index, TYPE);
+        } catch (IllegalStateException e) {
+            throw new IndexException(e);
         }
     }
 
@@ -73,13 +68,7 @@ public class CategoryEsIaoImpl implements CategoryEsIao {
     @Override
     public CategoryIndexPojo get(String cid) {
         try {
-            GetResponse resp = this.esClient.prepareGet(this.index, TYPE, cid).get();
-            String source = resp.getSourceAsString();
-            if (source != null) {
-                return this.objectMapper.readValue(source, CategoryIndexPojo.class);
-            } else {
-                logger.warn("GET分类[{}]信息失败", cid);
-            }
+            return EsUtil.get(this.esClient, cid, this.index, TYPE, CategoryIndexPojo.class);
         } catch (Exception e) {
             logger.warn("GET分类[{}]信息失败", cid, e);
         }
