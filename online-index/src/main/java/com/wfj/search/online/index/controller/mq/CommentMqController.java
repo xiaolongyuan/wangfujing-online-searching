@@ -127,10 +127,10 @@ public class CommentMqController {
             try {
                 commentSidList.add(jsonArray.getString(i));
             } catch (Exception e) {
-                String msg = "messageBody转换为评论POJO信息失败，格式错误，数据为：[ " + message + " ]";
+                String msg = "messageBody提取评论SID失败，格式错误，数据为：[ " + message + " ]";
                 logger.error(msg, e);
                 result.put("success", false);
-                result.put("message", "messageBody转换为评论POJO信息失败，" + e.toString());
+                result.put("message", "messageBody提取评论SID失败，" + e.toString());
                 response.setStatus(500);
                 return result;
             }
