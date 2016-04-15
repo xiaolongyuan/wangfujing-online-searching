@@ -139,7 +139,10 @@ public class PojoUtils {
             throw new IllegalArgumentException("缺少颜色主图");
         }
         try {
-            sku.setUpTime(trans2Date(Validate.notBlank(json.getString("upTime"), "上架时间为空").trim()));
+            String upTime = json.getString("upTime");
+            if (StringUtils.isNotBlank(upTime)) {
+                sku.setUpTime(trans2Date(upTime.trim()));
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException("上架时间格式无法解析", e);
         }
@@ -594,6 +597,7 @@ public class PojoUtils {
         return indexPojo;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static TagIndexPojo toIndexPojo(TagPojo tag) {
         TagIndexPojo indexPojo = new TagIndexPojo();
         indexPojo.setTagId(tag.getTagId());
@@ -625,6 +629,7 @@ public class PojoUtils {
         return indexPojo;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static Date trans2Date(String s) throws ParseException {
         return (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).parse(s);
     }
