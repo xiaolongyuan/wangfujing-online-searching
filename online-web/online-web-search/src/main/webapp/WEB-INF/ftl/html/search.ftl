@@ -359,22 +359,33 @@ ${navigationContent}
                     <div class="posa showinfo">
                         <div class="posa icon_28 list_likes" data-sku-id="${pro.skuId}">关注</div>
                         <div class="smalldiv clearfix">
-                            <#list pro.colorItems as colorItem>
-                                <#assign bigPic = colorItem.colorMasterPicture/>
-                                <#assign smallPic = colorItem.colorMasterPicture/>
-                                <#if colorItem.colorMasterPictureOfPix['220x220']??>
-                                    <#assign bigPic = colorItem.colorMasterPictureOfPix['220x220']/>
-                                </#if>
-                                <#if colorItem.colorMasterPictureOfPix['60x60']??>
-                                    <#assign smallPic = colorItem.colorMasterPictureOfPix['60x60']/>
-                                </#if>
-                                <a href="${itemUrlPrefix}${colorItem.skuId}${itemUrlPostfix}" target="_blank">
-                                    <img data-spu-id="${colorItem.spuId}" data-sku-id="${colorItem.skuId}"
-                                         data-big-pic="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/${bigPic}"
-                                         src="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/${smallPic}"
-                                         onmouseover="switchSpuBigPic(this)" onmouseout="resetSpuBigPic(this)">
-                                </a>
-                            </#list>
+                            <div class="posr colorBox">
+                                <div class="bd">
+                                    <ul>
+                                        <#list pro.colorItems as colorItem>
+                                            <#assign bigPic = colorItem.colorMasterPicture/>
+                                            <#assign smallPic = colorItem.colorMasterPicture/>
+                                            <#if colorItem.colorMasterPictureOfPix['220x220']??>
+                                                <#assign bigPic = colorItem.colorMasterPictureOfPix['220x220']/>
+                                            </#if>
+                                            <#if colorItem.colorMasterPictureOfPix['60x60']??>
+                                                <#assign smallPic = colorItem.colorMasterPictureOfPix['60x60']/>
+                                            </#if>
+                                            <li>
+                                                <a href="${itemUrlPrefix}${colorItem.skuId}${itemUrlPostfix}"
+                                                   target="_blank">
+                                                    <img data-spu-id="${colorItem.spuId}"
+                                                         data-sku-id="${colorItem.skuId}"
+                                                         data-big-pic="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/${bigPic}"
+                                                         src="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/${smallPic}"
+                                                         onmouseover="switchSpuBigPic(this)"
+                                                         onmouseout="resetSpuBigPic(this)">
+                                                </a>
+                                            </li>
+                                        </#list>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                         <a class="posa scanmore"
                            href="${context.contextPath}${pro.moreUrl}.html">查看更多${pro.brandName}<#if pro.leafCategories?? && pro.leafCategories?size gt 0>${pro.leafCategories[0].display}</#if></a>
