@@ -360,7 +360,7 @@ ${navigationContent}
                         <div class="posa icon_28 list_likes" data-sku-id="${pro.skuId}">关注</div>
                         <div class="smalldiv clearfix">
                             <div class="posr colorBox">
-                                <div class="bd">
+                                <div class="bd-data" style="display: none;">
                                     <ul>
                                         <#list pro.colorItems as colorItem>
                                             <#assign bigPic = colorItem.colorMasterPicture/>
@@ -385,6 +385,10 @@ ${navigationContent}
                                         </#list>
                                     </ul>
                                 </div>
+                                <div class="bd">
+                                </div>
+                                <a class="posa prev" href="javascript:;"></a>
+                                <a class="posa next" href="javascript:;"></a>
                             </div>
                         </div>
                         <a class="posa scanmore"

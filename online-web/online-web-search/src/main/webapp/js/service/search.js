@@ -2,10 +2,11 @@ $(function () {
     /*鼠标划过显示*/
 
     $(".itemList li").hover(function(){
-        $(this).find(".showinfo").show();
+        var html = $(this).find(".showinfo").find(".bd-data").html();
+        $(this).find(".showinfo").show().find(".bd").append(html);
         $(".colorBox").slide({mainCell:".bd ul",autoPage:true,effect:"top",vis:4});
     },function(){
-        $(this).find(".showinfo").hide();
+        $(this).find(".showinfo").hide().find(".bd").html("");
     });
 
 
