@@ -6,7 +6,9 @@ import com.google.common.collect.Lists;
 import com.wfj.search.online.index.es.CommentEsIao;
 import com.wfj.search.online.index.es.ScrollPage;
 import com.wfj.search.online.index.iao.IndexException;
+import com.wfj.search.online.index.pojo.CategoryIndexPojo;
 import com.wfj.search.online.index.pojo.CommentIndexPojo;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.action.ActionWriteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchResponse;
@@ -42,13 +44,12 @@ public class CommentEsIaoImpl implements CommentEsIao {
 
     @Override
     public CommentIndexPojo get(String commentId) throws IOException {
-        GetResponse resp = this.esClient.prepareGet(this.index, TYPE, commentId).get();
-        String source = resp.getSourceAsString();
-        if (source != null) {
-            return this.objectMapper.readValue(source, CommentIndexPojo.class);
-        } else {
-            return null;
+        try {
+            EsUtil.get(esClient, commentId, index, TYPE, CategoryIndexPojo.class);
+        } catch (Exception e) {
+            logger.error("GET评论[{}]信息失败", commentId, e);
         }
+        return null;
     }
 
     @Override
@@ -123,13 +124,10 @@ public class CommentEsIaoImpl implements CommentEsIao {
 
     @Override
     public void upsert(CommentIndexPojo comment) throws IndexException, JsonProcessingException {
-        String source = this.objectMapper.writeValueAsString(comment);
-        UpdateResponse resp = this.esClient.prepareUpdate(this.index, TYPE, comment.getCommentId()).setDoc(source)
-                .setUpsert(source).get();
-        ActionWriteResponse.ShardInfo shardInfo = resp.getShardInfo();
-        if (shardInfo.getFailed() == shardInfo.getTotal() && shardInfo.getTotal() > 0) {
-            logger.error("写入评论[{}]失败，所有节点都写入失败！", comment.getCommentId());
-            throw new IndexException("所有节点都写入失败！");
+        try {
+            EsUtil.upsert(this.esClient, comment, comment.getCommentId(), index, TYPE);
+        } catch (IllegalStateException e) {
+            throw new IndexException(e);
         }
     }
 

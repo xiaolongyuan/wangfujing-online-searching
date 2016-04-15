@@ -1,8 +1,8 @@
 package com.wfj.search.online.index.es.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wfj.search.online.index.es.ColorEsIao;
 import com.wfj.search.online.index.pojo.ColorIndexPojo;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +24,11 @@ public class ColorEsIaoImpl implements ColorEsIao {
     private Client esClient;
     @Value("${es.index}")
     private String index;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void upsert(ColorIndexPojo colorIndexPojo) {
         try {
-            String source = this.objectMapper.writeValueAsString(colorIndexPojo);
-            this.esClient.prepareUpdate(this.index, TYPE, colorIndexPojo.getColorId()).setDoc(source)
-                    .setUpsert(source).get();
+            EsUtil.upsert(this.esClient, colorIndexPojo, colorIndexPojo.getColorId(), index, TYPE);
         } catch (Exception e) {
             logger.warn("保存颜色[{}]到ES失败", colorIndexPojo.getColorId(), e);
         }

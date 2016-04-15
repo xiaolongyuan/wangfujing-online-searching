@@ -1,8 +1,8 @@
 package com.wfj.search.online.statistics.es.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wfj.search.online.statistics.es.ClicksEsIao;
 import com.wfj.search.online.statistics.pojo.ClickCountPojo;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +24,11 @@ public class ClicksEsIaoImpl implements ClicksEsIao {
     private Client esClient;
     @Value("${es.index}")
     private String index;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void upsert(ClickCountPojo clickCountPojo) {
         try {
-            String source = this.objectMapper.writeValueAsString(clickCountPojo);
-            this.esClient.prepareUpdate(this.index, TYPE, clickCountPojo.getSpuId()).setDoc(source)
-                    .setUpsert(source).get();
+            EsUtil.upsert(this.esClient, clickCountPojo, clickCountPojo.getSpuId(), index, TYPE);
         } catch (Exception e) {
             logger.warn("写点击量数据[SpuId:{}]到ES失败", clickCountPojo.getSpuId(), e);
         }

@@ -1,9 +1,8 @@
 package com.wfj.search.online.web.es.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wfj.search.online.index.pojo.StandardIndexPojo;
 import com.wfj.search.online.web.es.StandardEsIao;
-import org.elasticsearch.action.get.GetResponse;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,18 +24,11 @@ public class StandardEsIaoImpl implements StandardEsIao {
     private Client esClient;
     @Value("${es.index}")
     private String index;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public StandardIndexPojo get(String standardId) {
         try {
-            GetResponse resp = this.esClient.prepareGet(this.index, TYPE, standardId).get();
-            String source = resp.getSourceAsString();
-            if (source != null) {
-                return this.objectMapper.readValue(source, StandardIndexPojo.class);
-            } else {
-                logger.warn("GET规格[{}]信息失败", standardId);
-            }
+            EsUtil.get(esClient, standardId, index, TYPE, StandardIndexPojo.class);
         } catch (Exception e) {
             logger.warn("GET规格[{}]信息失败", standardId, e);
         }

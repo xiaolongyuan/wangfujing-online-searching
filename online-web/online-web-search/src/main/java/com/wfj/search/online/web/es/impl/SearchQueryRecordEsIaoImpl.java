@@ -7,6 +7,7 @@ import com.wfj.search.online.common.pojo.SearchQueryHistoryRecord;
 import com.wfj.search.online.common.pojo.SearchQueryRecord;
 import com.wfj.search.online.web.es.SearchQueryRecordEsIao;
 import com.wfj.search.online.web.pojo.PagedResult;
+import com.wfj.search.utils.es.EsUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.ActionWriteResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
@@ -45,18 +46,10 @@ public class SearchQueryRecordEsIaoImpl implements SearchQueryRecordEsIao {
 
     @Override
     public void upsert(SearchQueryRecord queryRecord) {
-        String source;
         try {
-            source = this.objectMapper.writeValueAsString(queryRecord);
-        } catch (JsonProcessingException e) {
-            logger.error("将查询记录转换JSON失败", e);
-            return;
-        }
-        UpdateResponse resp = this.esClient.prepareUpdate(this.index, TYPE, queryRecord.getUuid())
-                .setDoc(source).setUpsert(source).get();
-        ActionWriteResponse.ShardInfo shardInfo = resp.getShardInfo();
-        if (shardInfo.getFailed() == shardInfo.getTotal() && shardInfo.getTotal() > 0) {
-            logger.error("保存查询记录失败，所有节点写入失败!");
+            EsUtil.upsert(this.esClient, queryRecord, queryRecord.getUuid(), index, TYPE);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
         }
     }
 

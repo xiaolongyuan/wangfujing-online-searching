@@ -1,13 +1,10 @@
 package com.wfj.search.online.index.es.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wfj.search.online.index.es.BrandEsIao;
 import com.wfj.search.online.index.iao.IndexException;
 import com.wfj.search.online.index.pojo.BrandIndexPojo;
-import org.elasticsearch.action.ActionWriteResponse;
-import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.update.UpdateResponse;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,28 +26,20 @@ public class BrandEsIaoImpl implements BrandEsIao {
     private Client esClient;
     @Value("${es.index}")
     private String index;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void upsert(BrandIndexPojo brand) throws JsonProcessingException, IndexException {
-        String source = this.objectMapper.writeValueAsString(brand);
-        UpdateResponse resp = this.esClient.prepareUpdate(this.index, TYPE, brand.getBrandId()).setDoc(source)
-                .setUpsert(source).get();
-        ActionWriteResponse.ShardInfo shardInfo = resp.getShardInfo();
-        if (shardInfo.getFailed() == shardInfo.getTotal() && shardInfo.getTotal() > 0)
-            throw new IndexException("所有节点都写入失败！");
+        try {
+            EsUtil.upsert(this.esClient, brand, brand.getBrandId(), index, TYPE);
+        } catch (IllegalStateException e) {
+            throw new IndexException(e);
+        }
     }
 
     @Override
     public BrandIndexPojo get(String brandId) {
         try {
-            GetResponse resp = this.esClient.prepareGet(this.index, TYPE, brandId).get();
-            String source = resp.getSourceAsString();
-            if (source != null) {
-                return this.objectMapper.readValue(source, BrandIndexPojo.class);
-            } else {
-                logger.warn("GET品牌[{}]信息失败", brandId);
-            }
+            return EsUtil.get(this.esClient, brandId, this.index, TYPE, BrandIndexPojo.class);
         } catch (Exception e) {
             logger.warn("GET品牌[{}]信息失败", brandId, e);
         }

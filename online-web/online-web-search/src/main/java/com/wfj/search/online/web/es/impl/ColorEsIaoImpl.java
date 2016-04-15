@@ -1,9 +1,8 @@
 package com.wfj.search.online.web.es.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wfj.search.online.index.pojo.ColorIndexPojo;
 import com.wfj.search.online.web.es.ColorEsIao;
-import org.elasticsearch.action.get.GetResponse;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,18 +24,11 @@ public class ColorEsIaoImpl implements ColorEsIao {
     private Client esClient;
     @Value("${es.index}")
     private String index;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public ColorIndexPojo get(String colorId) {
         try {
-            GetResponse resp = this.esClient.prepareGet(this.index, TYPE, colorId).get();
-            String source = resp.getSourceAsString();
-            if (source != null) {
-                return this.objectMapper.readValue(source, ColorIndexPojo.class);
-            } else {
-                logger.warn("GET颜色[{}]信息失败", colorId);
-            }
+            EsUtil.get(esClient, colorId, index, TYPE, ColorIndexPojo.class);
         } catch (Exception e) {
             logger.warn("GET颜色[{}]信息失败", colorId, e);
         }

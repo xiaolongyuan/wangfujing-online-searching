@@ -1,13 +1,10 @@
 package com.wfj.search.online.index.es.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wfj.search.online.index.es.ItemSalesEsIao;
 import com.wfj.search.online.index.iao.IndexException;
 import com.wfj.search.online.index.pojo.ItemSalesPojo;
-import org.elasticsearch.action.ActionWriteResponse;
-import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.update.UpdateResponse;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,30 +26,20 @@ public class ItemSalesEsIaoImpl implements ItemSalesEsIao {
     private Client esClient;
     @Value("${es.index}")
     private String index;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void upsert(ItemSalesPojo itemSalesPojo) throws JsonProcessingException, IndexException {
-        String source = this.objectMapper.writeValueAsString(itemSalesPojo);
-        UpdateResponse resp = this.esClient.prepareUpdate(this.index, TYPE, itemSalesPojo.getItemId()).setDoc(source)
-                .setUpsert(source).get();
-        ActionWriteResponse.ShardInfo shardInfo = resp.getShardInfo();
-        if (shardInfo.getFailed() == shardInfo.getTotal() && shardInfo.getTotal() > 0) {
-            logger.error("写入商品[{}]失败，所有节点都写入失败！", itemSalesPojo.getItemId());
-            throw new IndexException("所有节点都写入失败！");
+        try {
+            EsUtil.upsert(this.esClient, itemSalesPojo, itemSalesPojo.getItemId(), index, TYPE);
+        } catch (IllegalStateException e) {
+            throw new IndexException(e);
         }
     }
 
     @Override
     public ItemSalesPojo get(String itemId) {
         try {
-            GetResponse resp = this.esClient.prepareGet(this.index, TYPE, itemId).get();
-            String source = resp.getSourceAsString();
-            if (source != null) {
-                return this.objectMapper.readValue(source, ItemSalesPojo.class);
-            } else {
-                logger.warn("查找商品[{}]销量失败", itemId);
-            }
+            EsUtil.get(esClient, itemId, index, TYPE, ItemSalesPojo.class);
         } catch (Exception e) {
             logger.warn("查找商品[{}]销量失败", itemId, e);
         }

@@ -8,6 +8,7 @@ import com.wfj.search.online.index.es.ItemEsIao;
 import com.wfj.search.online.index.es.ScrollPage;
 import com.wfj.search.online.index.iao.IndexException;
 import com.wfj.search.online.index.pojo.*;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.action.ActionWriteResponse;
 import org.elasticsearch.action.get.MultiGetItemResponse;
 import org.elasticsearch.action.get.MultiGetRequestBuilder;
@@ -55,13 +56,10 @@ public class ItemEsIaoImpl implements ItemEsIao {
 
     @Override
     public void upsert(ItemIndexPojo itemIndexPojo) throws IndexException, JsonProcessingException {
-        String source = this.objectMapper.writeValueAsString(itemIndexPojo);
-        UpdateResponse resp = this.esClient.prepareUpdate(this.index, TYPE, itemIndexPojo.getItemId()).setDoc(source)
-                .setUpsert(source).get();
-        ActionWriteResponse.ShardInfo shardInfo = resp.getShardInfo();
-        if (shardInfo.getFailed() == shardInfo.getTotal() && shardInfo.getTotal() > 0) {
-            logger.error("写入商品[{}]失败，所有节点都写入失败！", itemIndexPojo.getItemId());
-            throw new IndexException("所有节点都写入失败！");
+        try {
+            EsUtil.upsert(this.esClient, itemIndexPojo, itemIndexPojo.getItemId(), index, TYPE);
+        } catch (IllegalStateException e) {
+            throw new IndexException(e);
         }
     }
 

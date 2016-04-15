@@ -1,8 +1,8 @@
 package com.wfj.search.online.index.es.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wfj.search.online.index.es.StandardEsIao;
 import com.wfj.search.online.index.pojo.StandardIndexPojo;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +24,11 @@ public class StandardEsIaoImpl implements StandardEsIao {
     private Client esClient;
     @Value("${es.index}")
     private String index;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void upsert(StandardIndexPojo standardIndexPojo) {
         try {
-            String source = this.objectMapper.writeValueAsString(standardIndexPojo);
-            this.esClient.prepareUpdate(this.index, TYPE, standardIndexPojo.getStandardId()).setDoc(source)
-                    .setUpsert(source).get();
+            EsUtil.upsert(this.esClient, standardIndexPojo, standardIndexPojo.getStandardId(), index, TYPE);
         } catch (Exception e) {
             logger.warn("保存规格[{}]到ES失败", standardIndexPojo.getStandardId(), e);
         }

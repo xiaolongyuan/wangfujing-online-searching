@@ -1,9 +1,8 @@
 package com.wfj.search.online.web.es.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wfj.search.online.index.pojo.PropertyValueIndexPojo;
 import com.wfj.search.online.web.es.PropertyValueEsIao;
-import org.elasticsearch.action.get.GetResponse;
+import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,18 +24,11 @@ public class PropertyValueEsIaoImpl implements PropertyValueEsIao {
     private Client esClient;
     @Value("${es.index}")
     private String index;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public PropertyValueIndexPojo get(String propertyValueId) {
         try {
-            GetResponse resp = this.esClient.prepareGet(this.index, TYPE, propertyValueId).get();
-            String source = resp.getSourceAsString();
-            if (source != null) {
-                return this.objectMapper.readValue(source, PropertyValueIndexPojo.class);
-            } else {
-                logger.warn("GET属性值[{}]信息失败", propertyValueId);
-            }
+            EsUtil.get(esClient, propertyValueId, index, TYPE, PropertyValueIndexPojo.class);
         } catch (Exception e) {
             logger.warn("GET属性值[{}]信息失败", propertyValueId, e);
         }
