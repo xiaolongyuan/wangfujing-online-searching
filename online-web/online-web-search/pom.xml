@@ -63,10 +63,6 @@
             <artifactId>solr-solrj</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.wfj.platform</groupId>
-            <artifactId>redis-cluster-cache</artifactId>
-        </dependency>
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
@@ -90,6 +86,10 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -155,13 +155,4 @@
             <version>${dependency.elasticsearch.lucene.version}</version>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>local-stage</id>
-            <properties>
-                <resources.active>local-stage</resources.active>
-            </properties>
-        </profile>
-    </profiles>
 </project>

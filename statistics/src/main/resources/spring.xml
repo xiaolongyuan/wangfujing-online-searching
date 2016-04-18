@@ -28,7 +28,10 @@
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
     </bean>
 
-    <import resource="classpath:spring-es.xml"/>
+    <bean id="esClient" class="com.wfj.search.utils.es.EsClientFactory">
+        <constructor-arg name="transportAddressList" value="${es.transportAddressList}"/>
+        <constructor-arg name="clusterName" value="${es.clusterName}"/>
+    </bean>
 
     <jee:jndi-lookup jndi-name="mysql/address" id="mysql.address" expected-type="java.lang.String"/>
     <jee:jndi-lookup jndi-name="mysql/username" id="mysql.username" expected-type="java.lang.String"/>

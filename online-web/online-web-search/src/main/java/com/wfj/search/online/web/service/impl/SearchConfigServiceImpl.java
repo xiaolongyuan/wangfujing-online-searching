@@ -301,7 +301,7 @@ public class SearchConfigServiceImpl implements ISearchConfigService {
         return value;
     }
 
-    private static interface ValueConverter<T> {
+    private interface ValueConverter<T> {
         T convert(String stringValue);
     }
 

@@ -54,10 +54,6 @@
         </dependency>
         <dependency>
             <groupId>com.wfj.platform</groupId>
-            <artifactId>redis-cluster-cache</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.wfj.platform</groupId>
             <artifactId>zk-util</artifactId>
         </dependency>
         <dependency>
@@ -141,6 +137,10 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
         </dependency>
         <dependency>
             <groupId>biz.paluch.redis</groupId>

@@ -28,6 +28,7 @@
                 <value>classpath:pcm.properties</value>
                 <value>classpath:cms.properties</value>
                 <value>classpath:common.properties</value>
+                <value>classpath:redis.properties</value>
             </list>
         </property>
         <property name="fileEncoding" value="UTF-8"/>
@@ -80,11 +81,36 @@
     </bean>
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <import resource="spring-cache.xml"/>
-    <bean id="clusterConnection" factory-bean="clusterClient" factory-method="connectCluster" destroy-method="close"/>
-    <bean id="cacheManager" class="com.wfj.platform.cache.lettuce.cluster.LettuceClusterCache2Manager">
-        <constructor-arg ref="clusterConnection"/>
-        <property name="prefix" value="com.wfj.search"/>
+    <bean id="clusterConfig" class="org.springframework.data.redis.connection.RedisClusterConfiguration">
+        <constructor-arg name="propertySource">
+            <bean class="org.springframework.core.env.MapPropertySource">
+                <constructor-arg name="name" value="redis.properties"/>
+                <constructor-arg name="source">
+                    <map>
+                        <entry key="spring.redis.cluster.nodes" value="${spring.redis.cluster.nodes}"/>
+                        <entry key="spring.redis.cluster.max-redirects" value="${spring.redis.cluster.max-redirects}"/>
+                    </map>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+    </bean>
+    <bean id="connectionFactory" class="org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory">
+        <constructor-arg name="clusterConfig" ref="clusterConfig"/>
+        <property name="password" value="${spring.redis.cluster.password}"/>
+    </bean>
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+        <constructor-arg name="connectionFactory" ref="connectionFactory"/>
+    </bean>
+    <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+        <constructor-arg name="redisOperations" ref="redisTemplate"/>
+        <property name="cachePrefix">
+            <bean class="org.springframework.data.redis.cache.DefaultRedisCachePrefix">
+                <constructor-arg name="delimiter" value="~"/>
+            </bean>
+        </property>
+        <property name="defaultExpiration" value="180"/>
+        <property name="loadRemoteCachesOnStartup" value="true"/>
+        <property name="usePrefix" value="true"/>
     </bean>
     <bean id="stringRedisKeyGenerator" class="com.wfj.platform.util.cache.SimpleParamStringKeyGenerator"/>
     <cache:annotation-driven key-generator="stringRedisKeyGenerator" cache-manager="cacheManager"/>
@@ -115,7 +141,10 @@
         <property name="client" ref="registerClient"/>
     </bean>
 
-    <import resource="classpath:spring-es.xml"/>
+    <bean id="esClient" class="com.wfj.search.utils.es.EsClientFactory">
+        <constructor-arg name="transportAddressList" value="${es.transportAddressList}"/>
+        <constructor-arg name="clusterName" value="${es.clusterName}"/>
+    </bean>
     <bean id="elasticSearchRecorder" class="com.wfj.search.util.record.elasticsearch.ElasticSearchRecorder">
         <property name="esClient" ref="esClient"/>
         <property name="index" value="${es.index}"/>
