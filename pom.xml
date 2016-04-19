@@ -6,7 +6,7 @@
 
     <groupId>com.wfj.search</groupId>
     <artifactId>online-searching</artifactId>
-    <version>1.0.34.RELEASE</version>
+    <version>1.0.35-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>王府井线上搜索项目</description>
