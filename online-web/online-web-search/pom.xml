@@ -155,4 +155,13 @@
             <version>${dependency.elasticsearch.lucene.version}</version>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>production-pre</id>
+            <properties>
+                <resources.active>4-production-pre</resources.active>
+            </properties>
+        </profile>
+    </profiles>
 </project>
