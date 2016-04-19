@@ -5,7 +5,7 @@
     <parent>
         <artifactId>online-searching</artifactId>
         <groupId>com.wfj.search</groupId>
-        <version>1.0.33.RELEASE</version>
+        <version>1.0.34.RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -51,10 +51,6 @@
         <dependency>
             <groupId>com.wfj.platform</groupId>
             <artifactId>operation-record-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.wfj.platform</groupId>
-            <artifactId>redis-cluster-cache</artifactId>
         </dependency>
         <dependency>
             <groupId>com.wfj.platform</groupId>
@@ -141,6 +137,10 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
         </dependency>
         <dependency>
             <groupId>biz.paluch.redis</groupId>

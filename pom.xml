@@ -6,7 +6,7 @@
 
     <groupId>com.wfj.search</groupId>
     <artifactId>online-searching</artifactId>
-    <version>1.0.33.RELEASE</version>
+    <version>1.0.34.RELEASE</version>
     <packaging>pom</packaging>
 
     <description>王府井线上搜索项目</description>
@@ -40,7 +40,7 @@
         <dependency.wfj.platform-utils.version>1.0.6.RELEASE</dependency.wfj.platform-utils.version>
         <dependency.segment-service.version>1.0.1.RELEASE</dependency.segment-service.version>
         <dependency.solr-home.version>1.0.0.RELEASE</dependency.solr-home.version>
-        <dependency.wfj.search-utils.version>1.0.22.RELEASE</dependency.wfj.search-utils.version>
+        <dependency.wfj.search-utils.version>1.0.23.RELEASE</dependency.wfj.search-utils.version>
         <dependency.junit.version>4.12</dependency.junit.version>
         <dependency.slf4j.version>1.7.12</dependency.slf4j.version>
         <dependency.logback.version>1.1.3</dependency.logback.version>
@@ -54,8 +54,9 @@
         <dependency.mybatis.version>3.3.0</dependency.mybatis.version>
         <dependency.mybatis-spring.version>1.2.2</dependency.mybatis-spring.version>
         <dependency.mysql.version>5.1.35</dependency.mysql.version>
-        <dependency.spring.version>4.2.3.RELEASE</dependency.spring.version>
-        <dependency.spring-security.version>4.0.1.RELEASE</dependency.spring-security.version>
+        <dependency.spring.version>4.2.5.RELEASE</dependency.spring.version>
+        <dependency.spring-security.version>4.0.4.RELEASE</dependency.spring-security.version>
+        <dependency.spring-data-redis.version>1.7.1.RELEASE</dependency.spring-data-redis.version>
         <dependency.freemarker.version>2.3.22</dependency.freemarker.version>
         <dependency.solr.version>5.3.0</dependency.solr.version>
         <dependency.lettuce.version>3.4.1.Final</dependency.lettuce.version>
@@ -115,12 +116,6 @@
             <dependency>
                 <groupId>com.wfj.platform</groupId>
                 <artifactId>platform-base-util</artifactId>
-                <version>${dependency.wfj.platform-utils.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.wfj.platform</groupId>
-                <artifactId>redis-cluster-cache</artifactId>
                 <version>${dependency.wfj.platform-utils.version}</version>
                 <scope>compile</scope>
             </dependency>
@@ -349,6 +344,11 @@
                 <artifactId>spring-security-taglibs</artifactId>
                 <version>${dependency.spring-security.version}</version>
                 <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-redis</artifactId>
+                <version>${dependency.spring-data-redis.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.freemarker</groupId>

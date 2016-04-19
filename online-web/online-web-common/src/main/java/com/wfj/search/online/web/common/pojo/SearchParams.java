@@ -343,7 +343,7 @@ public class SearchParams {
 
     @Override
     public String toString() {
-        return "SearchParams{" + this.toUrl()
+        return "SearchParams_" + this.toUrl()
                 + "_" + this.getQ()
                 + "_" + this.isList()
                 + "_" + this.isBrand()
@@ -351,8 +351,7 @@ public class SearchParams {
                 + "_" + this.getChannel()
                 + ((dateFrom == null) ? "" : "_" + dateFrom.getTime())
                 + ((dateTo == null ) ? "" : "_" + dateTo.getTime())
-                + this.isFacetBrandCategories()
-                + "}";
+                + this.isFacetBrandCategories();
     }
 
     @SuppressWarnings("unused")
