@@ -1,0 +1,3 @@
+zkAddress=10.6.4.49:2181,10.6.4.50:2181,10.6.4.51:2181/solr
+dictPath=/com/wfj/search/segment/dicts
+extDicts=attribute.txt,brand.txt,category.txt
