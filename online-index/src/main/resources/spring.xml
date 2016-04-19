@@ -40,14 +40,11 @@
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
     </bean>
 
-    <jee:jndi-lookup jndi-name="mysql/address" id="mysql.address" expected-type="java.lang.String"/>
-    <jee:jndi-lookup jndi-name="mysql/username" id="mysql.username" expected-type="java.lang.String"/>
-    <jee:jndi-lookup jndi-name="mysql/password" id="mysql.password" expected-type="java.lang.String"/>
     <bean id="dbDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <!-- 基本属性 url、user、password -->
-        <property name="url" ref="mysql.address"/>
-        <property name="username" ref="mysql.username"/>
-        <property name="password" ref="mysql.password"/>
+        <property name="url" value="${mysql.address}"/>
+        <property name="username" value="${mysql.username}"/>
+        <property name="password" value="${mysql.password}"/>
         <!-- 配置初始化大小、最小、最大 -->
         <property name="initialSize" value="${mysql.initialSize}"/>
         <property name="minIdle" value="${mysql.minIdle}"/>
