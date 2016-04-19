@@ -100,6 +100,9 @@
     </bean>
     <bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
         <constructor-arg name="connectionFactory" ref="connectionFactory"/>
+        <property name="valueSerializer">
+            <bean class="org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer"/>
+        </property>
     </bean>
     <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
         <constructor-arg name="redisOperations" ref="redisTemplate"/>
