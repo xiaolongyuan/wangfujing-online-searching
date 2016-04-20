@@ -110,41 +110,41 @@ $(function () {
 /*头搜索*/
 
 
-
-var $o = function(a){
-    var $b = $("#key"),$a=$("#shelper");
-    var a = '<li id="d_0" title="手机壳6" onclick="clickItem(this)"><div class="search-item">手机壳<strong>6</strong></div><div class="search-count">搜索历史</div></li>',
-        b = '<li id="d_1" title="冰箱" onclick="clickItem(this)"><div class="search-item">冰箱<strong>18</strong></div><div class="search-count">约715485个商品</div></li>',
-        c = '<li onclick="$o.hideTip()" class="close">关闭</li>',
-        d = '<a style="color:#005AA0">删除</a>';
-
-    if(!(b.length<1)){
-        function x(obj){
-            this.init();
-        }
-        x.prototype={
-            constructor :x,
-            init:function(){
-                $b.focus(function(){
-                    $("#shelper").show().append(a+a+a+a+b+b+b+b+b+b+c).find("li").hover(function(){
-                        if($(this).find(".search-count").text()=="搜索历史"){
-                            $(this).find(".search-count").text("").append(d);
-                            $(this).find("a").click(function(e){
-                                $(this).parents("li").remove();
-                                stopEventBubble(e);
-                            });
-                        }
-                    },function(){
-                        if($(this).find(".search-count").text()=="删除"){
-                            $(this).find(".search-count").text("搜索历史");
-                        }
-                    });
-                });
-            }
-        }
-        new x();
-    }
-}(window);
+//
+// var $o = function(a){
+//     var $b = $("#key"),$a=$("#shelper");
+//     var a = '<li id="d_0" title="手机壳6" onclick="clickItem(this)"><div class="search-item">手机壳<strong>6</strong></div><div class="search-count">搜索历史</div></li>',
+//         b = '<li id="d_1" title="冰箱" onclick="clickItem(this)"><div class="search-item">冰箱<strong>18</strong></div><div class="search-count">约715485个商品</div></li>',
+//         c = '<li onclick="$o.hideTip()" class="close">关闭</li>',
+//         d = '<a style="color:#005AA0">删除</a>';
+//
+//     if(!(b.length<1)){
+//         function x(obj){
+//             this.init();
+//         }
+//         x.prototype={
+//             constructor :x,
+//             init:function(){
+//                 $b.focus(function(){
+//                     $("#shelper").show().append(a+a+a+a+b+b+b+b+b+b+c).find("li").hover(function(){
+//                         if($(this).find(".search-count").text()=="搜索历史"){
+//                             $(this).find(".search-count").text("").append(d);
+//                             $(this).find("a").click(function(e){
+//                                 $(this).parents("li").remove();
+//                                 stopEventBubble(e);
+//                             });
+//                         }
+//                     },function(){
+//                         if($(this).find(".search-count").text()=="删除"){
+//                             $(this).find(".search-count").text("搜索历史");
+//                         }
+//                     });
+//                 });
+//             }
+//         }
+//         new x();
+//     }
+// }(window);
 
 
 
