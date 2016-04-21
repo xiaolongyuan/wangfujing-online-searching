@@ -1,11 +1,13 @@
 package com.wfj.search.online.management.console.controller.caller;
 
-import com.wfj.platform.util.httpclient.HttpRequestException;
-import com.wfj.platform.util.httpclient.HttpRequester;
-import com.wfj.platform.util.signature.json.JsonSigner;
-import com.wfj.platform.util.signature.keytool.RsaKeyLoader;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.wfj.platform.util.zookeeper.discovery.SpringMvcServiceProvider;
-import net.sf.json.JSONObject;
+import com.wfj.search.utils.signature.json.rsa.JsonSigner;
+import com.wfj.search.utils.signature.json.rsa.StandardizingUtil;
+import com.wfj.search.utils.signature.ras.KeyUtils;
+import okhttp3.*;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.springframework.context.ResourceLoaderAware;
@@ -13,9 +15,12 @@ import org.springframework.core.io.ResourceLoader;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -25,9 +30,10 @@ import static org.junit.Assert.*;
  * @author liufl
  * @since 1.0.19
  */
-public abstract class CallerBase implements ResourceLoaderAware {
+abstract class CallerBase implements ResourceLoaderAware {
+    private static final MediaType mediaTypeJson = MediaType.parse("application/json; charset=utf-8");
     private ResourceLoader resourceLoader;
-    protected PrivateKey privateKey;
+    private PrivateKey privateKey;
 
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
@@ -42,10 +48,9 @@ public abstract class CallerBase implements ResourceLoaderAware {
 
     public abstract SpringMvcServiceProvider getServiceProvider();
 
-    protected void loadPrivateKey() throws IOException, InvalidKeySpecException {
-        this.privateKey = RsaKeyLoader
-                .base64String2PriKey(IOUtils.toString(
-                        this.resourceLoader.getResource("classpath:" + getPrivateKeyFile()).getInputStream()));
+    private void loadPrivateKey() throws IOException, InvalidKeySpecException {
+        this.privateKey = KeyUtils.base64String2RSAPrivateKey(IOUtils.toString(
+                this.resourceLoader.getResource("classpath:" + getPrivateKeyFile()).getInputStream()));
     }
 
     @PostConstruct
@@ -53,20 +58,26 @@ public abstract class CallerBase implements ResourceLoaderAware {
         loadPrivateKey();
     }
 
-    protected String requestWithSignature(String url, JSONObject messageBody)
-            throws URISyntaxException, IOException, HttpRequestException {
-        String signed = JsonSigner.wrapSignature(messageBody, privateKey, getCaller());
-        return HttpRequester.getSimpleHttpRequester().httpPostString(url, signed);
+    private String requestWithSignature(String url, JSON messageBody, String username)
+            throws IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        String signed = StandardizingUtil
+                .standardize(JsonSigner.wrapSignature(messageBody, privateKey, getCaller(), username));
+        Request request = new Request.Builder().url(url)
+                .post(RequestBody.create(mediaTypeJson, signed)).build();
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor().setLevel(
+                HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(30, TimeUnit.SECONDS)
+                .addNetworkInterceptor(loggingInterceptor).build();
+        Response response = okHttpClient.newCall(request).execute();
+        return response.body().string();
     }
 
-    protected void testTemplate(String serviceName, JSONObject messageBody) {
+    void testTemplate(String serviceName, JSON messageBody, String username) {
         try {
             String url = this.getServiceProvider().provideServiceAddress(serviceName);
-            this.getLogger().info("request url: {}", url);
-            String resp = requestWithSignature(url, messageBody);
+            String resp = requestWithSignature(url, messageBody, username);
             assertNotNull(resp);
-            this.getLogger().info(resp);
-            JSONObject res = JSONObject.fromObject(resp);
+            JSONObject res = JSONObject.parseObject(resp);
             assertTrue(res.getBoolean("success"));
         } catch (Exception e) {
             this.getLogger().error("调用失败", e);

@@ -50,15 +50,7 @@
         </dependency>
         <dependency>
             <groupId>com.wfj.platform</groupId>
-            <artifactId>operation-record-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.wfj.platform</groupId>
             <artifactId>zk-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.wfj.platform</groupId>
-            <artifactId>signature</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -171,6 +163,15 @@
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-analyzers-common</artifactId>
             <version>${dependency.elasticsearch.lucene.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>logging-interceptor</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

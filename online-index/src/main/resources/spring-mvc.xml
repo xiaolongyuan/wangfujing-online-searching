@@ -78,12 +78,6 @@
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
     <!-- 定义切面开始 { -->
-    <bean id="publicKeyProvider"
-          class="com.wfj.platform.operation.record.plugin.aspect.component.CachedPublicKeyProviderImpl">
-        <property name="publicKeyAgent">
-            <bean class="com.wfj.platform.operation.record.plugin.aspect.component.CachedPublicKeyProviderImpl.PublicKeyAgent"/>
-        </property>
-    </bean>
     <bean id="webOperationRecordAspect" class="com.wfj.search.util.web.record.WebOperationRecordAspect">
         <property name="appName" value="${monitor.register.appName}"/>
         <property name="instanceName" ref="instanceName"/>
@@ -111,8 +105,19 @@
             <bean class="com.wfj.search.util.web.record.json.PlainJsonResultHandler"/>
         </property>
     </bean>
+    <bean id="dbPubKeyBase64StrProvider"
+          class="com.wfj.search.utils.web.signature.verify.DbPublicKeyBase64StringProvider">
+        <property name="dataSource" ref="dbDataSource"/>
+    </bean>
+    <bean id="cacheablePubKeyBase64StrProvider"
+          class="com.wfj.search.utils.web.signature.verify.CacheableDelegatePublicKeyBase64StringProvider">
+        <property name="delegate" ref="dbPubKeyBase64StrProvider"/>
+    </bean>
+    <bean id="base64PubKeyProvider" class="com.wfj.search.utils.web.signature.verify.Base64PublicKeyProvider">
+        <property name="pubKeyBase64StrProvider" ref="cacheablePubKeyBase64StrProvider"/>
+    </bean>
     <bean id="jsonSignVerifyAspect" class="com.wfj.search.utils.web.signature.verify.JsonSignVerifyAspect">
-        <property name="publicKeyProvider" ref="publicKeyProvider"/>
+        <property name="publicKeyProvider" ref="base64PubKeyProvider"/>
         <property name="resultHandler">
             <bean class="com.wfj.search.util.web.record.json.PlainJsonResultHandler"/>
         </property>

@@ -4,8 +4,6 @@ import com.wfj.search.online.management.console.service.operation.IOperationPubl
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
-import static com.wfj.platform.operation.record.plugin.common.OperationConstants.CACHE_PUBLIC_KEY_PROVIDER;
-
 /**
  * <br/>create at 15-12-9
  *
@@ -14,7 +12,7 @@ import static com.wfj.platform.operation.record.plugin.common.OperationConstants
  */
 @Service
 public class OperationPublicKeyServiceImpl implements IOperationPublicKeyService {
-    @CacheEvict(value = CACHE_PUBLIC_KEY_PROVIDER, allEntries = true)
+    @CacheEvict(value = "public-key-rsa-base64", allEntries = true)
     @Override
     public void clearPublicKey() {
     }

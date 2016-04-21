@@ -29,10 +29,6 @@
             <artifactId>zk-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.wfj.platform</groupId>
-            <artifactId>signature</artifactId>
-        </dependency>
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>

@@ -1,7 +1,7 @@
 package com.wfj.search.online.management.console.controller.caller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wfj.platform.util.zookeeper.discovery.SpringMvcServiceProvider;
-import net.sf.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -51,6 +51,6 @@ public class FullyRebuildControllerCaller extends CallerBase {
     @Test
     public void testRefreshItems() {
         String serviceName = "online-mc-index-fully-rebuild";
-        testTemplate(serviceName, new JSONObject());
+        testTemplate(serviceName, new JSONObject(), "test");
     }
 }
