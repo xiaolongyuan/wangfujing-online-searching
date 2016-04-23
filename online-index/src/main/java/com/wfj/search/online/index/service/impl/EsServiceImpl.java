@@ -136,6 +136,7 @@ public class EsServiceImpl implements IEsService {
             for (int i = 0; i < pageSize; i++) {
                 completionService.take();
             }
+            opTimer.stop();
             logger.info("全量构建ES数据完成。" + multiFailure.toString() + " 耗时" +
                     Duration.between(opTimer.getStartTime(), opTimer.lastStop().getStopTime()).toString());
         } catch (InterruptedException e) {

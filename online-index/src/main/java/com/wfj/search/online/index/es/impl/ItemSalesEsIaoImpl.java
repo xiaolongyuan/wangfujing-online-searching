@@ -39,8 +39,11 @@ public class ItemSalesEsIaoImpl implements ItemSalesEsIao {
     @Override
     public ItemSalesPojo get(String itemId) {
         try {
-            EsUtil.get(esClient, itemId, index, TYPE, ItemSalesPojo.class);
+            return EsUtil.get(esClient, itemId, index, TYPE, ItemSalesPojo.class);
         } catch (Exception e) {
+            if (e.getMessage().contains("BLANK")) {
+                return null;
+            }
             logger.warn("查找商品[{}]销量失败", itemId, e);
         }
         return null;

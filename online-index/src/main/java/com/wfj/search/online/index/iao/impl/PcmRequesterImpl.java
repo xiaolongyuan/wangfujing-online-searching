@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <br/>create at 15-9-8
@@ -36,7 +37,7 @@ public class PcmRequesterImpl implements IPcmRequester {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private PcmUrlConfig pcmUrlConfig;
-    private OkHttpClient okHttpClient = new OkHttpClient();
+    private OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(30, TimeUnit.SECONDS).build();
     private MediaType mediaTypeJson = MediaType.parse("application/json; charset=utf-8");
 
     @SuppressWarnings("StringBufferMayBeStringBuilder")

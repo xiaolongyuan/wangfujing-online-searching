@@ -36,7 +36,17 @@
         <appender-ref ref="stdout"/>
     </logger>
 
-    <root level="DEBUG">
+    <logger name="org.apache.commons.beanutils" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="com.wfj.search.online.index.service.impl" additivity="false">
+        <level value="DEBUG"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <root level="INFO">
         <appender-ref ref="stdout"/>
     </root>
 </configuration>

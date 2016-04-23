@@ -356,8 +356,7 @@ public class PojoUtils {
         return indexPojo;
     }
 
-    public static CategoryIndexPojo toIndexPojo(CategoryPojo category, IPcmRequester pcmRequester,
-            Long operationSid) throws RequestException {
+    public static CategoryIndexPojo toIndexPojo(CategoryPojo category) {
         CategoryIndexPojo index = new CategoryIndexPojo();
         index.setCategoryId(category.getCategoryId());
         index.setCategoryName(category.getCategoryName());
@@ -368,20 +367,6 @@ public class PojoUtils {
         index.setLevel(category.getLevel());
         index.setOrder(category.getOrder());
         index.setChannel(category.getChannel());
-        Deque<String> categoryIdStack = new LinkedList<>();
-        categoryIdStack.push(category.getCategoryId());
-        String parentCategoryId = category.getParentCategoryId();
-        while (StringUtils.isNotBlank(parentCategoryId) && !"0".equals(parentCategoryId.trim())) {
-            categoryIdStack.push(parentCategoryId);
-            CategoryPojo parent = pcmRequester.getCategoryInfo(parentCategoryId);
-            parentCategoryId = parent.getParentCategoryId();
-        }
-        String idPath = "";
-        while (!categoryIdStack.isEmpty()) {
-            idPath += categoryIdStack.pop();
-        }
-        index.setIdPath(idPath);
-        index.setOperationSid(operationSid);
         return index;
     }
 
@@ -402,14 +387,6 @@ public class PojoUtils {
             CategoryPojo parent = pcmRequester.getCategoryInfo(parentCategoryId);
             index.setParent(toIndexPojo(parent, pcmRequester));
         }
-        List<String> idList = Lists.newArrayList();
-        CategoryIndexPojo cat = index;
-        while (cat != null) {
-            idList.add(cat.getCategoryId());
-            cat = cat.getParent();
-        }
-        Collections.reverse(idList);
-        index.setIdPath(StringUtils.join(idList.toArray(), "_"));
         return index;
     }
 

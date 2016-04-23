@@ -44,8 +44,11 @@ public class SkuSalesEsIaoImpl implements SkuSalesEsIao {
     @Override
     public SkuSalesPojo get(String skuId) {
         try {
-            EsUtil.get(esClient, skuId, index, TYPE, SkuSalesPojo.class);
+            return EsUtil.get(esClient, skuId, index, TYPE, SkuSalesPojo.class);
         } catch (Exception e) {
+            if (e.getMessage().contains("BLANK")) {
+                return null;
+            }
             logger.warn("查找SKU[{}]销量失败", skuId, e);
         }
         return null;

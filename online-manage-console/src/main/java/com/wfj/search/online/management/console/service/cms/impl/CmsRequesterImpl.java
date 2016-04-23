@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * <br/>create at 15-12-22
  *
@@ -28,7 +30,7 @@ public class CmsRequesterImpl implements ICmsRequester {
     private String urlGetSiteList;
     @Value("${cms.uri.getChannelListBySid}")
     private String urlGetChannelListBySid;
-    private OkHttpClient okHttpClient = new OkHttpClient();
+    private OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(30, TimeUnit.SECONDS).build();
 
     @Override
     public JSONArray getSiteList() {

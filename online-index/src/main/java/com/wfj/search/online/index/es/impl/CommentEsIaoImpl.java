@@ -6,14 +6,10 @@ import com.google.common.collect.Lists;
 import com.wfj.search.online.index.es.CommentEsIao;
 import com.wfj.search.online.index.es.ScrollPage;
 import com.wfj.search.online.index.iao.IndexException;
-import com.wfj.search.online.index.pojo.CategoryIndexPojo;
 import com.wfj.search.online.index.pojo.CommentIndexPojo;
 import com.wfj.search.utils.es.EsUtil;
-import org.elasticsearch.action.ActionWriteResponse;
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -45,8 +41,11 @@ public class CommentEsIaoImpl implements CommentEsIao {
     @Override
     public CommentIndexPojo get(String commentId) throws IOException {
         try {
-            EsUtil.get(esClient, commentId, index, TYPE, CategoryIndexPojo.class);
+            return EsUtil.get(esClient, commentId, index, TYPE, CommentIndexPojo.class);
         } catch (Exception e) {
+            if (e.getMessage().contains("BLANK")) {
+                return null;
+            }
             logger.error("GET评论[{}]信息失败", commentId, e);
         }
         return null;

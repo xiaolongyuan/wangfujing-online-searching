@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * <br/>create at 15-11-4
  *
@@ -21,7 +23,7 @@ public class FullyRebuildServiceImpl implements IFullyRebuildService {
     private static final Logger logger = LoggerFactory.getLogger(FullyRebuildServiceImpl.class);
     @Autowired
     private SpringMvcServiceProvider springMvcServiceProvider;
-    private OkHttpClient okHttpClient = new OkHttpClient();
+    private OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(30, TimeUnit.SECONDS).build();
     private MediaType mediaTypeJson = MediaType.parse("application/json; charset=utf-8");
 
     @Override

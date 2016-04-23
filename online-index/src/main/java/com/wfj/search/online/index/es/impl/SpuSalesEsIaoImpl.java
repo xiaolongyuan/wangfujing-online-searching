@@ -39,8 +39,11 @@ public class SpuSalesEsIaoImpl implements SpuSalesEsIao {
     @Override
     public SpuSalesPojo get(String spuId) {
         try {
-            EsUtil.get(esClient, spuId, index, TYPE, SpuSalesPojo.class);
+            return EsUtil.get(esClient, spuId, index, TYPE, SpuSalesPojo.class);
         } catch (Exception e) {
+            if (e.getMessage().contains("BLANK")) {
+                return null;
+            }
             logger.warn("查找SPU[{}]销量失败", spuId, e);
         }
         return null;

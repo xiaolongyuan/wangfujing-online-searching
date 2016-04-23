@@ -70,6 +70,9 @@ public class CategoryEsIaoImpl implements CategoryEsIao {
         try {
             return EsUtil.get(this.esClient, cid, this.index, TYPE, CategoryIndexPojo.class);
         } catch (Exception e) {
+            if (e.getMessage().contains("BLANK")) {
+                return null;
+            }
             logger.warn("GET分类[{}]信息失败", cid, e);
         }
         return null;

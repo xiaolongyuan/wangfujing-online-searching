@@ -119,7 +119,7 @@ public class IndexPojos {
             for (String cid : spuPojo.getCategoryIds()) {
                 while (StringUtils.isNotBlank(cid) && !"0".equals(cid.trim())) {
                     CategoryPojo categoryPojo = pcmRequester.getCategoryInfo(cid);
-                    CategoryIndexPojo cat = PojoUtils.toIndexPojo(categoryPojo, pcmRequester, null);
+                    CategoryIndexPojo cat = PojoUtils.toIndexPojo(categoryPojo);
                     String channel = cat.getChannel();
                     Map<String, CategoryIndexPojo> spuCategories = spuCategoriesOfChannels.get(channel);
                     if (spuCategories == null) {

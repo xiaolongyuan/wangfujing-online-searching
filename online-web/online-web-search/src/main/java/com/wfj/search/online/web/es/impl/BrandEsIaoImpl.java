@@ -30,6 +30,9 @@ public class BrandEsIaoImpl implements BrandEsIao {
         try {
             return EsUtil.get(this.esClient, brandId, this.index, TYPE, BrandIndexPojo.class);
         } catch (Exception e) {
+            if (e.getMessage().contains("BLANK")) {
+                return null;
+            }
             logger.warn("GET品牌[{}]信息失败", brandId, e);
         }
         return null;

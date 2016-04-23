@@ -28,8 +28,11 @@ public class CategoryEsIaoImpl implements CategoryEsIao {
     @Override
     public CategoryIndexPojo get(String catId) {
         try {
-            EsUtil.get(esClient, catId, index, TYPE, CategoryIndexPojo.class);
+            return EsUtil.get(esClient, catId, index, TYPE, CategoryIndexPojo.class);
         } catch (Exception e) {
+            if (e.getMessage().contains("BLANK")) {
+                return null;
+            }
             logger.warn("GET分类[{}]信息失败", catId, e);
         }
         return null;

@@ -29,10 +29,6 @@
     "order": {
       "type": "integer"
     },
-    "idPath": {
-      "type": "string",
-      "index": "not_analyzed"
-    },
     "channel": {
       "type": "string",
       "index": "not_analyzed"

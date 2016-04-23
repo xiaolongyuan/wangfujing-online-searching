@@ -28,8 +28,11 @@ public class ActivityEsIaoImpl implements ActivityEsIao {
     @Override
     public ActivityPojo get(String activeId) {
         try {
-            EsUtil.get(this.esClient, activeId, index, TYPE, ActivityPojo.class);
+            return EsUtil.get(this.esClient, activeId, index, TYPE, ActivityPojo.class);
         } catch (Exception e) {
+            if (e.getMessage().contains("BLANK")) {
+                return null;
+            }
             logger.warn("GET活动[{}]信息失败", activeId, e);
         }
         return null;

@@ -28,8 +28,11 @@ public class PropertyValueEsIaoImpl implements PropertyValueEsIao {
     @Override
     public PropertyValueIndexPojo get(String propertyValueId) {
         try {
-            EsUtil.get(esClient, propertyValueId, index, TYPE, PropertyValueIndexPojo.class);
+            return EsUtil.get(esClient, propertyValueId, index, TYPE, PropertyValueIndexPojo.class);
         } catch (Exception e) {
+            if (e.getMessage().contains("BLANK")) {
+                return null;
+            }
             logger.warn("GET属性值[{}]信息失败", propertyValueId, e);
         }
         return null;

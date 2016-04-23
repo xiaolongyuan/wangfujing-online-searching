@@ -30,6 +30,9 @@ public class ClicksEsIaoImpl implements ClicksEsIao {
         try {
             return EsUtil.get(this.esClient, spuId, index, TYPE, ClickCountPojo.class);
         } catch (Exception e) {
+            if (e.getMessage().contains("BLANK")) {
+                return null;
+            }
             logger.warn("GET SPU点击数[{}]信息失败", spuId, e);
         }
         return null;

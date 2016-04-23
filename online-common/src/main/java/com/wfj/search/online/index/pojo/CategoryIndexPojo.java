@@ -26,8 +26,6 @@ public class CategoryIndexPojo {
     private int level;
     @Field("order")
     private int order;
-    @Field("idPath")
-    private String idPath;
     @Field("channel")
     private String channel;
     @Field("operationSid")
@@ -180,25 +178,6 @@ public class CategoryIndexPojo {
      */
     public void setOrder(int order) {
         this.order = order;
-    }
-
-    /**
-     * 各级分类编码路径，下划线连接
-     *
-     * @return 各级分类编码路径，下划线连接
-     */
-    @SuppressWarnings("unused")
-    public String getIdPath() {
-        return idPath;
-    }
-
-    /**
-     * 各级分类编码路径，下划线连接
-     *
-     * @param idPath 各级分类路径，下划线连接
-     */
-    public void setIdPath(String idPath) {
-        this.idPath = idPath;
     }
 
     /**

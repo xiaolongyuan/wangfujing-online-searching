@@ -28,8 +28,11 @@ public class ColorEsIaoImpl implements ColorEsIao {
     @Override
     public ColorIndexPojo get(String colorId) {
         try {
-            EsUtil.get(esClient, colorId, index, TYPE, ColorIndexPojo.class);
+            return EsUtil.get(esClient, colorId, index, TYPE, ColorIndexPojo.class);
         } catch (Exception e) {
+            if (e.getMessage().contains("BLANK")) {
+                return null;
+            }
             logger.warn("GET颜色[{}]信息失败", colorId, e);
         }
         return null;

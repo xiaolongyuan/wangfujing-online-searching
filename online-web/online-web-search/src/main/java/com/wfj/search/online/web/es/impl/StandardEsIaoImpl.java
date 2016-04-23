@@ -28,8 +28,11 @@ public class StandardEsIaoImpl implements StandardEsIao {
     @Override
     public StandardIndexPojo get(String standardId) {
         try {
-            EsUtil.get(esClient, standardId, index, TYPE, StandardIndexPojo.class);
+            return EsUtil.get(esClient, standardId, index, TYPE, StandardIndexPojo.class);
         } catch (Exception e) {
+            if (e.getMessage().contains("BLANK")) {
+                return null;
+            }
             logger.warn("GET规格[{}]信息失败", standardId, e);
         }
         return null;

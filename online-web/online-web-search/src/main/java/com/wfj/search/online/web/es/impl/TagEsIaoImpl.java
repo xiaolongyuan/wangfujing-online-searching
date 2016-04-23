@@ -28,8 +28,11 @@ public class TagEsIaoImpl implements TagEsIao {
     @Override
     public TagIndexPojo get(String tagId) {
         try {
-            EsUtil.get(esClient, tagId, index, TYPE, TagIndexPojo.class);
+            return EsUtil.get(esClient, tagId, index, TYPE, TagIndexPojo.class);
         } catch (Exception e) {
+            if (e.getMessage().contains("BLANK")) {
+                return null;
+            }
             logger.warn("GET标签[{}]信息失败", tagId, e);
         }
         return null;

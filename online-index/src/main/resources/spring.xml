@@ -113,6 +113,20 @@
             </bean>
         </property>
         <property name="defaultExpiration" value="180"/>
+        <property name="expires">
+            <map key-type="java.lang.String" value-type="java.lang.Long">
+                <!-- 黑名单缓存24小时 -->
+                <entry key="WFJ_ONLINE_INDEX_BLACKLIST" value="86400"/>
+                <!-- 品牌详细信息缓存24小时 -->
+                <entry key="WFJ_SEARCH_ONLINE_PCM_BRAND" value="86400"/>
+                <!-- 分类详细信息缓存24小时 -->
+                <entry key="WFJ_SEARCH_ONLINE_PCM_CATEGORY" value="86400"/>
+                <!-- SKU缓存24小时 -->
+                <entry key="WFJ_SEARCH_ONLINE_PCM_SKU" value="86400"/>
+                <!-- SPU缓存24小时 -->
+                <entry key="WFJ_SEARCH_ONLINE_PCM_SPU" value="86400"/>
+            </map>
+        </property>
         <property name="loadRemoteCachesOnStartup" value="true"/>
         <property name="usePrefix" value="true"/>
     </bean>

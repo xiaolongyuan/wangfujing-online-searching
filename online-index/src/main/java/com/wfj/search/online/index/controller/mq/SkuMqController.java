@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.common.pojo.SkuPojo;
+import com.wfj.search.online.index.iao.IPcmRequester;
 import com.wfj.search.online.index.iao.IndexException;
 import com.wfj.search.online.index.service.IEsService;
 import com.wfj.search.online.index.service.IIndexService;
@@ -39,6 +40,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @RequestMapping("/mq/sku")
 public class SkuMqController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    @Autowired
+    private IPcmRequester pcmRequester;
     @Autowired
     private IEsService esService;
     @Autowired
@@ -77,6 +80,7 @@ public class SkuMqController {
         AtomicBoolean success = new AtomicBoolean(true);
         try {
             skuPojos.forEach(sku -> {
+                this.pcmRequester.clearSkuInfoCache(sku.getSkuId());
                 this.esService.updateSku(sku)
                         .ifPresent(failure -> {
                             failureMsg.append(failure.toString()).append("\n");
