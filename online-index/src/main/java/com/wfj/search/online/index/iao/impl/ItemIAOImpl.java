@@ -1,5 +1,6 @@
 package com.wfj.search.online.index.iao.impl;
 
+import com.google.common.collect.Lists;
 import com.wfj.search.online.common.constant.CollectionNames;
 import com.wfj.search.online.index.iao.IItemIAO;
 import com.wfj.search.online.index.iao.IndexException;
@@ -7,6 +8,8 @@ import com.wfj.search.online.index.iao.QueryException;
 import com.wfj.search.online.index.iao.impl.boostStrategy.BoostStrategy;
 import com.wfj.search.online.index.pojo.ItemIndexPojo;
 import com.wfj.search.online.index.service.IEdismaxConfigService;
+import com.wfj.search.online.index.service.IIndexConfigService;
+import com.wfj.search.online.index.util.ExecutorServiceFactory;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -22,7 +25,12 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -41,11 +49,28 @@ public class ItemIAOImpl implements IItemIAO {
     private BoostStrategy boostStrategy;
     @Autowired
     private IEdismaxConfigService edismaxConfigService;
+    @Autowired
+    private IIndexConfigService indexConfigService;
 
     @Override
     public void saveItems(Collection<ItemIndexPojo> items) throws IndexException {
-        List<SolrInputDocument> docs = items.stream().map(item -> this.boostStrategy.boost(this.solrClient, item))
-                .collect(Collectors.toList());
+        int threads = this.indexConfigService.getFetchThreads();
+        final AtomicReference<Throwable> tracker = new AtomicReference<>();
+        ExecutorService threadPool = ExecutorServiceFactory.create("rebuildES", threads,
+                Thread.currentThread(), tracker);
+        CompletionService<Void> completionService = new ExecutorCompletionService<>(threadPool);
+        final List<SolrInputDocument> docs = Collections.synchronizedList(Lists.newArrayListWithExpectedSize(items.size()));
+        for (ItemIndexPojo item : items) {
+            completionService.submit(() -> docs.add(boostStrategy.boost(solrClient, item)), null);
+        }
+        try {
+            for (int i = 0; i < items.size(); i++) {
+                completionService.take();
+            }
+        } catch (InterruptedException e) {
+            Throwable throwable = tracker.get();
+            throw new IndexException(e.toString(), throwable);
+        }
         try {
             if (!docs.isEmpty()) {
                 this.solrClient.add(COLLECTION_NAME, docs);
