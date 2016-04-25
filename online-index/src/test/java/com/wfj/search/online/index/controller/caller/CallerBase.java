@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
  */
 public abstract class CallerBase implements ResourceLoaderAware {
     private ResourceLoader resourceLoader;
-    protected PrivateKey privateKey;
+    private PrivateKey privateKey;
 
     @Override
     public void setResourceLoader(ResourceLoader resourceLoader) {
@@ -46,7 +46,7 @@ public abstract class CallerBase implements ResourceLoaderAware {
 
     public abstract SpringMvcServiceProvider getServiceProvider();
 
-    protected void loadPrivateKey() throws IOException, InvalidKeySpecException {
+    private void loadPrivateKey() throws IOException, InvalidKeySpecException {
         this.privateKey = KeyUtils.base64String2RSAPrivateKey(IOUtils.toString(
                 this.resourceLoader.getResource("classpath:" + getPrivateKeyFile()).getInputStream()));
     }
@@ -56,7 +56,7 @@ public abstract class CallerBase implements ResourceLoaderAware {
         loadPrivateKey();
     }
 
-    protected String requestWithSignature(String url, JSONObject messageBody)
+    private String requestWithSignature(String url, JSONObject messageBody)
             throws URISyntaxException, IOException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         String signed = StandardizingUtil
                 .standardize(JsonSigner.wrapSignature(messageBody, privateKey, getCaller(), ""));
