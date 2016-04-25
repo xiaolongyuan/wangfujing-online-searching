@@ -1,12 +1,8 @@
 package com.wfj.search.online.web.service.impl;
 
 import com.google.common.collect.Lists;
-import com.wfj.search.online.web.mapper.SearchConfigMapper;
 import com.wfj.search.online.web.service.ISearchConfigService;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -16,9 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.wfj.search.online.common.constant.CacheableAware.VALUE_KEY_SEARCH_CONFIG_WEB_ROWS;
-import static com.wfj.search.online.common.constant.ConfigurationParameters.*;
-import static com.wfj.search.online.web.common.constant.CacheableAware.*;
+import static com.wfj.search.online.web.common.constant.CacheableAware.VALUE_KEY_SEARCH_CONFIG_NEW_PRODUCT_DATE_FROM;
 
 /**
  * <p>create at 15-9-21</p>
@@ -29,28 +23,21 @@ import static com.wfj.search.online.web.common.constant.CacheableAware.*;
  */
 @Service("searchConfigService")
 public class SearchConfigServiceImpl implements ISearchConfigService {
-    private static final Logger logger = LoggerFactory.getLogger(SearchConfigServiceImpl.class);
-    @SuppressWarnings("UnusedDeclaration")
-    private static final BooleanConverter BOOLEAN_CONVERTER = new BooleanConverter();
-    private static final StringConverter STRING_CONVERTER = new StringConverter();
-    private static final IntegerConverter INTEGER_CONVERTER = new IntegerConverter();
     private static final StringListConverter STRING_LIST_CONVERTER = new StringListConverter();
-    @Autowired
-    private SearchConfigMapper searchConfigMapper;
     @Value("${search.config.channel}")
     private String channel;
     @Value("${search.config.default.tie}")
-    private String defaultTie;
+    private String tie;
     @Value("${search.config.default.qf}")
-    private String defaultQf;
+    private String qf;
     @Value("${search.config.default.qs}")
-    private String defaultQs;
+    private String qs;
     @Value("${search.config.default.mm}")
-    private String defaultMm;
+    private String mm;
     @Value("${search.config.default.bq}")
-    private String defaultBq;
+    private String bq;
     @Value("${search.config.webRows}")
-    private String webRows;
+    private String rows;
     @Value("${search.config.wwwLocation}")
     private String wwwLocation;
     @Value("${search.config.searchLocation}")
@@ -76,7 +63,7 @@ public class SearchConfigServiceImpl implements ISearchConfigService {
     @Value("${search.config.www.jsLocationTemplate}")
     private String wwwJsLocationTemplate;
     @Value("${search.config.default.simpleRows}")
-    private String defaultSimpleRows;
+    private String simpleRows;
     @Value(("${search.pagination.num_display_entries}"))
     private String numDisplayEntries;
     @Value("${search.config.htmlTbarUri}")
@@ -106,40 +93,33 @@ public class SearchConfigServiceImpl implements ISearchConfigService {
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_CONFIG_TIE)
     public String getTie() {
-        return getConfig(CONFIG_TIE, defaultTie, this.searchConfigMapper, STRING_CONVERTER, this.getChannel());
+        return tie;
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_CONFIG_QF)
     public String getQf() {
-        return getConfig(CONFIG_QF, defaultQf, this.searchConfigMapper, STRING_CONVERTER, this.getChannel())
-                .replaceAll("\\{channel\\}", this.getChannel());
+        return qf.replaceAll("\\{channel\\}", this.getChannel()); // DDD regex right ?
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_CONFIG_QS)
     public int getQs() {
-        return getConfig(CONFIG_QS, defaultQs, this.searchConfigMapper, INTEGER_CONVERTER, this.getChannel());
+        return Integer.valueOf(qs);
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_CONFIG_MM)
     public String getMm() {
-        return getConfig(CONFIG_MM, defaultMm, this.searchConfigMapper, STRING_CONVERTER, this.getChannel());
+        return mm;
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_CONFIG_BQ)
     public String getBq() {
-        return getConfig(CONFIG_BQ, defaultBq, this.searchConfigMapper, STRING_CONVERTER, this.getChannel());
+        return bq;
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_CONFIG_WEB_ROWS)
     public Integer getRows() {
-        return getConfig(CONFIG_WEB_ROWS, webRows, this.searchConfigMapper, INTEGER_CONVERTER, this.getChannel());
+        return Integer.valueOf(rows);
     }
 
     @Override
@@ -203,17 +183,13 @@ public class SearchConfigServiceImpl implements ISearchConfigService {
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_CONFIG_SIMPLE_ROWS)
     public int getSimpleRows() {
-        return getConfig(CONFIG_SIMPLE_ROWS, defaultSimpleRows, this.searchConfigMapper, INTEGER_CONVERTER,
-                this.getChannel());
+        return Integer.valueOf(simpleRows);
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_PAGINATION_NUM_DISPLAY_ENTRIES)
     public int getNumDisplayEntries() {
-        return getConfig(CONFIG_NUM_DISPLAY_ENTRIES, numDisplayEntries, this.searchConfigMapper, INTEGER_CONVERTER,
-                this.getChannel());
+        return Integer.valueOf(numDisplayEntries);
     }
 
     @Override
@@ -247,30 +223,24 @@ public class SearchConfigServiceImpl implements ISearchConfigService {
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_CONFIG_MAY_LIKE_ROWS)
     public Integer getMayLikeRows() {
-        return getConfig(CONFIG_MAY_LIKE_ROWS, mayLikeRows, this.searchConfigMapper, INTEGER_CONVERTER, this.getChannel());
+        return Integer.valueOf(mayLikeRows);
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_CONFIG_DEFAULT_WEB_SITE)
     public String getDefaultSite() {
-        return getConfig(CONFIG_WEB_DEFAULT_SITE, this.defaultSite, this.searchConfigMapper, STRING_CONVERTER,
-                this.getChannel());
+        return defaultSite;
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_CONFIG_DEFAULT_WEB_CHANNEL)
     public String getDefaultChannel() {
-        return getConfig(CONFIG_WEB_DEFAULT_CHANNEL, this.defaultChannel, this.searchConfigMapper, STRING_CONVERTER,
-                this.getChannel());
+        return defaultChannel;
     }
 
     @Override
     @Cacheable(value = VALUE_KEY_SEARCH_CONFIG_NEW_PRODUCT_DATE_FROM)
     public Date getNewProductsDateFrom() {
-        int dateFrom = getConfig(CONFIG_NEW_PRODUCT_DATE_FROM, this.newProductsDateFrom, this.searchConfigMapper,
-                INTEGER_CONVERTER, this.getChannel());
+        int dateFrom = Integer.valueOf(newProductsDateFrom);
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, -dateFrom);
         calendar.set(Calendar.HOUR, 0);
@@ -280,55 +250,8 @@ public class SearchConfigServiceImpl implements ISearchConfigService {
         return calendar.getTime();
     }
 
-    private static <T> T getConfig(String config, String defaultValue, SearchConfigMapper searchConfigMapper,
-            ValueConverter<T> converter, String channel) {
-        String configValue;
-        T value;
-        try {
-            configValue = searchConfigMapper.get(config, channel);
-            if (configValue == null) {
-                throw new Exception("数据库中无配置值");
-            }
-            value = converter.convert(configValue);
-        } catch (Exception e) {
-            logger.warn("查询配置失败, 使用编码默认值" + defaultValue, e);
-            try {
-                searchConfigMapper.save(config, defaultValue, channel);
-            } catch (Exception ignored) {
-            }
-            return converter.convert(defaultValue);
-        }
-        return value;
-    }
-
-    private interface ValueConverter<T> {
-        T convert(String stringValue);
-    }
-
-    private static class BooleanConverter implements ValueConverter<Boolean> {
-        @Override
-        public Boolean convert(String stringValue) {
-            return Boolean.parseBoolean(stringValue);
-        }
-    }
-
-    private static class StringConverter implements ValueConverter<String> {
-        @Override
-        public String convert(String stringValue) {
-            return stringValue;
-        }
-    }
-
-    private static class IntegerConverter implements ValueConverter<Integer> {
-        @Override
-        public Integer convert(String stringValue) {
-            return Integer.valueOf(stringValue);
-        }
-    }
-
-    private static class StringListConverter implements ValueConverter<List<String>> {
-        @Override
-        public List<String> convert(String stringValue) {
+    private static class StringListConverter {
+        List<String> convert(String stringValue) {
             if (StringUtils.isBlank(stringValue)) {
                 return Lists.newArrayList();
             }

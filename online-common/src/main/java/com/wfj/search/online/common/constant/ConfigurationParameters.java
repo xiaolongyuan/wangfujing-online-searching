@@ -8,6 +8,7 @@ import org.apache.solr.common.params.DisMaxParams;
  * @author liuxh
  * @since 1.0.0
  */
+// DDD check unused
 public final class ConfigurationParameters {
     private ConfigurationParameters() {
         throw new AssertionError("No com.wfj.search.online.common.constant.ConfigurationParameters instances for you!");

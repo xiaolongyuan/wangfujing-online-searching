@@ -8,6 +8,7 @@ package com.wfj.search.online.web.common.constant;
  * @author liuxh
  * @since 1.0.0
  */
+// DDD check unused
 public final class CacheableAware {
     private CacheableAware() {
         throw new AssertionError("No com.wfj.search.online.common.constant.CacheableAware instances for you!");
