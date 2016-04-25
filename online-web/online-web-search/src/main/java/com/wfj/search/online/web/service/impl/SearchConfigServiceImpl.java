@@ -99,7 +99,7 @@ public class SearchConfigServiceImpl implements ISearchConfigService {
 
     @Override
     public String getQf() {
-        return qf.replaceAll("\\{channel\\}", this.getChannel()); // DDD regex right ?
+        return qf.replaceAll("\\{channel\\}", this.getChannel());
     }
 
     @Override
