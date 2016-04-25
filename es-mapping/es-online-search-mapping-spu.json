@@ -50,6 +50,14 @@
     "spuPropertyValues": {
       "type": "string",
       "index": "not_analyzed"
+    },
+    "shortDesc": {
+      "type": "string",
+      "index": "not_analyzed"
+    },
+    "longDesc": {
+      "type": "string",
+      "index": "not_analyzed"
     }
   }
 }

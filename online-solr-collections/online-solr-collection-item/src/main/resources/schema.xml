@@ -276,6 +276,16 @@
     <field name="spuSale" type="int" indexed="true" stored="true" required="true" multiValued="false" docValues="true"/>
     <field name="spuClick" type="int" indexed="true" stored="true" required="true" multiValued="false"
            docValues="true"/>
+    <!-- 描述标题 -->
+    <field name="longDesc" type="text_dmseg" indexed="true" stored="true" required="false" multiValued="false"/>
+    <copyField source="longDesc" dest="searchAll"/>
+    <copyField source="longDesc" dest="suggestion"/>
+    <copyField source="longDesc" dest="keywords"/>
+    <!-- 短描述标题 -->
+    <field name="shortDesc" type="text_dmseg" indexed="true" stored="true" required="false" multiValued="false"/>
+    <copyField source="shortDesc" dest="searchAll"/>
+    <copyField source="shortDesc" dest="suggestion"/>
+    <copyField source="shortDesc" dest="keywords"/>
     <!-- 操作记录号 -->
     <field name="operationSid" type="long" indexed="true" stored="true" required="true" multiValued="false"/>
 
