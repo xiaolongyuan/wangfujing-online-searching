@@ -5,7 +5,6 @@ import com.wfj.member.sdk.common.Config;
 import com.wfj.member.sdk.common.DataDto;
 import com.wfj.search.online.web.service.IHtmlCommonPartService;
 import com.wfj.search.online.web.service.ISearchConfigService;
-import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,17 +68,8 @@ public class HtmlCommonPartInterceptor extends HandlerInterceptorAdapter impleme
         modelAndView.getModelMap().addAttribute("headerContent", this.htmlCommonPartService.htmlContent(headerUri));
         String navigationUri = this.searchConfigService.getHtmlNavigationUri();
         String nav_ = this.htmlCommonPartService.htmlContent(navigationUri);
-        String nav = "";
-        try {
-            JSONObject jsonObject = JSONObject.fromObject(nav_);
-            if (jsonObject.getBoolean("success")) {
-                nav = jsonObject.getString("data");
-            }
-        } catch (Exception e) {
-            logger.warn("获取nav块失败", e);
-        }
         modelAndView.getModelMap()
-                .addAttribute("navigationContent", nav);
+                .addAttribute("navigationContent", nav_);
         String footerUri = this.searchConfigService.getHtmlFooterUri();
         modelAndView.getModelMap().addAttribute("footerContent", this.htmlCommonPartService.htmlContent(footerUri));
         String returnUrl = request.getScheme() + "://" + request.getServerName() + (request
