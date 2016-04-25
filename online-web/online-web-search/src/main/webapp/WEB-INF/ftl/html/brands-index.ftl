@@ -81,7 +81,7 @@ ${navigationContent}
                                         <li data-catinfo="{}" data-catid="<#list brand.availableCategoryIds as cid>${cid},</#list>" class="fl item">
                                             <div class="posr pic-logo clearfix">
                                                 <a class="posr fl" href="${brandLocation}${brand.url}.html" target="_blank">
-                                                    <img alt="${brand.display}logo图片" src="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/brand/${brand.logo}">
+                                                    <img alt="${brand.display}logo图片" src="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/brand/${brand.logo!}">
                                                 </a>
                                                 <div class="posa line"></div>
                                             </div>
