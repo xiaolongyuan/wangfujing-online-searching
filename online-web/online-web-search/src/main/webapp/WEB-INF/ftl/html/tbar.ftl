@@ -48,7 +48,7 @@
                 <span class="posa outer"></span>
                 <span class="posa bk_line"></span>
 
-                <div class="posa drop_list" style="height: auto">
+                <div class="posa drop_list">
                     <div class="drop_panel">
                         <h2 class="posr padding_rl">
                             <a id="btnLogon2"

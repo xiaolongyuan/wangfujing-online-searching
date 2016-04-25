@@ -34,7 +34,6 @@
                         </ul>
                         <div class="search_inputBox">
                             <input type="text" id="key" placeholder="请输入商品名称" name="q"
-                                   autofocus="true"
                             <#--noinspection HtmlUnknownAttribute-->
                                    hidefocus="true" class="ele_text" autocomplete="off">
                             <input type="hidden" value="3" name="pattern">

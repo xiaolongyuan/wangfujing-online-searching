@@ -9,10 +9,13 @@
                     <b class="posa num">0</b>
                 </a>
             </li>
-            <li class="rlikes">
+            <li class="posr rlikes">
                 <a href="${concernItemPageUrl}" target="_blank">
-                    <i id="js_like" class="posa icon_28"></i>
+                    <i class="posa icon_28" id="js_like" style="display: block;"></i>
                 </a>
+                <div class="posa addshow">
+                    已成功加入收藏
+                </div>
             </li>
             <li class="totop">
             <#--noinspection HtmlUnknownAnchorTarget-->
