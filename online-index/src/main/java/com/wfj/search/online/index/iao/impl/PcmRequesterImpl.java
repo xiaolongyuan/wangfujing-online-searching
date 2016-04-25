@@ -170,6 +170,12 @@ public class PcmRequesterImpl implements IPcmRequester {
     @Override
     @Cacheable(PCM_SKU)
     public SkuPojo getSkuInfo(String skuId) throws RequestException {
+        return directGetSkuInfo(skuId);
+    }
+
+    @Override
+    @CachePut(PCM_SKU)
+    public SkuPojo directGetSkuInfo(String skuId) throws RequestException {
         try {
             JSONObject params = new JSONObject();
             params.put("skuId", skuId);
@@ -200,6 +206,12 @@ public class PcmRequesterImpl implements IPcmRequester {
     @Override
     @Cacheable(PCM_SPU)
     public SpuPojo getSpuInfo(String spuId) throws RequestException {
+        return directGetSpuInfo(spuId);
+    }
+
+    @Override
+    @CachePut(PCM_SPU)
+    public SpuPojo directGetSpuInfo(String spuId) throws RequestException {
         try {
             JSONObject params = new JSONObject();
             params.put("spuId", spuId);

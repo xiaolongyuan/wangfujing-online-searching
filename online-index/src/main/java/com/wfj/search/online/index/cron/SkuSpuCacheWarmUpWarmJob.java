@@ -1,7 +1,7 @@
 package com.wfj.search.online.index.cron;
 
 import com.wfj.platform.util.zookeeper.coordinating.CoordinatingTask;
-import com.wfj.search.online.index.coordinating.CategoryCacheWarmUpTaskDescription;
+import com.wfj.search.online.index.coordinating.SkuSpuCacheWarmUpTaskDescription;
 import com.wfj.search.online.index.operation.IOperation;
 import com.wfj.search.util.record.pojo.Operation;
 import org.apache.curator.framework.CuratorFramework;
@@ -19,11 +19,11 @@ import java.sql.Timestamp;
  * @author liufl
  * @since 1.0.35
  */
-public class CategoryCacheUpWarmJob {
+public class SkuSpuCacheWarmUpWarmJob {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
-    @Qualifier("categoryCacheWarmUpOperation")
-    private IOperation<Void> categoryCacheWarmUpOperation;
+    @Qualifier("skuSpuCacheWarmUpOperation")
+    private IOperation<Void> skuSpuCacheWarmUpOperation;
     @Autowired
     private CuratorFramework client;
     @Value("${coordinator.operation.namespace}")
@@ -34,16 +34,16 @@ public class CategoryCacheUpWarmJob {
     @Value("${monitor.register.appName}")
     private String appName;
 
-    public void warmUpCategories() {
+    public void warmUpSkuSpus() {
         Operation operation = new Operation();
         operation.setAppName(this.appName);
         operation.setInstanceName(this.instanceName);
         operation.setStartTime(new Timestamp(System.currentTimeMillis()));
-        operation.setOperation("CATEGORIES_WARM_UP");
+        operation.setOperation("SKU_SPUS_WARM_UP");
         operation.setParameter("");
         operation.setCaller("SYS_INDEX_SERVICE");
-        CategoryCacheWarmUpTaskDescription taskDescription = new CategoryCacheWarmUpTaskDescription(operation,
-                this.categoryCacheWarmUpOperation);
+        SkuSpuCacheWarmUpTaskDescription taskDescription = new SkuSpuCacheWarmUpTaskDescription(operation,
+                this.skuSpuCacheWarmUpOperation);
         CoordinatingTask task = new CoordinatingTask(taskDescription, client, taskNamespace, instanceName);
         try {
             task.execute();

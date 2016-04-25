@@ -45,7 +45,7 @@ public class BrandCacheWarmUpOperation implements IOperation<Void> {
             timer.start();
             int threads = this.indexConfigService.getFetchThreads();
             final AtomicReference<Throwable> tracker = new AtomicReference<>();
-            ExecutorService threadPool = ExecutorServiceFactory.create("rebuildES", threads,
+            ExecutorService threadPool = ExecutorServiceFactory.create("warm-up-brand", threads,
                     Thread.currentThread(), tracker);
             CompletionService<Void> completionService = new ExecutorCompletionService<>(threadPool);
             for (BrandPojo brandPojo : brandPojos) {

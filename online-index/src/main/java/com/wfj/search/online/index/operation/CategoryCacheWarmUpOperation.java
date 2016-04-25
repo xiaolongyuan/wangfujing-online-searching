@@ -58,7 +58,7 @@ public class CategoryCacheWarmUpOperation implements IOperation<Void> {
         if (subIds != null && !subIds.isEmpty()) {
             int threads = this.indexConfigService.getFetchThreads();
             final AtomicReference<Throwable> tracker = new AtomicReference<>();
-            ExecutorService threadPool = ExecutorServiceFactory.create("rebuildES", threads,
+            ExecutorService threadPool = ExecutorServiceFactory.create("warm-up-category", threads,
                     Thread.currentThread(), tracker);
             CompletionService<Void> completionService = new ExecutorCompletionService<>(threadPool);
             for (String subId : subIds) {

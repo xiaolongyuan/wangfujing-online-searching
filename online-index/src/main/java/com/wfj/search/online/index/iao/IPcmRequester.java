@@ -69,6 +69,16 @@ public interface IPcmRequester {
     SkuPojo getSkuInfo(String skuId) throws RequestException;
 
     /**
+     * 获取SKU信息</br>
+     * 从PCM直接获取，不使用缓存数据
+     *
+     * @param skuId SKU编码
+     * @return SKU信息
+     * @throws RequestException
+     */
+    SkuPojo directGetSkuInfo(String skuId) throws RequestException;
+
+    /**
      * 清理SKU信息缓存
      *
      * @param skuId SKU编码
@@ -95,6 +105,16 @@ public interface IPcmRequester {
      * @throws RequestException
      */
     SpuPojo getSpuInfo(String spuId) throws RequestException;
+
+    /**
+     * 获取SPU信息</br>
+     * 从PCM直接获取，不使用缓存数据
+     *
+     * @param spuId SPU编码
+     * @return SPU信息
+     * @throws RequestException
+     */
+    SpuPojo directGetSpuInfo(String spuId) throws RequestException;
 
     /**
      * 清理SPU信息缓存
