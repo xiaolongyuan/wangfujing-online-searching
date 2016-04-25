@@ -13,16 +13,31 @@ $(function () {
     /*判断每行最后一个换位置*/
     $(".itemList li").each(function(k,v){
         var w=$(".itemList").width();
+        /*if(k%5==4 && w ==1200){
+         $(this).find(".showinfo").addClass("s-info-right");
+         }else if(k%4==3 && w == 1000){
+         $(this).find(".showinfo").addClass("s-info-right");
+         }else if(k%3==2 && w == 768){
+         $(this).find(".showinfo").addClass("s-info-right");
+         }else if(k%2==1 && w == 640){
+         $(this).find(".showinfo").addClass("s-info-right");
+         }*/
         if(k%5==4 && w ==1200){
             $(this).find(".showinfo").addClass("s-info-right");
-        }else if(k%4==3 && w == 1000){
+        }
+        if(k%4==3 && w == 1000){
             $(this).find(".showinfo").addClass("s-info-right");
-        }else if(k%3==2 && w == 768){
+        }
+        if(k%3==2 && w == 768){
             $(this).find(".showinfo").addClass("s-info-right");
-        }else if(k%2==1 && w == 640){
+        }
+        if(k%2==1 && w == 640){
             $(this).find(".showinfo").addClass("s-info-right");
         }
     });
+
+
+
     $(".history .prev").hover(function(){
        $(this).addClass("icon_32")
     });

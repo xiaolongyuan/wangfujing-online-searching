@@ -102,6 +102,7 @@ lable.error, .bError{margin-left: 10px;color:#c42605;text-align: left;line-heigh
 .shop-total .red-btn{padding: 3px 20px;}
 .shop-total .div_4 .inputbr{width: 100px;}
 .shop-total .div_2 .mb10,.shop-total .div_4 .mb10,.shop-total .div_5 .mb10{margin-bottom: 10px;}
+.shop-total .div_4 .ui_btn{margin-left: 64px;}
 .shop-total .div_5 .mb10 .ts{background-color: #c42605;width: 15px;height: 15px;border-radius: 50%;text-align: center;line-height: 15px;color: #fff;margin: 0px 10px;cursor: pointer;}
 .shop-total .div_5 .mb10 .ts .tsbox{border: 1px solid #c42605;background-color: #FFF5F4;padding: 10px;color: #c42605;width: 200px;text-align: left;line-height: 20px;left: 20px;top:0;display: none;}
 

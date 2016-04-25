@@ -265,7 +265,7 @@
 }
 
 @media screen and (min-width : 320px) and (max-width : 639px){
-    #navigation,.first_view_side,.choicely .choicely-4, .choicely .choicely-5,.choicely .choicely-7,.centent .sub,.main .main_bd .top .mc-right,.main .main_bd .img-w1,.main .main_bd .img-w4,.j_drop,#toolbar li.line,#myorder,.main .main_bd a.img-w6,.main .main_bd .img-w7{display: none;}
+    #navigation,.first_view_side,.choicely .choicely-4, .choicely .choicely-5,.choicely .choicely-7,.centent .sub,.main .main_bd .top .mc-right,.main .main_bd .img-w1,.main .main_bd .img-w4,.main .main_bd a.img-w6,.main .main_bd .img-w7{display: none;}
 
     .first_view_main{margin-left: 0;width: 100%;}
     .home_banner,.home_banner .bd,.home_banner img,.main .main_bd .top .mc-left{width: 100%;height: 300px;}

@@ -265,6 +265,7 @@ a.zoomThumbActive{border: 2px solid #E4393C;padding:0;color:#E4393C;}
 #add-cart .btn_addcart{text-indent: 32px;}
 #add-cart .out-of-stock{text-indent: 0;filter: progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = #7c7c7c, endColorstr = #7c7c7c);background:#7c7c7c!important;cursor: not-allowed;}
 #add-cart .btn_buy{background: #fff!important;filter:none;border: #c74630 2px solid;color: #c74630;line-height:44px;margin-left: 18px;}
+#add-cart .ui_btn1{float: left;font-size: 18px;height: 48px;line-height: 48px;text-align: center;width: 172px;border:none;color: #fff !important;font-size: 14px;background: #666 !important;}
 /*扫码购*/
 .wxbuy{width: 150px;display: inline-block;border: 1px solid #fff;right: 10px;bottom: 20px;text-align: center;cursor: pointer;padding:10px;background-color: #fff;}
 .wxhref{width: 150px;height: 150px;}
@@ -450,4 +451,21 @@ a.zoomThumbActive{border: 2px solid #E4393C;padding:0;color:#E4393C;}
     .d_content .nav_warp .item{width: 159px;}
     .d_content .nav_warp,.description .d_content{width: 640px;}
     .d_content .d_main .d_img,.d_content .d_main .d_img img{max-width: 590px;}
+}
+@media screen and (min-width : 320px) and (max-width : 639px){
+    #wfj_Description .d_side,.hotlist,.wxbuy{display: none;}
+    #pro-price{height: auto;}
+    .detail-property .prop-wrap{margin: 386px 0 0 0;}
+    #preview,#preview .preview-wrap{width: 320px;}
+    .jqzoom,.jqzoom .lazy-pic{width: 320px;height: 320px;}
+    .thumb-list .thumb-pic{width: 44px;margin-right: 4px;}
+    .thumb-list .thumb-items a img{width: 40px !important;height: 40px !important;}
+    .thumb-list .hd a{height: 44px;}
+    .thumb-list .hd .arrow{top:14px;}
+    #add-cart .btn_buy{margin-left: 0px;margin-top: 10px;}
+    .description .d_content{float: none;}
+    .d_content .nav_warp .item:nth-child(3),.d_content .nav_warp .item:nth-child(4),.icon_detail13,.icon_detail14,.icon_detail17{display: none;}
+    .d_content .nav_warp .item{width: 105px;}
+    .d_content .nav_warp,.description .d_content{width: 320px;}
+    .d_content .d_main .d_img, .d_content .d_main .d_img img{max-width: 270px;}
 }
