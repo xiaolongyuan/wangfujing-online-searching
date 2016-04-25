@@ -165,7 +165,8 @@ public class ItemIAOImpl implements IItemIAO {
     public void query(SolrQuery query, SearchResult searchResult) throws SolrSearchException {
         QueryResponse response;
         try {
-            response = solrClient.query(COLLECTION_NAME, query);
+            response = solrClient
+                    .query(COLLECTION_NAME, query.getCopy().addOrUpdateSort("_version_", SolrQuery.ORDER.desc));
         } catch (SolrServerException | IOException e) {
             throw new SolrSearchException(e);
         }
@@ -337,7 +338,8 @@ public class ItemIAOImpl implements IItemIAO {
     public QueryResponse query(SolrQuery query) throws SolrSearchException {
         QueryResponse response;
         try {
-            response = solrClient.query(COLLECTION_NAME, query);
+            response = solrClient
+                    .query(COLLECTION_NAME, query.getCopy().addOrUpdateSort("_version_", SolrQuery.ORDER.desc));
         } catch (SolrServerException | IOException e) {
             throw new SolrSearchException(e);
         }
