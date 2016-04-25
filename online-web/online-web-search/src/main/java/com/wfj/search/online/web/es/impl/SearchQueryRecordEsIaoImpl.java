@@ -1,7 +1,5 @@
 package com.wfj.search.online.web.es.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.wfj.search.online.common.pojo.SearchQueryHistoryRecord;
 import com.wfj.search.online.common.pojo.SearchQueryRecord;
@@ -12,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.ActionWriteResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -42,7 +39,6 @@ public class SearchQueryRecordEsIaoImpl implements SearchQueryRecordEsIao {
     private Client esClient;
     @Value("${es.index}")
     private String index;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void upsert(SearchQueryRecord queryRecord) {
