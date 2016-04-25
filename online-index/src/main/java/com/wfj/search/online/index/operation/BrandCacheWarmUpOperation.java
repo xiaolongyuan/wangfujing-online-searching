@@ -1,23 +1,18 @@
 package com.wfj.search.online.index.operation;
 
-import com.google.common.collect.Lists;
 import com.wfj.platform.util.analysis.Timer;
 import com.wfj.search.online.common.pojo.BrandPojo;
 import com.wfj.search.online.index.iao.IPcmRequester;
-import com.wfj.search.online.index.iao.IndexException;
 import com.wfj.search.online.index.iao.RequestException;
-import com.wfj.search.online.index.pojo.ItemIndexPojo;
 import com.wfj.search.online.index.service.IIndexConfigService;
 import com.wfj.search.online.index.util.ExecutorServiceFactory;
 import com.wfj.search.util.record.pojo.Operation;
-import org.apache.solr.common.SolrInputDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
@@ -47,7 +42,8 @@ public class BrandCacheWarmUpOperation implements IOperation<Void> {
             List<BrandPojo> brandPojos = pcmRequester.listBrands();
             logger.debug("brand to warm-up counts: {}", brandPojos.size());
             Timer timer = new Timer();
-            timer.start();int threads = this.indexConfigService.getFetchThreads();
+            timer.start();
+            int threads = this.indexConfigService.getFetchThreads();
             final AtomicReference<Throwable> tracker = new AtomicReference<>();
             ExecutorService threadPool = ExecutorServiceFactory.create("rebuildES", threads,
                     Thread.currentThread(), tracker);
@@ -65,6 +61,7 @@ public class BrandCacheWarmUpOperation implements IOperation<Void> {
                     logger.debug("brand[{}] warm-up, cost {}", brandPojo.getBrandId(), stop.toString());
                 }, null);
             }
+            //noinspection Duplicates
             try {
                 for (int i = 0; i < brandPojos.size(); i++) {
                     completionService.take();
