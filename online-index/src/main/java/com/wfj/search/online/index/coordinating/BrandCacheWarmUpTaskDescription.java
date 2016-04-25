@@ -6,17 +6,17 @@ import com.wfj.search.util.record.pojo.Operation;
 import java.text.SimpleDateFormat;
 
 /**
- * <p>create at 16-1-5</p>
+ * <p>create at 16-4-25</p>
  *
  * @author liufl
- * @since 1.0.0
+ * @since 1.0.35
  */
-public class ActivitiesUpdateTaskDescription extends AbstractCoordinatingTaskDescription {
+public class BrandCacheWarmUpTaskDescription extends AbstractCoordinatingTaskDescription {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMddHH");
 
-    public ActivitiesUpdateTaskDescription(Operation param,
-            IOperation<Void> activeUpdateOperation) {
-        super("activeUpdate", param, activeUpdateOperation);
+    public BrandCacheWarmUpTaskDescription(Operation param,
+            IOperation<Void> brandCacheWarmUpOperation) {
+        super("brandCacheWarmUp", param, brandCacheWarmUpOperation);
     }
 
     @Override

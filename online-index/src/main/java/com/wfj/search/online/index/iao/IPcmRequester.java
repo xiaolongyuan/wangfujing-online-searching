@@ -118,6 +118,16 @@ public interface IPcmRequester {
     BrandPojo getBrandInfo(String brandId) throws RequestException;
 
     /**
+     * 获取品牌详细信息 </br>
+     * 从PCM直接获取，不使用缓存数据
+     *
+     * @param brandId 网站品牌编码
+     * @return 品牌详细信息
+     * @throws RequestException
+     */
+    BrandPojo directGetBrandInfo(String brandId) throws RequestException;
+
+    /**
      * 清理品牌详细信息缓存
      *
      * @param brandId 网站品牌编码
