@@ -5,7 +5,6 @@ import com.wfj.platform.util.analysis.Timer;
 import com.wfj.search.online.common.pojo.ItemPojo;
 import com.wfj.search.online.common.pojo.Page;
 import com.wfj.search.online.common.pojo.SkuPojo;
-import com.wfj.search.online.common.pojo.SpuPojo;
 import com.wfj.search.online.index.iao.IPcmRequester;
 import com.wfj.search.online.index.iao.RequestException;
 import com.wfj.search.online.index.service.IIndexConfigService;
@@ -48,11 +47,11 @@ public class SkuSpuCacheWarmUpOperation implements IOperation<Void> {
             running = true;
             int itemCount = pcmRequester.countItems();
             Set<String> skuSet = Collections.synchronizedSet(Sets.newHashSetWithExpectedSize(itemCount));
-            int fetchSize = indexConfigService.getFetchSize();
+            int fetchSize = indexConfigService.getWarmUpFetchSize();
             int pageSize = (itemCount + fetchSize) / fetchSize;
             Timer timer = new Timer();
             timer.start();
-            int threads = this.indexConfigService.getFetchThreads();
+            int threads = this.indexConfigService.getWarmUpFetchThreads();
             final AtomicReference<Throwable> tracker = new AtomicReference<>();
             ExecutorService threadPool = ExecutorServiceFactory.create("warm-up-sku-spu-list-items", threads,
                     Thread.currentThread(), tracker);

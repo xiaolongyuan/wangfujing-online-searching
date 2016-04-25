@@ -18,7 +18,10 @@ public class IndexConfigServiceImpl implements IIndexConfigService {
     private String fetchSize;
     @Value("${index.config.default.fetchThreads}")
     private String fetchThreads;
-
+    @Value("${index.config.default.warmUpItemsFetchSize}")
+    private String warmUpFetchSize;
+    @Value("${index.config.default.warmUpFetchThreads}")
+    private String warmUpFetchThreads;
 
     @Override
     public int getFetchSize() {
@@ -28,5 +31,15 @@ public class IndexConfigServiceImpl implements IIndexConfigService {
     @Override
     public int getFetchThreads() {
         return Integer.parseInt(fetchThreads);
+    }
+
+    @Override
+    public int getWarmUpFetchSize() {
+        return Integer.parseInt(warmUpFetchSize);
+    }
+
+    @Override
+    public int getWarmUpFetchThreads() {
+        return Integer.parseInt(warmUpFetchThreads);
     }
 }

@@ -22,4 +22,6 @@ public interface IIndexConfigService {
      * @return 商品数据抓取线程数
      */
     int getFetchThreads();
+    int getWarmUpFetchSize();
+    int getWarmUpFetchThreads();
 }

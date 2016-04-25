@@ -56,7 +56,7 @@ public class CategoryCacheWarmUpOperation implements IOperation<Void> {
     private void warmUpSubCategories(String cid, AtomicLong sum) throws RequestException {
         List<String> subIds = pcmRequester.listSubCategories(cid);
         if (subIds != null && !subIds.isEmpty()) {
-            int threads = this.indexConfigService.getFetchThreads();
+            int threads = this.indexConfigService.getWarmUpFetchThreads();
             final AtomicReference<Throwable> tracker = new AtomicReference<>();
             ExecutorService threadPool = ExecutorServiceFactory.create("warm-up-category", threads,
                     Thread.currentThread(), tracker);

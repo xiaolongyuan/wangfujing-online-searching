@@ -43,7 +43,7 @@ public class BrandCacheWarmUpOperation implements IOperation<Void> {
             logger.debug("brand to warm-up counts: {}", brandPojos.size());
             Timer timer = new Timer();
             timer.start();
-            int threads = this.indexConfigService.getFetchThreads();
+            int threads = this.indexConfigService.getWarmUpFetchThreads();
             final AtomicReference<Throwable> tracker = new AtomicReference<>();
             ExecutorService threadPool = ExecutorServiceFactory.create("warm-up-brand", threads,
                     Thread.currentThread(), tracker);
