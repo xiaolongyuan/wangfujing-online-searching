@@ -223,7 +223,7 @@
         <task:scheduled ref="activitiesUpdateJob" method="updateActivities" cron="${index.config.updateActivityCron}"/>
         <task:scheduled ref="suggestionUpdateJob" method="updateSuggestions" cron=" 0 0 * * * *"/>
         <task:scheduled ref="brandCacheUpWarmJob" method="warmUpBrands" cron="0 0 * * * *"/>
-        <task:scheduled ref="categoryCacheUpWarmJob" method="warmUpCategories" cron="0 0 * * * *"/>
+        <task:scheduled ref="categoryCacheUpWarmJob" method="warmUpCategories" cron="0 0 0/4 * * *"/>
     </task:scheduled-tasks>
 
     <bean id="springDataSourceBeanPostProcessor"
