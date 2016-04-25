@@ -122,6 +122,8 @@ public class MayLikeSearchServiceImpl implements IMayLikeSearchService {
                 item.setOnSellSince((Date) itemDoc.getFieldValue("onSellSince"));
                 item.setBrandId((String) itemDoc.getFieldValue("brandId"));
                 item.setBrandName((String) itemDoc.getFieldValue("brandName"));
+                item.setLongDesc((String) itemDoc.getFieldValue("longDesc"));
+                item.setShortDesc((String) itemDoc.getFieldValue("shortDesc"));
                 List<String> activeName = Lists.newArrayList();
                 try {
                     activeName = itemDoc.getFieldValues("activeName").stream().map(Object::toString)

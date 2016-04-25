@@ -29,6 +29,8 @@ public class SpuIndexPojo {
     private List<String> categoryIds = Lists.newArrayList(); // 所属的所有叶子分类编码
     private List<String> tagIds = Lists.newArrayList(); // 标签ID
     private List<String> propertyValueIds = Lists.newArrayList(); // 属性值编码
+    private String shortDesc;
+    private String longDesc;
 
     private List<String> spuPropertyValues = Lists.newArrayList(); // 属性值
     private Long operationSid; // 操作记录号
@@ -262,6 +264,22 @@ public class SpuIndexPojo {
         this.propertyValueIds = propertyValueIds;
     }
 
+    public String getShortDesc() {
+        return shortDesc;
+    }
+
+    public void setShortDesc(String shortDesc) {
+        this.shortDesc = shortDesc;
+    }
+
+    public String getLongDesc() {
+        return longDesc;
+    }
+
+    public void setLongDesc(String longDesc) {
+        this.longDesc = longDesc;
+    }
+
     /**
      * 属性值
      *
@@ -286,6 +304,7 @@ public class SpuIndexPojo {
      *
      * @return 操作记录号
      */
+    @SuppressWarnings("unused")
     public Long getOperationSid() {
         return operationSid;
     }
@@ -295,6 +314,7 @@ public class SpuIndexPojo {
      *
      * @param operationSid 操作记录号
      */
+    @SuppressWarnings("unused")
     public void setOperationSid(Long operationSid) {
         this.operationSid = operationSid;
     }

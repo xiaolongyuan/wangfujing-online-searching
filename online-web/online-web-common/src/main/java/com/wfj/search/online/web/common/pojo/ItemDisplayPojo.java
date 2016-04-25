@@ -39,6 +39,8 @@ public class ItemDisplayPojo extends AbstractDisplayPojo {
     private String title;
     private String subTitle;
     private List<String> categoryIds = Collections.synchronizedList(Lists.newArrayList());
+    private String longDesc;
+    private String shortDesc;
 
     public String getItemId() {
         return itemId;
@@ -231,5 +233,21 @@ public class ItemDisplayPojo extends AbstractDisplayPojo {
 
     public void setCategoryIds(List<String> categoryIds) {
         this.categoryIds = categoryIds;
+    }
+
+    public String getLongDesc() {
+        return longDesc;
+    }
+
+    public void setLongDesc(String longDesc) {
+        this.longDesc = longDesc;
+    }
+
+    public String getShortDesc() {
+        return shortDesc;
+    }
+
+    public void setShortDesc(String shortDesc) {
+        this.shortDesc = shortDesc;
     }
 }

@@ -290,7 +290,7 @@ ${navigationContent}
                                                  class="lazy-pic"
                                                  data-src="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/${pic}"
                                                  src="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/${pic}"
-                                                 alt="${pro.title}"">
+                                                 alt="${pro.title}">
                                         </a>
                                     </div>
                                     <div class="posa pin-ico ico6_tag"></div>
@@ -339,7 +339,7 @@ ${navigationContent}
                                     </div>
                                     <div class="p-name">
                                         <a target="_blank" title="${pro.title}"
-                                           href="${itemUrlPrefix}${pro.spuId}${itemUrlPostfix}">${pro.title}</a>
+                                           href="${itemUrlPrefix}${pro.spuId}${itemUrlPostfix}"><#if pro.longDesc?? || pro.longDesc.trim().isEmpty()>${pro.title} ${pro.shortDesc!}<#else>${pro.longDesc} ${pro.title}</#if></a>
                                     </div>
                                     <p class="red p-words"></p>
 

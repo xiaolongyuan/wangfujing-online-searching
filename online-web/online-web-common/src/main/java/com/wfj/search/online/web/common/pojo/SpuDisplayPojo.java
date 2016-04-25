@@ -44,6 +44,8 @@ public class SpuDisplayPojo extends AbstractDisplayPojo {
     private List<String> categoryIds = Collections.synchronizedList(Lists.newArrayList());
     private List<CategoryDisplayPojo> leafCategories = Collections.synchronizedList(Lists.newArrayList());
     private String moreUrl = "#";
+    private String longDesc;
+    private String shortDesc;
 
     @SuppressWarnings("unused")
     public String getItemId() {
@@ -275,6 +277,22 @@ public class SpuDisplayPojo extends AbstractDisplayPojo {
         this.moreUrl = moreUrl;
     }
 
+    public String getLongDesc() {
+        return longDesc;
+    }
+
+    public void setLongDesc(String longDesc) {
+        this.longDesc = longDesc;
+    }
+
+    public String getShortDesc() {
+        return shortDesc;
+    }
+
+    public void setShortDesc(String shortDesc) {
+        this.shortDesc = shortDesc;
+    }
+
     public static SpuDisplayPojo copyOf(ItemDisplayPojo item) {
         SpuDisplayPojo pojo = new SpuDisplayPojo();
         pojo.setItemId(item.getItemId());
@@ -300,6 +318,8 @@ public class SpuDisplayPojo extends AbstractDisplayPojo {
         pojo.setTitle(item.getTitle());
         pojo.setSubTitle(item.getSubTitle());
         pojo.setCategoryIds(item.getCategoryIds());
+        pojo.setLongDesc(item.getLongDesc());
+        pojo.setShortDesc(item.getShortDesc());
         return pojo;
     }
 

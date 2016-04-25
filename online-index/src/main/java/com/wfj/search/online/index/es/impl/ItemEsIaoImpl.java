@@ -428,6 +428,8 @@ public class ItemEsIaoImpl implements ItemEsIao {
         List<ItemIndexPojo> bySpuId = this.findBySpuId(spuIndexPojo.getSpuId());
         for (ItemIndexPojo itemIndexPojo : bySpuId) {
             itemIndexPojo.setSpuName(spuIndexPojo.getSpuName());
+            itemIndexPojo.setLongDesc(spuIndexPojo.getLongDesc());
+            itemIndexPojo.setShortDesc(spuIndexPojo.getShortDesc());
             itemIndexPojo.setModel(spuIndexPojo.getModel());
             itemIndexPojo.setActiveBit(spuIndexPojo.getActiveBit());
             itemIndexPojo.setPageDescription(spuIndexPojo.getPageDescription());

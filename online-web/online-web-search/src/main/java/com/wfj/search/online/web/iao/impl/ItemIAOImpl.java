@@ -207,6 +207,8 @@ public class ItemIAOImpl implements IItemIAO {
                 item.setOnSellSince((Date) itemDoc.getFieldValue("onSellSince"));
                 item.setBrandId((String) itemDoc.getFieldValue("brandId"));
                 item.setBrandName((String) itemDoc.getFieldValue("brandName"));
+                item.setLongDesc((String) itemDoc.getFieldValue("longDesc"));
+                item.setShortDesc((String) itemDoc.getFieldValue("shortDesc"));
                 List<String> activeName = Lists.newArrayList();
                 try {
                     activeName = itemDoc.getFieldValues("activeName").stream().map(Object::toString)
@@ -292,6 +294,8 @@ public class ItemIAOImpl implements IItemIAO {
                                 item.setOnSellSince((Date) itemDoc.getFieldValue("onSellSince"));
                                 item.setBrandId((String) itemDoc.getFieldValue("brandId"));
                                 item.setBrandName((String) itemDoc.getFieldValue("brandName"));
+                                item.setLongDesc((String) itemDoc.getFieldValue("longDesc"));
+                                item.setShortDesc((String) itemDoc.getFieldValue("shortDesc"));
                                 try {
                                     item.setActiveName(
                                             itemDoc.getFieldValues("activeName").stream().map(Object::toString)

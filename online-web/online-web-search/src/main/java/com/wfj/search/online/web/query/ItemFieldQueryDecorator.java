@@ -39,6 +39,8 @@ public class ItemFieldQueryDecorator implements QueryDecorator {
                 .addField("activeName")
                 .addField("title")
                 .addField("subTitle")
-                .addField("allLevelCategoryIds_" + searchParams.getChannel());
+                .addField("allLevelCategoryIds_" + searchParams.getChannel())
+                .addField("longDesc")
+                .addField("shortDesc");
     }
 }

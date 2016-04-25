@@ -25,6 +25,8 @@ public class SpuPojo {
     private List<String> categoryIds = Lists.newArrayList();
     private List<TagPojo> tags = Lists.newArrayList();
     private List<PropertyValuePojo> propertyValues = Lists.newArrayList();
+    private String longDesc;
+    private String shortDesc;
 
     /**
      * SPU编码
@@ -202,6 +204,7 @@ public class SpuPojo {
      *
      * @param categoryIds 所属分类编码列表
      */
+    @SuppressWarnings("unused")
     public void setCategoryIds(List<String> categoryIds) {
         this.categoryIds = categoryIds;
     }
@@ -238,7 +241,24 @@ public class SpuPojo {
      *
      * @param propertyValues SPU属性
      */
+    @SuppressWarnings("unused")
     public void setPropertyValues(List<PropertyValuePojo> propertyValues) {
         this.propertyValues = propertyValues;
+    }
+
+    public String getLongDesc() {
+        return longDesc;
+    }
+
+    public void setLongDesc(String longDesc) {
+        this.longDesc = longDesc;
+    }
+
+    public String getShortDesc() {
+        return shortDesc;
+    }
+
+    public void setShortDesc(String shortDesc) {
+        this.shortDesc = shortDesc;
     }
 }

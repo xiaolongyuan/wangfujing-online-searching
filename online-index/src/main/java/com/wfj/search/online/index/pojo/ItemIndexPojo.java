@@ -120,6 +120,10 @@ public class ItemIndexPojo {
     private Integer spuSale;
     @Field("spuClick")
     private Integer spuClick;
+    @Field("longDesc")
+    private String longDesc;
+    @Field("shortDesc")
+    private String shortDesc;
     @Field("operationSid")
     private Long operationSid;// 操作记录号
 
@@ -992,6 +996,24 @@ public class ItemIndexPojo {
 
     public void setSpuClick(Integer spuClick) {
         this.spuClick = spuClick;
+    }
+
+    @SuppressWarnings("unused")
+    public String getLongDesc() {
+        return longDesc;
+    }
+
+    public void setLongDesc(String longDesc) {
+        this.longDesc = longDesc;
+    }
+
+    @SuppressWarnings("unused")
+    public String getShortDesc() {
+        return shortDesc;
+    }
+
+    public void setShortDesc(String shortDesc) {
+        this.shortDesc = shortDesc;
     }
 
     /**

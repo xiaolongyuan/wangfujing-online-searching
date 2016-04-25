@@ -230,6 +230,12 @@ public class PojoUtils {
                 }
             }
         }
+        try {
+            spu.setLongDesc(json.getString("longDesc"));
+        } catch (Exception ignored) {}
+        try {
+            spu.setShortDesc(json.getString("shortDesc"));
+        } catch (Exception ignored) {}
         return spu;
     }
 
@@ -448,6 +454,8 @@ public class PojoUtils {
         indexPojo.setUpTime(skuPojo.getUpTime());
         indexPojo.setSpuId(skuPojo.getSpuId());
         indexPojo.setSpuName(spuPojo.getSpuName());
+        indexPojo.setLongDesc(spuPojo.getLongDesc());
+        indexPojo.setShortDesc(spuPojo.getShortDesc());
         indexPojo.setModel(spuPojo.getModel());
         indexPojo.setActiveBit(spuPojo.getActiveBit());
         indexPojo.setPageDescription(spuPojo.getPageDescription());
@@ -553,6 +561,8 @@ public class PojoUtils {
                 .map(PojoUtils::toIndexPojo).collect(Collectors.toSet()));
         index.getPropertyValueIndexPojos().addAll(spu.getPropertyValues().stream()
                 .map(PojoUtils::toIndexPojo).collect(Collectors.toSet()));
+        index.setShortDesc(spu.getShortDesc());
+        index.setLongDesc(spu.getLongDesc());
         return index;
     }
 

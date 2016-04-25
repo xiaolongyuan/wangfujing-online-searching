@@ -14,14 +14,6 @@ public final class IndexCacheableAware {
     }
 
     /**
-     * 索引过程记录抓取分页长度
-     */
-    public static final String VALUE_KEY_INDEX_CONFIG_FETCH_SIZE = "WFJ_ONLINE_INDEX_FETCH_SIZE";
-    /**
-     * 索引过程抓取线程数
-     */
-    public static final String VALUE_KEY_INDEX_CONFIG_PRO_FETCH_THREADS = "WFJ_ONLINE_INDEX_FETCH_THREADS";
-    /**
      * 手工加权
      */
     public static final String VALUE_KEY_INDEX_VARIABLE_MANUAL_BOOSTS = "WFJ_ONLINE_INDEX_V_MANUAL_BOOSTS";
