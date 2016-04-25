@@ -359,7 +359,7 @@ ${navigationContent}
                                     </div>
                                     <div class="p-name">
                                         <a target="_blank" title="${pro.title}"
-                                           href="${itemUrlPrefix}${pro.spuId}${itemUrlPostfix}"><#if pro.longDesc?? || pro.longDesc.trim().isEmpty()>${pro.title} ${pro.shortDesc!}<#else>${pro.longDesc} ${pro.title}</#if></a>
+                                           href="${itemUrlPrefix}${pro.spuId}${itemUrlPostfix}"><#if !pro.longDesc?? || pro.longDesc.trim().isEmpty()>${pro.title} ${pro.shortDesc!}<#else>${pro.longDesc} ${pro.title}</#if></a>
                                     </div>
                                     <p class="red p-words"></p>
 

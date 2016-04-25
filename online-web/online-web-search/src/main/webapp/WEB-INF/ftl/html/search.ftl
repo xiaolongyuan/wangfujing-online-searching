@@ -353,7 +353,7 @@ ${navigationContent}
                     </#if>
                     -->
                         <dd class="p-name"><a href="${itemUrlPrefix}${pro.spuId}${itemUrlPostfix}"
-                                              target="_blank"><#if pro.longDesc?? || pro.longDesc.trim().isEmpty()>${pro.title} ${pro.shortDesc!}<#else>${pro.longDesc} ${pro.title}</#if></a></dd>
+                                              target="_blank"><#if !pro.longDesc?? || pro.longDesc.trim().isEmpty()>${pro.title} ${pro.shortDesc!}<#else>${pro.longDesc} ${pro.title}</#if></a></dd>
                         <dd class="p-price">￥${pro.currentPrice?string("0.00")}</dd>
                     </dl>
                     <div class="posa showinfo">
@@ -446,7 +446,7 @@ ${navigationContent}
 <#include "mini_login.ftl">
 </div>
 ${footerContent}
-<#include "no-pic-script.ftl">
+<#--<#include "no-pic-script.ftl">-->
 <#--noinspection HtmlUnknownTarget-->
 <script src="<@randomLocation hosts=jsHosts template=jsLocationTemplate/>/plugin/jquery-1.9.1.min.js"></script>
 <script src="<@randomLocation hosts=jsHosts template=jsLocationTemplate/>/plugin/jquery.slide.js"></script>

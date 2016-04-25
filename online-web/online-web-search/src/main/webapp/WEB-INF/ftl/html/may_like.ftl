@@ -24,7 +24,7 @@
                              style="width: 220px;height: 220px;">
                     </a>
                     <div class="item_txt">
-                        <a target="_blank" href="${itemUrlPrefix}${pro.spuId}${itemUrlPostfix}" class="name"><#if pro.longDesc?? || pro.longDesc.trim().isEmpty()>${pro.title} ${pro.shortDesc!}<#else>${pro.longDesc} ${pro.title}</#if></a>
+                        <a target="_blank" href="${itemUrlPrefix}${pro.spuId}${itemUrlPostfix}" class="name"><#if !pro.longDesc?? || pro.longDesc.trim().isEmpty()>${pro.title} ${pro.shortDesc!}<#else>${pro.longDesc} ${pro.title}</#if></a>
                         <div class="item_price">
                         <#--<del>￥990</del>-->
                             <strong>￥${pro.currentPrice?string("0.00")}</strong>
