@@ -120,6 +120,12 @@
                 <entry key="WFJ_SEARCH_ONLINE_PCM_SKU" value="86400"/>
                 <!-- SPU缓存24小时 -->
                 <entry key="WFJ_SEARCH_ONLINE_PCM_SPU" value="86400"/>
+                <!-- 人工加权缓存24小时 -->
+                <entry key="WFJ_ONLINE_INDEX_V_MANUAL_BOOSTS" value="86400"/>
+                <!-- 品牌置顶坑位缓存24小时 -->
+                <entry key="WFJ_ONLINE_INDEX_BRAND_TOP_SPOTS" value="86400"/>
+                <!-- 分类置顶坑位缓存24小时 -->
+                <entry key="VALUE_KEY_CATEGORY_TOP_SPOTS" value="86400"/>
             </map>
         </property>
         <property name="loadRemoteCachesOnStartup" value="true"/>

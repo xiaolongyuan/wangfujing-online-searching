@@ -1,7 +1,5 @@
 package com.wfj.search.online.index.iao.impl.boostStrategy;
 
-import com.wfj.search.online.index.es.CommentEsIao;
-import com.wfj.search.online.index.es.ItemEsIao;
 import com.wfj.search.online.index.pojo.ItemIndexPojo;
 import com.wfj.search.online.index.pojo.Spot;
 import com.wfj.search.online.index.service.IManualBoostService;
@@ -15,7 +13,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <p>create at 15-11-10</p>
@@ -27,10 +24,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BoostStrategyImpl implements BoostStrategy {
     @Autowired
     private IManualBoostService manualBoostService;
-    @Autowired
-    private ItemEsIao itemEsIao;
-    @Autowired
-    private CommentEsIao commentEsIao;
+//    @Autowired
+//    private ItemEsIao itemEsIao;
+//    @Autowired
+//    private CommentEsIao commentEsIao;
     @Autowired
     private ITopSpotService topSpotService;
 
@@ -93,14 +90,15 @@ public class BoostStrategyImpl implements BoostStrategy {
         double spuSaleBoost = spuSale < 100 ? Math.log(spuSale + 1) / Math.log(100) : 1;
         Integer spuClick = item.getSpuClick();
         double spuClickBoost = spuClick < 1000 ? Math.log(spuClick + 1) / Math.log(1000) : 1;
-        List<ItemIndexPojo> spuItems = this.itemEsIao.findBySpuId(item.getSpuId());
-        AtomicInteger inv = new AtomicInteger(0);
-        spuItems.forEach(item_ -> inv.addAndGet(item_.getInventory()));
-        double spuInventoryBoost = inv.get() < 100 ? Math.log(inv.get() + 1) / Math.log(10) / 2 : 1;
-        long spuCommentCount = this.commentEsIao.countOfSpuScoreGt(item.getSpuId(), -1);
-        long spuGoodCommentCount = this.commentEsIao.countOfSpuScoreGt(item.getSpuId(), 3);
-        double spuCommentBoost = spuCommentCount == 0 ? 0 : spuGoodCommentCount / spuCommentCount;
-        spuCommentBoost *= spuCommentCount < 100 ? Math.log(spuCommentCount) / Math.log(100) : 1;
-        return (float) (sinceBoost * 0.2 + spuSaleBoost * 0.8 + spuClickBoost * 0.2 + spuInventoryBoost * 0.1 + spuCommentBoost * 0.5);
+//        List<ItemIndexPojo> spuItems = this.itemEsIao.findBySpuId(item.getSpuId());
+//        AtomicInteger inv = new AtomicInteger(0);
+//        spuItems.forEach(item_ -> inv.addAndGet(item_.getInventory()));
+//        double spuInventoryBoost = inv.get() < 100 ? Math.log(inv.get() + 1) / Math.log(10) / 2 : 1;
+//        long spuCommentCount = this.commentEsIao.countOfSpuScoreGt(item.getSpuId(), -1);
+//        long spuGoodCommentCount = this.commentEsIao.countOfSpuScoreGt(item.getSpuId(), 3);
+//        double spuCommentBoost = spuCommentCount == 0 ? 0 : spuGoodCommentCount / spuCommentCount;
+//        spuCommentBoost *= spuCommentCount < 100 ? Math.log(spuCommentCount) / Math.log(100) : 1;
+//        return (float) (sinceBoost * 0.2 + spuSaleBoost * 0.8 + spuClickBoost * 0.2 + spuInventoryBoost * 0.1 + spuCommentBoost * 0.5);
+        return (float) (sinceBoost * 0.2 + spuSaleBoost * 0.8 + spuClickBoost * 0.2);
     }
 }
