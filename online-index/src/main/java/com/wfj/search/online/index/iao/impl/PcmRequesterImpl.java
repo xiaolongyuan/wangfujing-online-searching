@@ -266,6 +266,12 @@ public class PcmRequesterImpl implements IPcmRequester {
     @Override
     @Cacheable(PCM_CATEGORY)
     public CategoryPojo getCategoryInfo(String categoryId) throws RequestException {
+        return this.directGetCategoryInfo(categoryId);
+    }
+
+    @Override
+    @CachePut(PCM_CATEGORY)
+    public CategoryPojo directGetCategoryInfo(String categoryId) throws RequestException {
         try {
             JSONObject params = new JSONObject();
             params.put("categoryId", categoryId);

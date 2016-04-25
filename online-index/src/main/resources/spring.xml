@@ -205,6 +205,7 @@
     <bean id="activitiesUpdateJob" class="com.wfj.search.online.index.cron.ActivitiesUpdateJob"/>
     <bean id="suggestionUpdateJob" class="com.wfj.search.online.index.cron.SuggestionUpdateJob"/>
     <bean id="brandCacheUpWarmJob" class="com.wfj.search.online.index.cron.BrandCacheUpWarmJob"/>
+    <bean id="categoryCacheUpWarmJob" class="com.wfj.search.online.index.cron.CategoryCacheUpWarmJob"/>
     <task:scheduler id="scheduler" pool-size="10"/>
     <task:scheduled-tasks scheduler="scheduler">
         <task:scheduled ref="instanceStatusUpdateRegisterJobDescription" method="work" initial-delay="1000"
@@ -222,6 +223,7 @@
         <task:scheduled ref="activitiesUpdateJob" method="updateActivities" cron="${index.config.updateActivityCron}"/>
         <task:scheduled ref="suggestionUpdateJob" method="updateSuggestions" cron=" 0 0 * * * *"/>
         <task:scheduled ref="brandCacheUpWarmJob" method="warmUpBrands" cron="0 0 * * * *"/>
+        <task:scheduled ref="categoryCacheUpWarmJob" method="warmUpCategories" cron="0 0 * * * *"/>
     </task:scheduled-tasks>
 
     <bean id="springDataSourceBeanPostProcessor"

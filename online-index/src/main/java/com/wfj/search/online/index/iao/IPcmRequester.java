@@ -156,6 +156,16 @@ public interface IPcmRequester {
     CategoryPojo getCategoryInfo(String categoryId) throws RequestException;
 
     /**
+     * 获取分类详细信息</br>
+     * 从PCM直接获取，不使用缓存数据
+     *
+     * @param categoryId 展示分类编码
+     * @return 分类详细信息
+     * @throws RequestException
+     */
+    CategoryPojo directGetCategoryInfo(String categoryId) throws RequestException;
+
+    /**
      * 清理分类详细信息缓存
      */
     @CacheEvict(value = PCM_CATEGORY, allEntries = true)
