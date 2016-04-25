@@ -4,6 +4,7 @@ import com.wfj.search.online.statistics.es.ClicksEsIao;
 import com.wfj.search.online.statistics.pojo.ClickCountPojo;
 import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.engine.DocumentAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,15 @@ public class ClicksEsIaoImpl implements ClicksEsIao {
         try {
             EsUtil.upsert(this.esClient, clickCountPojo, clickCountPojo.getSpuId(), index, TYPE);
         } catch (Exception e) {
-            logger.warn("写点击量数据[SpuId:{}]到ES失败", clickCountPojo.getSpuId(), e);
+            Throwable cause = e;
+            while (cause.getCause() != null) {
+                cause = e.getCause();
+            }
+            if (cause instanceof DocumentAlreadyExistsException) {
+                upsert(clickCountPojo);
+            } else {
+                logger.warn("写点击量数据[SpuId:{}]到ES失败", clickCountPojo.getSpuId(), e);
+            }
         }
     }
 }
