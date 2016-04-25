@@ -27,7 +27,7 @@ public class HotWordServiceImpl implements IHotWordService {
     private HotWordMapper hotWordMapper;
 
     @Override
-    @Cacheable(value = VALUE_KEY_HOT_WORDS, unless = "#result.size() > 0")
+    @Cacheable(value = VALUE_KEY_HOT_WORDS, unless = "#result.size() == 0")
     public List<HotWordsOfChannelPojo> listHotWords(String siteId, String channelId) {
         if (StringUtils.isBlank(siteId)) {
             siteId = null;

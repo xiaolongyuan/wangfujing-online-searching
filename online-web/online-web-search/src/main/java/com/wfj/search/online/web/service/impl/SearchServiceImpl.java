@@ -246,26 +246,26 @@ public class SearchServiceImpl implements ISearchService {
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_WEB_DO_SEARCH, unless = "#result.successList.size() > 0")
+    @Cacheable(value = VALUE_KEY_SEARCH_WEB_DO_SEARCH, unless = "#result.successList.size() == 0")
     public SearchResult doSearch(SearchParams searchParams, String urlPrefix) throws TrackingException {
         return this.searchTemplate(searchParams, urlPrefix + '/' + searchParams.getInputQuery(),
                 () -> SearchServiceImpl.this.searchTasks);
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_WEB_DO_SEARCH, unless = "#result.successList.size() > 0")
+    @Cacheable(value = VALUE_KEY_SEARCH_WEB_DO_SEARCH, unless = "#result.successList.size() == 0")
     public SearchResult doList(SearchParams searchParams, String urlPrefix) throws TrackingException {
         return this.searchTemplate(searchParams, urlPrefix, () -> SearchServiceImpl.this.listTasks);
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_WEB_DO_SEARCH, unless = "#result.successList.size() > 0")
+    @Cacheable(value = VALUE_KEY_SEARCH_WEB_DO_SEARCH, unless = "#result.successList.size() == 0")
     public SearchResult doBrandList(SearchParams searchParams, String urlPrefix) throws TrackingException {
         return this.searchTemplate(searchParams, urlPrefix, () -> SearchServiceImpl.this.brandListTasks);
     }
 
     @Override
-    @Cacheable(value = VALUE_KEY_SEARCH_WEB_DO_SEARCH, unless = "#result.successList.size() > 0")
+    @Cacheable(value = VALUE_KEY_SEARCH_WEB_DO_SEARCH, unless = "#result.successList.size() == 0")
     public SearchResult doNewProductsList(SearchParams searchParams) throws TrackingException {
         return this.searchTemplate(searchParams, "/new-products", () -> SearchServiceImpl.this.newProductsListTasks);
     }
