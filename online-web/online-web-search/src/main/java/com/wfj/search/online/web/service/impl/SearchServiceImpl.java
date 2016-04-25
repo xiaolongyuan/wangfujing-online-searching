@@ -179,6 +179,7 @@ public class SearchServiceImpl implements ISearchService {
         final SearchResult searchResult = new SearchResult(searchParams);
         final Thread masterThread = Thread.currentThread();
         final AtomicReference<Throwable> atomicException = new AtomicReference<>();
+        //noinspection Duplicates
         ExecutorService pool = Executors.newCachedThreadPool(r -> {
             Thread thread = new Thread(r, "SearchThreads-" + NO_FORMAT.format(searchRequestNo.addAndGet(1L)));
             thread.setDaemon(true);

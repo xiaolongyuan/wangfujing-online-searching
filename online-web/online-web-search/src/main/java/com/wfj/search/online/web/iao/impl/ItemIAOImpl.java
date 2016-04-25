@@ -128,12 +128,7 @@ public class ItemIAOImpl implements IItemIAO {
             }
         }
         */
-        Collections.sort(availableRanges, new Comparator<RangeDisplayPojo>() {
-            @Override
-            public int compare(RangeDisplayPojo o1, RangeDisplayPojo o2) {
-                return o1.getOrder() - o2.getOrder();
-            }
-        });
+        Collections.sort(availableRanges, (o1, o2) -> o1.getOrder() - o2.getOrder());
         return availableRanges;
     }
 
@@ -231,6 +226,7 @@ public class ItemIAOImpl implements IItemIAO {
         });
         final Thread masterThread = Thread.currentThread();
         final AtomicReference<Throwable> atomicException = new AtomicReference<>();
+        //noinspection Duplicates
         ExecutorService pool = Executors.newCachedThreadPool(r -> {
             Thread thread = new Thread(r, "SearchThreads-" + NO_FORMAT.format(queryNo.addAndGet(1L)));
             thread.setDaemon(true);
