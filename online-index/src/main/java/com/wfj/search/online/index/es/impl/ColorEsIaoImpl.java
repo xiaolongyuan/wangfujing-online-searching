@@ -4,6 +4,7 @@ import com.wfj.search.online.index.es.ColorEsIao;
 import com.wfj.search.online.index.pojo.ColorIndexPojo;
 import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.engine.DocumentAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,15 @@ public class ColorEsIaoImpl implements ColorEsIao {
         try {
             EsUtil.upsert(this.esClient, colorIndexPojo, colorIndexPojo.getColorId(), index, TYPE);
         } catch (Exception e) {
-            logger.warn("保存颜色[{}]到ES失败", colorIndexPojo.getColorId(), e);
+            Throwable cause = e;
+            while (cause.getCause() != null) {
+                cause = e.getCause();
+            }
+            if (cause instanceof DocumentAlreadyExistsException) {
+                upsert(colorIndexPojo);
+            } else {
+                logger.warn("保存颜色[{}]到ES失败", colorIndexPojo.getColorId(), e);
+            }
         }
     }
 }

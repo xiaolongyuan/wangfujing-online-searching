@@ -12,6 +12,7 @@ import org.elasticsearch.action.get.MultiGetItemResponse;
 import org.elasticsearch.action.get.MultiGetRequestBuilder;
 import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.engine.DocumentAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,15 @@ public class CategoryEsIaoImpl implements CategoryEsIao {
         try {
             EsUtil.upsert(this.esClient, category, category.getCategoryId(), this.index, TYPE);
         } catch (IllegalStateException e) {
-            throw new IndexException(e);
+            Throwable cause = e;
+            while (cause.getCause() != null) {
+                cause = e.getCause();
+            }
+            if (cause instanceof DocumentAlreadyExistsException) {
+                upsert(category);
+            } else {
+                throw new IndexException(e);
+            }
         }
     }
 

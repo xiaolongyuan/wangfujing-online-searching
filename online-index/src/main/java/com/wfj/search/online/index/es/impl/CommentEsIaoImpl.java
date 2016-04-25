@@ -12,6 +12,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.engine.DocumentAlreadyExistsException;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
@@ -126,7 +127,15 @@ public class CommentEsIaoImpl implements CommentEsIao {
         try {
             EsUtil.upsert(this.esClient, comment, comment.getCommentId(), index, TYPE);
         } catch (IllegalStateException e) {
-            throw new IndexException(e);
+            Throwable cause = e;
+            while (cause.getCause() != null) {
+                cause = e.getCause();
+            }
+            if (cause instanceof DocumentAlreadyExistsException) {
+                upsert(comment);
+            } else {
+                throw new IndexException(e);
+            }
         }
     }
 

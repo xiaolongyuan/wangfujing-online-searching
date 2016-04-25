@@ -18,6 +18,7 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.engine.DocumentAlreadyExistsException;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -59,7 +60,15 @@ public class ItemEsIaoImpl implements ItemEsIao {
         try {
             EsUtil.upsert(this.esClient, itemIndexPojo, itemIndexPojo.getItemId(), index, TYPE);
         } catch (IllegalStateException e) {
-            throw new IndexException(e);
+            Throwable cause = e;
+            while (cause.getCause() != null) {
+                cause = e.getCause();
+            }
+            if (cause instanceof DocumentAlreadyExistsException) {
+                upsert(itemIndexPojo);
+            } else {
+                throw new IndexException(e);
+            }
         }
     }
 

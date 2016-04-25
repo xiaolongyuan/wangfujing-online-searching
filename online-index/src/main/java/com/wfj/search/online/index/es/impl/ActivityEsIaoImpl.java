@@ -4,6 +4,7 @@ import com.wfj.search.online.common.pojo.ActivityPojo;
 import com.wfj.search.online.index.es.ActivityEsIao;
 import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.engine.DocumentAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,15 @@ public class ActivityEsIaoImpl implements ActivityEsIao {
         try {
             EsUtil.upsert(this.esClient, activityPojo, activityPojo.getActiveId(), this.index, TYPE);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Throwable cause = e;
+            while (cause.getCause() != null) {
+                cause = e.getCause();
+            }
+            if (cause instanceof DocumentAlreadyExistsException) {
+                upsert(activityPojo);
+            } else {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

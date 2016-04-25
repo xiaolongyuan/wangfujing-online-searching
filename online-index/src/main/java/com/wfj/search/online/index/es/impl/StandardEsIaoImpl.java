@@ -4,6 +4,7 @@ import com.wfj.search.online.index.es.StandardEsIao;
 import com.wfj.search.online.index.pojo.StandardIndexPojo;
 import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.engine.DocumentAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,15 @@ public class StandardEsIaoImpl implements StandardEsIao {
         try {
             EsUtil.upsert(this.esClient, standardIndexPojo, standardIndexPojo.getStandardId(), index, TYPE);
         } catch (Exception e) {
-            logger.warn("保存规格[{}]到ES失败", standardIndexPojo.getStandardId(), e);
+            Throwable cause = e;
+            while (cause.getCause() != null) {
+                cause = e.getCause();
+            }
+            if (cause instanceof DocumentAlreadyExistsException) {
+                upsert(standardIndexPojo);
+            } else {
+                logger.warn("保存规格[{}]到ES失败", standardIndexPojo.getStandardId(), e);
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ import com.wfj.search.online.index.iao.IndexException;
 import com.wfj.search.online.index.pojo.SkuIndexPojo;
 import com.wfj.search.utils.es.EsUtil;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.engine.DocumentAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,15 @@ public class SkuEsIaoImpl implements SkuEsIao {
         try {
             EsUtil.upsert(this.esClient, skuIndexPojo, skuIndexPojo.getSkuId(), index, TYPE);
         } catch (IllegalStateException e) {
-            throw new IndexException(e);
+            Throwable cause = e;
+            while (cause.getCause() != null) {
+                cause = e.getCause();
+            }
+            if (cause instanceof DocumentAlreadyExistsException) {
+                upsert(skuIndexPojo);
+            } else {
+                throw new IndexException(e);
+            }
         }
     }
 }
