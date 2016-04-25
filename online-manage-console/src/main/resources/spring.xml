@@ -102,11 +102,6 @@
     </bean>
     <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
         <constructor-arg name="redisOperations" ref="redisTemplate"/>
-        <property name="cachePrefix">
-            <bean class="org.springframework.data.redis.cache.DefaultRedisCachePrefix">
-                <constructor-arg name="delimiter" value="~"/>
-            </bean>
-        </property>
         <property name="defaultExpiration" value="180"/>
         <property name="loadRemoteCachesOnStartup" value="true"/>
         <property name="usePrefix" value="true"/>
