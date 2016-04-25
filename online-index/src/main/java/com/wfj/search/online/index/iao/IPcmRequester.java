@@ -93,6 +93,7 @@ public interface IPcmRequester {
     /**
      * 清理SKU信息缓存
      */
+    @SuppressWarnings("unused")
     @CacheEvict(value = PCM_SKU, allEntries = true)
     default void clearAllSkuInfoCache() {
     }
@@ -162,6 +163,7 @@ public interface IPcmRequester {
     /**
      * 清理品牌详细信息缓存
      */
+    @SuppressWarnings("unused")
     @CacheEvict(value = PCM_BRAND, allEntries = true)
     default void clearAllBrandInfoCache() {
     }

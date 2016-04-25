@@ -125,9 +125,6 @@ public class EsServiceImpl implements IEsService {
         ExecutorService threadPool = ExecutorServiceFactory.create("rebuildES", threads,
                 Thread.currentThread(), tracker);
         CompletionService<Void> completionService = new ExecutorCompletionService<>(threadPool);
-        pcmRequester.clearAllBrandInfoCache();
-        pcmRequester.clearAllCategoryInfoCache();
-        pcmRequester.clearAllSkuInfoCache();
         for (int i = 0; i < pageSize; i++) {
             final int start = i * fetchSize;
             completionService.submit(() -> multiFailure.merge(save2ESPages(start, fetchSize, version)), null);
