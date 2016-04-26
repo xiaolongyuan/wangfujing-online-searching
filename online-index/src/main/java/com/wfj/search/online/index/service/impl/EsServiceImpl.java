@@ -105,6 +105,7 @@ public class EsServiceImpl implements IEsService {
         String step = "从PCM获取专柜商品总数";
         try {
             total = this.pcmRequester.countItems();
+            logger.info("item counts: {}", total);
             multiFailure.setTotal(total);
             opTimer.stop(step);
         } catch (RequestException e) {
@@ -145,6 +146,8 @@ public class EsServiceImpl implements IEsService {
     }
 
     private MultiFailure save2ESPages(int start, int fetch, long version) {
+        Timer timer = new Timer();
+        timer.start();
         MultiFailure multiFailure = new MultiFailure();
         Page<ItemPojo> itemPojoPage;
         try {
@@ -177,6 +180,8 @@ public class EsServiceImpl implements IEsService {
                 retryService.addUnresolvedRetryNote(itemPojo.getItemId(), Step.request, Type.item, Action.save);
             }
         }
+        Duration stop = timer.stop();
+        logger.debug("assemble data start {} fetch {} cost {}", start, fetch, stop.toString());
         try {
             this.esBulkIao.bulkIndex(indexPojos, version).ifPresent(multiFailure::addFailure);
             multiFailure.addSuccess(ok);
@@ -190,6 +195,8 @@ public class EsServiceImpl implements IEsService {
             logger.error(msg, e);
             multiFailure.addFail(multiFailure.getFailures().size());
         }
+        stop = timer.stop();
+        logger.debug("bulk index data start {} fetch {} cost {}", start, fetch, stop.toString());
         return multiFailure;
     }
 
