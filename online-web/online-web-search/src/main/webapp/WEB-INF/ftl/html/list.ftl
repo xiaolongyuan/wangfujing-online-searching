@@ -349,7 +349,7 @@ ${navigationContent}
                     </#if>
                     -->
                         <dd class="p-name"><a href="${itemUrlPrefix}${pro.spuId}${itemUrlPostfix}"
-                                              target="_blank"><#if !pro.longDesc?? || pro.longDesc.trim().isEmpty()>${pro.title} ${pro.shortDesc!}<#else>${pro.longDesc} ${pro.title}</#if></a></dd>
+                                              target="_blank"><#if !pro.longDesc?? || pro.longDesc?length == 0>${pro.title} ${pro.shortDesc!}<#else>${pro.longDesc} ${pro.title}</#if></a></dd>
                         <dd class="p-price">￥${pro.currentPrice?string("0.00")}</dd>
                     </dl>
                     <div class="posa showinfo">
