@@ -78,7 +78,7 @@ public class ItemEsIaoImpl implements ItemEsIao {
         try {
             scrollResp = this.esClient.prepareSearch(this.index).setTypes(TYPE)
                     .setSearchType(SearchType.DEFAULT)
-                    .setQuery(QueryBuilders.matchAllQuery()).setSize(100)
+                    .setQuery(QueryBuilders.matchAllQuery()).setSize(1000)
                     .setScroll(new TimeValue(60000)).get();
         } catch (IllegalStateException e) {
             throw new IndexException("创建scroll失败，操作被中断", e);

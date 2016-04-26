@@ -33,6 +33,18 @@ public class BoostStrategyImpl implements BoostStrategy {
 
     @Override
     public SolrInputDocument boost(SolrClient solrClient, ItemIndexPojo item) {
+        if (item.getItemSale() == null) {
+            item.setItemSale(0);
+        }
+        if (item.getSkuSale() == null) {
+            item.setSkuSale(0);
+        }
+        if (item.getSpuSale() == null) {
+            item.setSpuSale(0);
+        }
+        if (item.getSpuClick() == null) {
+            item.setSpuClick(0);
+        }
         String brandId = item.getBrandId();
         for (String channel : item.getChannels()) {
             Map<String, Float> channelManualBoostMap = manualBoostService.listBoosts(channel);
@@ -87,8 +99,16 @@ public class BoostStrategyImpl implements BoostStrategy {
             }
         }
         Integer spuSale = item.getSpuSale();
+        if (spuSale == null) {
+            spuSale = 0;
+            item.setSpuSale(0);
+        }
         double spuSaleBoost = spuSale < 100 ? Math.log(spuSale + 1) / Math.log(100) : 1;
         Integer spuClick = item.getSpuClick();
+        if (spuClick == null) {
+            spuClick = 0;
+            item.setSpuClick(0);
+        }
         double spuClickBoost = spuClick < 1000 ? Math.log(spuClick + 1) / Math.log(1000) : 1;
 //        List<ItemIndexPojo> spuItems = this.itemEsIao.findBySpuId(item.getSpuId());
 //        AtomicInteger inv = new AtomicInteger(0);

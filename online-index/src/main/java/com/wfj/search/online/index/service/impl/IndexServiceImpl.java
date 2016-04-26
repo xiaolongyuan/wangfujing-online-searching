@@ -1,6 +1,7 @@
 package com.wfj.search.online.index.service.impl;
 
 import com.google.common.collect.Lists;
+import com.wfj.platform.util.analysis.Timer;
 import com.wfj.search.online.index.es.ItemEsIao;
 import com.wfj.search.online.index.es.ScrollPage;
 import com.wfj.search.online.index.iao.IItemIAO;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +53,9 @@ public class IndexServiceImpl implements IIndexService {
 
     @Override
     public Optional<Failure> indexAllFromEs(long version) {
+        logger.debug("version {}", version);
+        Timer timer = new Timer();
+        timer.start();
         MultiFailure multiFailure = new MultiFailure();
         ScrollPage<ItemIndexPojo> scrollPage;
         try {
@@ -70,6 +75,9 @@ public class IndexServiceImpl implements IIndexService {
             try {
                 this.itemIAO.saveItems(list);
                 multiFailure.addSuccess(size);
+                Duration stop = timer.stop();
+                logger.debug("es -> solr {}/{}, cost {}", multiFailure.getSuccess(), multiFailure.getTotal(),
+                        stop.toString());
             } catch (Exception e) {
                 multiFailure.addFail(size);
                 String msg = "写入索引失败，itemIds：" + list.stream().map(item -> {
@@ -88,6 +96,9 @@ public class IndexServiceImpl implements IIndexService {
                 return Optional.of(multiFailure);
             }
         }
+        timer.stop();
+        logger.debug("es -> solr , coast {}",
+                Duration.between(timer.getStartTime(), timer.lastStop().getStopTime()).toString());
         try {
             this.itemIAO.removeExpired(version);
         } catch (IndexException e) {
