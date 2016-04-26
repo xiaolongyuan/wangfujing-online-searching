@@ -9,6 +9,7 @@ import com.wfj.search.online.common.pojo.interval.IntervalDetailPojo;
 import com.wfj.search.online.web.common.pojo.*;
 import com.wfj.search.online.web.iao.IItemIAO;
 import com.wfj.search.online.web.iao.SolrSearchException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -159,9 +160,21 @@ public class ItemIAOImpl implements IItemIAO {
     @Override
     public void query(SolrQuery query, SearchResult searchResult) throws SolrSearchException {
         QueryResponse response;
+        //noinspection Duplicates
         try {
+            String sortField = query.getSortField();
+            if (StringUtils.isBlank(sortField)) {
+                query = query.getCopy().setSort("_version_", SolrQuery.ORDER.desc);
+            } else {
+                query = query.getCopy().clearSorts();
+                for (String sortStr : sortField.split(",")) {
+                    String[] sortDesc = sortStr.split("\\s+");
+                    query.addSort(sortDesc[0], SolrQuery.ORDER.valueOf(sortDesc[1].toLowerCase()));
+                }
+                query.addSort("_version_", SolrQuery.ORDER.desc);
+            }
             response = solrClient
-                    .query(COLLECTION_NAME, query.getCopy().addOrUpdateSort("_version_", SolrQuery.ORDER.desc));
+                    .query(COLLECTION_NAME, query);
         } catch (SolrServerException | IOException e) {
             throw new SolrSearchException(e);
         }
@@ -333,9 +346,21 @@ public class ItemIAOImpl implements IItemIAO {
     @Override
     public QueryResponse query(SolrQuery query) throws SolrSearchException {
         QueryResponse response;
+        //noinspection Duplicates
         try {
+            String sortField = query.getSortField();
+            if (StringUtils.isBlank(sortField)) {
+                query = query.getCopy().setSort("_version_", SolrQuery.ORDER.desc);
+            } else {
+                query = query.getCopy().clearSorts();
+                for (String sortStr : sortField.split(",")) {
+                    String[] sortDesc = sortStr.split("\\s+");
+                    query.addSort(sortDesc[0], SolrQuery.ORDER.valueOf(sortDesc[1].toLowerCase()));
+                }
+                query.addSort("_version_", SolrQuery.ORDER.desc);
+            }
             response = solrClient
-                    .query(COLLECTION_NAME, query.getCopy().addOrUpdateSort("_version_", SolrQuery.ORDER.desc));
+                    .query(COLLECTION_NAME, query);
         } catch (SolrServerException | IOException e) {
             throw new SolrSearchException(e);
         }
