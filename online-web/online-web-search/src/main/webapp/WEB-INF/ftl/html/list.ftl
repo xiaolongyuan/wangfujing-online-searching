@@ -1,3 +1,4 @@
+<#-- @ftlvariable name="random" type="java.util.Random" -->
 <#-- @ftlvariable name="searchLocation" type="java.lang.String" -->
 <#-- @ftlvariable name="memberHomeUrl" type="java.lang.String" -->
 <#-- @ftlvariable name="registerPageUrl" type="java.lang.String" -->
@@ -338,9 +339,8 @@ ${navigationContent}
                                 <#assign pic = pro.colorMasterPictureOfPix['220x220']/>
                             </#if>
                             <a href="${itemUrlPrefix}${pro.spuId}${itemUrlPostfix}" target="_blank">
-                                <img id="spu-big-pic-${pro.spuId}"
-                                     data-src="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/${pic}"
-                                     src="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/${pic}">
+                                <#assign imgLocation=imageLocationTemplate?replace('{host}', imageHosts[random.nextInt(imageHosts?size)])>
+                                <img id="spu-big-pic-${pro.spuId}" class="lazy-pic" data-src="${imgLocation}/${pic}" data-original="${imgLocation}/${pic}" src="${imgLocation}/${pic}">
                             </a>
                         </dt>
                     <#--

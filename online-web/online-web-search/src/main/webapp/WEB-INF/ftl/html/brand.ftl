@@ -1,3 +1,4 @@
+<#-- @ftlvariable name="random" type="java.util.Random" -->
 <#-- @ftlvariable name="brandLocation" type="java.lang.String" -->
 <#-- @ftlvariable name="searchLocation" type="java.lang.String" -->
 <#-- @ftlvariable name="memberHomeUrl" type="java.lang.String" -->
@@ -283,13 +284,14 @@ ${navigationContent}
                                             <#if pro.colorMasterPictureOfPix['220x220']??>
                                                 <#assign pic = pro.colorMasterPictureOfPix['220x220']/>
                                             </#if>
+                                            <#assign imgLocation=imageLocationTemplate?replace('{host}', imageHosts[random.nextInt(imageHosts?size)])>
                                             <img id="spu-big-pic-${pro.spuId}"
                                             <#--id="img_${pro.spuId}-->
                                                  style="display: inline;"
-                                                 data-lazyload="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/${pic}"
+                                                 data-lazyload="${imgLocation}/${pic}"
                                                  class="lazy-pic"
-                                                 data-src="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/${pic}"
-                                                 src="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/${pic}"
+                                                 data-src="${imgLocation}/${pic}" data-original="${imgLocation}/${pic}"
+                                                 src="${imgLocation}/${pic}"
                                                  alt="${pro.title}">
                                         </a>
                                     </div>

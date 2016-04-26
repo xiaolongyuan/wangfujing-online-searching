@@ -1,3 +1,4 @@
+<#-- @ftlvariable name="random" type="java.util.Random" -->
 <#-- @ftlvariable name="searchLocation" type="java.lang.String" -->
 <#-- @ftlvariable name="memberHomeUrl" type="java.lang.String" -->
 <#-- @ftlvariable name="registerPageUrl" type="java.lang.String" -->
@@ -341,10 +342,9 @@ ${navigationContent}
                             <#if pro.colorMasterPictureOfPix['220x220']??>
                                 <#assign pic = pro.colorMasterPictureOfPix['220x220']/>
                             </#if>
+                            <#assign imgLocation=imageLocationTemplate?replace('{host}', imageHosts[random.nextInt(imageHosts?size)])>
                             <a href="${itemUrlPrefix}${pro.spuId}${itemUrlPostfix}" target="_blank">
-                                <img id="spu-big-pic-${pro.spuId}"
-                                     data-src="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/${pic}"
-                                     src="<@randomLocation hosts=imageHosts template=imageLocationTemplate/>/${pic}">
+                                <img id="spu-big-pic-${pro.spuId}" class="lazy-pic" data-src="${imgLocation}/${pic}" data-original="${imgLocation}/${pic}" src="${imgLocation}/${pic}">
                             </a>
                         </dt>
                     <#--
@@ -507,5 +507,7 @@ ${footerContent}
 <#--noinspection HtmlUnknownTarget-->
 <script src="<@randomLocation hosts=jsHosts template=jsLocationTemplate/>/service/history_list.js"></script>
 <script src="<@randomLocation hosts=jsHosts template=jsLocationTemplate/>/service/search_list_pic_switch.js"></script>
+<#--noinspection HtmlUnknownTarget-->
+<script src="<@randomLocation hosts=jsHosts template=jsLocationTemplate/>/plugin/jquery.lazyload.min.js"></script>
 </body>
 </html>
