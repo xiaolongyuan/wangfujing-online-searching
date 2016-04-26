@@ -1,6 +1,5 @@
 package com.wfj.search.online.index.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -79,8 +78,6 @@ public class EsServiceImpl implements IEsService {
     @Autowired
     private TagEsIao tagEsIao;
     @Autowired
-    private ClicksEsIao clicksEsIao;
-    @Autowired
     private ICacheEvictService cacheEvictService;
     @Autowired
     private SearchQueryRecordEsIao searchQueryRecordEsIao;
@@ -96,6 +93,8 @@ public class EsServiceImpl implements IEsService {
     private ActiveActivityHolder activeActivityHolder;
     @Autowired
     private IActivityService activityService;
+    @Autowired
+    private EsBulkIao esBulkIao;
 
     @Override
     public Optional<Failure> buildAll2Es(long version) {
@@ -179,7 +178,7 @@ public class EsServiceImpl implements IEsService {
             }
         }
         try {
-            this.saveIndexPojos(indexPojos, version);
+            this.esBulkIao.bulkIndex(indexPojos, version).ifPresent(multiFailure::addFailure);
             multiFailure.addSuccess(ok);
         } catch (Exception e) {
             String msg = "保存分页商品数据到es失败, " + indexPojos.itemIndexPojos.values().stream().map(item -> {
@@ -353,7 +352,7 @@ public class EsServiceImpl implements IEsService {
                             });
                 }
                 try {
-                    this.saveIndexPojos(indexPojos, version);
+                    this.esBulkIao.bulkIndex(indexPojos, version).ifPresent(multiFailure::addFailure);
                 } catch (Exception e) {
                     String msg = "保存分页商品数据到ES失败";
                     logger.error(msg, e);
@@ -437,7 +436,7 @@ public class EsServiceImpl implements IEsService {
             return Optional.of(new Failure(DataType.item, FailureType.buildData, itemId, fo.get().toString(), null));
         } else {
             try {
-                this.saveIndexPojos(indexPojos, version);
+                return this.esBulkIao.bulkIndex(indexPojos, version);
             } catch (Exception e) {
                 String msg = "商品数据[itemId:" + itemId + "]写入ES失败";
                 logger.error(msg, e);
@@ -445,7 +444,6 @@ public class EsServiceImpl implements IEsService {
                 return Optional.of(new Failure(DataType.item, FailureType.save2ES, itemId, msg, e));
             }
         }
-        return Optional.empty();
     }
 
     @Override
@@ -995,74 +993,6 @@ public class EsServiceImpl implements IEsService {
             return Optional.of(new Failure(DataType.item, FailureType.updateES, itemId, msg, e));
         }
         return Optional.empty();
-    }
-
-    private void saveIndexPojos(IndexPojos indexPojos, long version) throws IndexException, JsonProcessingException {
-        Collection<BrandIndexPojo> brands = indexPojos.brandIndexPojos.values();
-        for (BrandIndexPojo brand : brands) {
-            this.brandEsIao.upsert(brand);
-        }
-        brands.forEach(brand -> this.cacheEvictService.removeBrandCache(brand.getBrandId()));
-        Collection<CategoryIndexPojo> categories = indexPojos.categoryIndexPojos.values();
-        for (CategoryIndexPojo category : categories) {
-            this.categoryEsIao.upsert(category);
-        }
-        categories.forEach(category -> this.cacheEvictService.removeCategoryCache(category.getCategoryId()));
-        Collection<ColorIndexPojo> colors = indexPojos.colorIndexPojos.values();
-        colors.forEach(this.colorEsIao::upsert);
-        colors.forEach(color -> this.cacheEvictService.removeColorCache(color.getColorId()));
-        this.saleCount(indexPojos.itemIndexPojos.values());
-        this.clickCount(indexPojos.itemIndexPojos.values());
-        indexPojos.itemIndexPojos.values().forEach(item -> item.setOperationSid(version));
-        for (ItemIndexPojo itemIndexPojo : indexPojos.itemIndexPojos.values()) {
-            this.itemEsIao.upsert(itemIndexPojo);
-        }
-        indexPojos.activityPojos.values().forEach(this.activityEsIao::upsert);
-        Collection<SkuIndexPojo> skus = indexPojos.skuIndexPojos.values();
-        for (SkuIndexPojo sku : skus) {
-            this.skuEsIao.upsert(sku);
-        }
-        skus.forEach(sku -> this.cacheEvictService.removeSkuCache(sku.getSkuId()));
-        Collection<SpuIndexPojo> spus = indexPojos.spuIndexPojos.values();
-        for (SpuIndexPojo spu : spus) {
-            this.spuEsIao.upsert(spu);
-        }
-        spus.forEach(spu -> this.cacheEvictService.removeSpuCache(spu.getSpuId()));
-        Collection<PropertyIndexPojo> props = indexPojos.propertyIndexPojos.values();
-        for (PropertyIndexPojo prop : props) {
-            this.propertyEsIao.upsert(prop);
-        }
-        props.forEach(prop -> this.cacheEvictService.removePropertyCache(prop.getPropertyId()));
-        Collection<PropertyValueIndexPojo> pvs = indexPojos.propertyValueIndexPojos.values();
-        for (PropertyValueIndexPojo pv : pvs) {
-            this.propertyValueEsIao.upsert(pv);
-        }
-        pvs.forEach(pv -> this.cacheEvictService.removePropertyValueCache(pv.getPropertyValueId()));
-        Collection<StandardIndexPojo> standards = indexPojos.standardIndexPojos.values();
-        standards.forEach(this.standardEsIao::upsert);
-        standards.forEach(standard -> this.cacheEvictService.removeStandardCache(standard.getStandardId()));
-        Collection<TagIndexPojo> tags = indexPojos.tagIndexPojos.values();
-        tags.forEach(this.tagEsIao::upsert);
-        tags.forEach(tag -> this.cacheEvictService.removeTagCache(tag.getTagId()));
-    }
-
-    private void saleCount(Collection<ItemIndexPojo> itemIndexPojos) {
-        itemIndexPojos.forEach(item -> {
-            ItemSalesPojo itemSalesPojo = this.itemSalesEsIao.get(item.getItemId());
-            item.setItemSale(itemSalesPojo == null ? 0 : itemSalesPojo.getSales());
-            SkuSalesPojo skuSalesPojo = this.skuSalesEsIao.get(item.getSkuId());
-            item.setSkuSale(skuSalesPojo == null ? 0 : skuSalesPojo.getSales());
-            SpuSalesPojo spuSalesPojo = this.spuSalesEsIao.get(item.getSpuId());
-            item.setSpuSale(spuSalesPojo == null ? 0 : spuSalesPojo.getSales());
-        });
-    }
-
-    private void clickCount(Collection<ItemIndexPojo> itemIndexPojos) {
-        itemIndexPojos.forEach(item -> {
-            ClickCountPojo count;
-            count = this.clicksEsIao.get(item.getSpuId());
-            item.setSpuClick(count == null ? 0 : count.getSpuClick());
-        });
     }
 
     private Optional<Failure> updateItemsOfCategory(String categoryId, int start, int fetch, long version) {

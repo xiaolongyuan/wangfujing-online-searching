@@ -22,41 +22,6 @@ public interface ICacheEvictService {
     default void removeCategoryCache( String categoryId) {
     }
 
-    @CacheEvict(value = VALUE_KEY_COLOR)
-    @SuppressWarnings("UnusedParameters")
-    default void removeColorCache( String colorId) {
-    }
-
-    @CacheEvict(value = VALUE_KEY_SKU)
-    @SuppressWarnings("UnusedParameters")
-    default void removeSkuCache( String skuId) {
-    }
-
-    @CacheEvict(value = VALUE_KEY_SPU)
-    @SuppressWarnings("UnusedParameters")
-    default void removeSpuCache( String spuId) {
-    }
-
-    @CacheEvict(value = VALUE_KEY_PROPERTY)
-    @SuppressWarnings("UnusedParameters")
-    default void removePropertyCache( String propertyId) {
-    }
-
-    @CacheEvict(value = VALUE_KEY_PROPERTY_VALUE)
-    @SuppressWarnings("UnusedParameters")
-    default void removePropertyValueCache( String propertyValueId) {
-    }
-
-    @CacheEvict(value = VALUE_KEY_STANDARD)
-    @SuppressWarnings("UnusedParameters")
-    default void removeStandardCache( String standardId) {
-    }
-
-    @CacheEvict(value = VALUE_KEY_TAG)
-    @SuppressWarnings("UnusedParameters")
-    default void removeTagCache(String tagId) {
-    }
-
     @CacheEvict(value = VALUE_KEY_COMMENT)
     @SuppressWarnings("UnusedParameters")
     default void removeCommentCache(String commentId) {

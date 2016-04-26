@@ -50,14 +50,6 @@ public final class CacheableAware {
      */
     public static final String VALUE_KEY_COLOR = "WFJ_ONLINE_COLOR";
     /**
-     * SKU缓存
-     */
-    public static final String VALUE_KEY_SKU = "WFJ_ONLINE_SKU";
-    /**
-     * SPU缓存
-     */
-    public static final String VALUE_KEY_SPU = "WFJ_ONLINE_SPU";
-    /**
      * 属性缓存
      */
     public static final String VALUE_KEY_PROPERTY = "WFJ_ONLINE_PROPERTY";
