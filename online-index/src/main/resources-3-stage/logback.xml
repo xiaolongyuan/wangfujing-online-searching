@@ -41,6 +41,11 @@
         <appender-ref ref="stdout"/>
     </logger>
 
+    <logger name="com.wfj.search.online.index.service" additivity="false">
+        <level value="DEBUG"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
     <root level="INFO">
         <appender-ref ref="stdout"/>
     </root>
