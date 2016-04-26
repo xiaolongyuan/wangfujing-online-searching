@@ -11,9 +11,9 @@ $(function () {
 
 
     /*判断每行最后一个换位置*/
-    $(".itemList li").each(function(k,v){
-        var w=$(".itemList").width();
-        /*if(k%5==4 && w ==1200){
+    $(".itemList>li").each(function(k,v){
+         var w=$(".itemList").width();
+        if(k%5==4 && w ==1200){
          $(this).find(".showinfo").addClass("s-info-right");
          }else if(k%4==3 && w == 1000){
          $(this).find(".showinfo").addClass("s-info-right");
@@ -21,19 +21,24 @@ $(function () {
          $(this).find(".showinfo").addClass("s-info-right");
          }else if(k%2==1 && w == 640){
          $(this).find(".showinfo").addClass("s-info-right");
-         }*/
-        if(k%5==4 && w ==1200){
+         }
+        // if(k%5==4 && w ==1200){
+        //     $(this).find(".showinfo").addClass("s-info-right");
+        // }
+        // if(k%4==3 && w == 1000){
+        //     $(this).find(".showinfo").addClass("s-info-right");
+        // }
+        // if(k%3==2 && w == 768){
+        //     $(this).find(".showinfo").addClass("s-info-right");
+        // }
+        // if(k%2==1 && w == 640){
+        //     $(this).find(".showinfo").addClass("s-info-right");
+        // }
+        /*console.log(k);
+        if((k%5) == 4){
+            console.log(k);
             $(this).find(".showinfo").addClass("s-info-right");
-        }
-        if(k%4==3 && w == 1000){
-            $(this).find(".showinfo").addClass("s-info-right");
-        }
-        if(k%3==2 && w == 768){
-            $(this).find(".showinfo").addClass("s-info-right");
-        }
-        if(k%2==1 && w == 640){
-            $(this).find(".showinfo").addClass("s-info-right");
-        }
+        }*/
     });
 
 
