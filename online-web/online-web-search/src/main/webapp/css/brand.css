@@ -10,7 +10,7 @@
 .brand-sub .item:nth-child(even) .b-name{background-color: #eee;}
 .brand-sub .item .b-names{display: none;border-bottom: 1px solid #fff;}
 .brand-sub .item .b-names li{width: 50%;float: left;height: 22px;line-height: 22px;}
-.brand-sub .item .b-names li>a{margin-left: 20px;}
+.brand-sub .item .b-names li>a{margin-left: 20px;height: 20px;overflow: hidden;display: block;}
 .brand-sub .on .b-name,.brand-sub .on:nth-child(even) .b-name{background-color: #fde3e5;}
 .brand-sub .on .b-names{display: block;background-color: #fff5f5;border-bottom: 1px solid #c22605;}
 
