@@ -1,9 +1,9 @@
 package com.wfj.search.online.index.cron;
 
-import com.wfj.platform.util.zookeeper.coordinating.CoordinatingTask;
 import com.wfj.search.online.index.coordinating.ActivitiesUpdateTaskDescription;
 import com.wfj.search.online.index.operation.IOperation;
 import com.wfj.search.util.record.pojo.Operation;
+import com.wfj.search.utils.zookeeper.coordinating.CoordinatingTask;
 import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

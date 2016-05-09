@@ -22,6 +22,38 @@
             <artifactId>es-client-factory</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>curator-client-factory</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>curator-spring-mvc-simple-discovery</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>curator-distributed-coordinating-task</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>batch-runnable</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>simple-system-info</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>string-cache-key-generator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>timer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>ok-http-util</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.wfj.search</groupId>
             <artifactId>online-common</artifactId>
             <version>${project.version}</version>
@@ -49,14 +81,6 @@
                     <artifactId>httpcore</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.wfj.platform</groupId>
-            <artifactId>platform-base-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.wfj.platform</groupId>
-            <artifactId>zk-util</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.solr</groupId>
@@ -124,9 +148,8 @@
             <artifactId>jackson-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <classifier>jdk15</classifier>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
         </dependency>
         <dependency>
             <groupId>org.freemarker</groupId>

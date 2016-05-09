@@ -1,13 +1,14 @@
 package com.wfj.search.online.web.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wfj.member.sdk.client.MemberClient;
 import com.wfj.member.sdk.common.Config;
 import com.wfj.member.sdk.common.MsgReturnDto;
-import com.wfj.platform.util.httpclient.HttpRequester;
-import net.sf.json.JSONObject;
+import com.wfj.search.utils.http.OkHttpOperator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -35,6 +36,8 @@ public class CartController implements ServletContextAware {
     private ServletContext servletContext;
     @Value("${cart.getCartNumUrl}")
     private String getCartNumUrl;
+    @Autowired
+    private OkHttpOperator okHttpOperator;
 
     @PostConstruct
     public void initConfig() throws Exception {
@@ -65,7 +68,7 @@ public class CartController implements ServletContextAware {
                     boolean login = "1".equals(msgReturnDto.getCode());
                     if (login) {
                         Object object = msgReturnDto.getObject();
-                        JSONObject loginJson = JSONObject.fromObject(object);
+                        net.sf.json.JSONObject loginJson = net.sf.json.JSONObject.fromObject(object);
                         cartUid = loginJson.getString("sid");
                         loginUid = cartUid;
                     }
@@ -80,9 +83,10 @@ public class CartController implements ServletContextAware {
                 JSONObject param = new JSONObject();
                 param.put("uid", StringUtils.isBlank(loginUid) ? "" : loginUid);
                 param.put("cart_id", StringUtils.isBlank(cartId) ? "" : cartId);
+                String url = this.getCartNumUrl + cartUid;
+                String jsonText = param.toJSONString();
                 try {
-                    cartNumResp = HttpRequester.getSimpleHttpRequester()
-                            .httpPostString(this.getCartNumUrl + cartUid, param);
+                    cartNumResp = this.okHttpOperator.postJsonTextForTextResp(url, jsonText);
                 } catch (Exception e) {
                     logger.error("请求购物车失败", e);
                     cartNumResp = null;

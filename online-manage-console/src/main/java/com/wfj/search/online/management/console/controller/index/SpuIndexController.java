@@ -1,10 +1,10 @@
 package com.wfj.search.online.management.console.controller.index;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.management.console.service.index.ISpuIndexService;
 import com.wfj.search.util.web.record.WebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class SpuIndexController {
     @RequestMapping("/refresh-items-by-spu")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-index-spu-refresh-items")
+    @ServiceRegister(name = "online-mc-index-spu-refresh-items")
     public JSONObject refreshItems(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("RequestBody is {}", message);
@@ -63,7 +63,7 @@ public class SpuIndexController {
     @RequestMapping("/remove-items-by-spu")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-index-spu-remove-items")
+    @ServiceRegister(name = "online-mc-index-spu-remove-items")
     public JSONObject removeItems(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("RequestBody is {}", message);

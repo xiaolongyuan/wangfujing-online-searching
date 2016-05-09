@@ -1,7 +1,6 @@
 package com.wfj.search.online.index.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.json.JsonGetPartException;
 import com.wfj.search.online.common.pojo.BrandPojo;
 import com.wfj.search.online.common.pojo.ItemPojo;
 import com.wfj.search.online.common.pojo.SkuPojo;
@@ -120,7 +119,7 @@ public class PojoUtilsTest {
     }
 
     @Test
-    public void json2Brand() throws JsonGetPartException {
+    public void json2Brand() {
         JSONObject json = JSONObject.parseObject("{\n" +
                 "    \"brandId\":\"1\",\n" +
                 "    \"brandName\":\"brand1\",\n" +

@@ -2,12 +2,12 @@ package com.wfj.search.online.management.console.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.common.pojo.CategoryPojo;
 import com.wfj.search.online.management.console.service.cms.ICmsRequester;
 import com.wfj.search.online.management.console.service.pcm.IPcmRequester;
 import com.wfj.search.util.web.record.WebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ public class BasicDataController {
     @RequestMapping("/brands")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-basic-data-brands")
+    @ServiceRegister(name = "online-mc-basic-data-brands")
     public JSONObject brandList(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         if (logger.isDebugEnabled()) {
@@ -60,7 +60,7 @@ public class BasicDataController {
     @RequestMapping("/categories")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-basic-data-categories")
+    @ServiceRegister(name = "online-mc-basic-data-categories")
     public JSONObject categoryList(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("request body is {}, request parameter is {}", message, messageGet);
@@ -93,7 +93,7 @@ public class BasicDataController {
     @RequestMapping("/channels")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-basic-data-channels")
+    @ServiceRegister(name = "online-mc-basic-data-channels")
     public JSONObject channels(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         if (logger.isDebugEnabled()) {
@@ -117,7 +117,7 @@ public class BasicDataController {
     @RequestMapping("/getSiteList")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-basic-data-cms-sites")
+    @ServiceRegister(name = "online-mc-basic-data-cms-sites")
     public JSONObject getSiteList(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         if (logger.isDebugEnabled()) {
@@ -141,7 +141,7 @@ public class BasicDataController {
     @RequestMapping("/getChannelListBySid")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-basic-data-cms-channels")
+    @ServiceRegister(name = "online-mc-basic-data-cms-channels")
     public JSONObject getChannelListBySid(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         if (logger.isDebugEnabled()) {

@@ -3,8 +3,6 @@ package com.wfj.search.online.index.service.impl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.wfj.platform.util.analysis.Timer;
-import com.wfj.platform.util.concurrent.BatchRunnables;
 import com.wfj.search.online.common.pojo.*;
 import com.wfj.search.online.index.es.*;
 import com.wfj.search.online.index.iao.IPcmRequester;
@@ -19,7 +17,11 @@ import com.wfj.search.online.index.service.*;
 import com.wfj.search.online.index.util.ActiveActivityHolder;
 import com.wfj.search.online.index.util.ExecutorServiceFactory;
 import com.wfj.search.online.index.util.PojoUtils;
+import com.wfj.search.utils.concurrent.BatchRunnables;
+import com.wfj.search.utils.timer.Timer;
+import com.wfj.search.utils.timer.TimerStop;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
@@ -134,8 +135,10 @@ public class EsServiceImpl implements IEsService {
                 completionService.take();
             }
             opTimer.stop();
+            TimerStop lastStop = opTimer.lastStop();
+            assert lastStop != null;
             logger.info("全量构建ES数据完成。" + multiFailure.toString() + " 耗时" +
-                    Duration.between(opTimer.getStartTime(), opTimer.lastStop().getStopTime()).toString());
+                    new Duration(opTimer.getStartTime().toDateTime(), lastStop.getStopTime().toDateTime()).toString());
         } catch (InterruptedException e) {
             Throwable throwable = tracker.get();
             String msg = step + "失败";
@@ -370,6 +373,7 @@ public class EsServiceImpl implements IEsService {
                     });
                 }
             });
+            //noinspection Duplicates
             try {
                 scrollPage = this.itemEsIao.scroll(scrollPage.getScrollId(), scrollPage.getScrollIdTTL());
             } catch (IndexException e) {

@@ -1,7 +1,7 @@
 package com.wfj.search.online.management.console.controller.caller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.discovery.SpringMvcServiceProvider;
+import com.wfj.search.utils.zookeeper.discovery.SpringWebMvcServiceProvider;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class FullyRebuildControllerCaller extends CallerBase {
     @Value("${caller.privateKeyFile}")
     private String privateKeyFile;
     @Autowired
-    private SpringMvcServiceProvider serviceProvider;
+    private SpringWebMvcServiceProvider serviceProvider;
 
     @Override
     public Logger getLogger() {
@@ -44,7 +44,7 @@ public class FullyRebuildControllerCaller extends CallerBase {
     }
 
     @Override
-    public SpringMvcServiceProvider getServiceProvider() {
+    public SpringWebMvcServiceProvider getServiceProvider() {
         return serviceProvider;
     }
 

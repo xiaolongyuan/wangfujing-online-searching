@@ -1,7 +1,6 @@
 package com.wfj.search.online.index.controller.ops;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.index.iao.IndexException;
 import com.wfj.search.online.index.pojo.failure.DataType;
 import com.wfj.search.online.index.pojo.failure.Failure;
@@ -13,6 +12,7 @@ import com.wfj.search.util.record.pojo.Operation;
 import com.wfj.search.util.record.util.OperationHolderKt;
 import com.wfj.search.util.web.record.WebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class CategoryOpsController {
     private IIndexService indexService;
 
     @RequestMapping("/indexItems")
-    @ServiceRegister(value = "online-ops-indexCategory")
+    @ServiceRegister(name = "online-ops-indexCategory")
     @WebOperation
     @JsonSignVerify
     public JSONObject indexItems(@RequestBody(required = false) String message,
@@ -60,6 +60,7 @@ public class CategoryOpsController {
         result.put("asynchronous", false);
         String categoryId;
         String channel;
+        //noinspection Duplicates
         try {
             JSONObject messageBody = MessageBodyChooser.getJsonObject(message, messageGet);
             categoryId = Validate.notBlank(messageBody.getString("categoryId"), "分类编码为空").trim();
@@ -86,6 +87,7 @@ public class CategoryOpsController {
             if (failureOptional.isPresent()) {// 向ES保存分类数据失败
                 Optional<Failure> esFailureOptional = this.esService
                         .updateItemOfCategory(categoryId, channel, Long.parseLong(operation.getSid()));
+                //noinspection Duplicates
                 esFailureOptional.ifPresent(failure -> {
                     failureMsg.append(failure.toString()).append("\n");
                     result.put("success", false);
@@ -95,6 +97,7 @@ public class CategoryOpsController {
                 if (!esFailureOptional.isPresent()) {// 修改分类下的商品数据成功
                     Optional<Failure> indexFailureOptional = this.indexService.indexItemsOfCategoryFromEs(
                             categoryId, channel, Long.parseLong(operation.getSid()));
+                    //noinspection Duplicates
                     indexFailureOptional.ifPresent(failure -> {
                         failureMsg.append(failure.toString()).append("\n");
                         result.put("success", false);

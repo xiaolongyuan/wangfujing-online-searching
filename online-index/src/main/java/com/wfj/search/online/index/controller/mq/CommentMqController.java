@@ -3,7 +3,6 @@ package com.wfj.search.online.index.controller.mq;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.common.pojo.CommentPojo;
 import com.wfj.search.online.index.iao.IndexException;
 import com.wfj.search.online.index.service.ICommentEsService;
@@ -13,6 +12,7 @@ import com.wfj.search.util.record.pojo.Operation;
 import com.wfj.search.util.record.util.OperationHolderKt;
 import com.wfj.search.util.web.record.MqWebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ public class CommentMqController {
     private ICommentIndexService indexService;
 
     @RequestMapping(value = "/indexComments", method = RequestMethod.POST)
-    @ServiceRegister(value = "online-mq-indexComments")
+    @ServiceRegister(name = "online-mq-indexComments")
     @MqWebOperation
     @JsonSignVerify
     public JSONObject indexComments(@RequestBody String message) {
@@ -110,7 +110,7 @@ public class CommentMqController {
      * 评论暂时没有删除业务
      */
     @RequestMapping(value = "/removeComments", method = RequestMethod.POST)
-    @ServiceRegister(value = "online-mq-removeComments")
+    @ServiceRegister(name = "online-mq-removeComments")
     @MqWebOperation
     @JsonSignVerify
     public JSONObject removeComments(@RequestBody String message) {

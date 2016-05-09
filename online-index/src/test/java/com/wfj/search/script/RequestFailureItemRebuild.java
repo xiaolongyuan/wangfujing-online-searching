@@ -1,9 +1,8 @@
 package com.wfj.search.script;
 
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Lists;
-import com.wfj.platform.util.zookeeper.discovery.SpringMvcServiceProvider;
 import com.wfj.search.online.index.controller.caller.CallerBase;
+import com.wfj.search.utils.zookeeper.discovery.SpringWebMvcServiceProvider;
 import okhttp3.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,15 +16,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * DDD unfinished type: com.wfj.search.script.ItemIdFinder
  * <p>create at 16-4-24</p>
  *
  * @author liufl
- * @since DDD version
+ * @since 1.0.34
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:spring-script.xml"})
@@ -40,7 +37,7 @@ public class RequestFailureItemRebuild extends CallerBase {
     @Value("${caller.privateKeyFile}")
     private String privateKeyFile;
     @Autowired
-    private SpringMvcServiceProvider serviceProvider;
+    private SpringWebMvcServiceProvider serviceProvider;
 
     @Override
     public Logger getLogger() {
@@ -58,7 +55,7 @@ public class RequestFailureItemRebuild extends CallerBase {
     }
 
     @Override
-    public SpringMvcServiceProvider getServiceProvider() {
+    public SpringWebMvcServiceProvider getServiceProvider() {
         return serviceProvider;
     }
 

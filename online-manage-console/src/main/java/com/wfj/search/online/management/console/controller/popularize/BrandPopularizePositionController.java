@@ -1,11 +1,11 @@
 package com.wfj.search.online.management.console.controller.popularize;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.common.pojo.popularize.BrandPopularizePositionPojo;
 import com.wfj.search.online.management.console.service.popularize.IBrandPopularizePositionService;
 import com.wfj.search.util.web.record.WebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class BrandPopularizePositionController {
     @RequestMapping("read")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-top-spot-brand-read")
+    @ServiceRegister(name = "online-mc-top-spot-brand-read")
     public JSONObject branPopularizePositionList(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
@@ -70,6 +70,7 @@ public class BrandPopularizePositionController {
             // 未传入或传入的字段不对，直接忽略。
         }
         JSONObject json = new JSONObject();
+        //noinspection Duplicates
         if (start < 0 || limit < 0) {
             json.put("success", false);
             json.put("message", "未输入正确的数据，请检查后重新请求！");
@@ -96,7 +97,7 @@ public class BrandPopularizePositionController {
     @RequestMapping("create")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-top-spot-brand-create")
+    @ServiceRegister(name = "online-mc-top-spot-brand-create")
     public JSONObject addBrandPosition(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         JSONObject json = new JSONObject();
@@ -121,6 +122,7 @@ public class BrandPopularizePositionController {
             }
             BrandPopularizePositionPojo position = new BrandPopularizePositionPojo(brandId, spuId, orders, modifier);
             int count = brandPopularizePositionService.addBrandPosition(position, modifier);
+            //noinspection Duplicates
             if (count == 1) {
                 json.put("success", true);
             } else if (count == -1) {
@@ -149,7 +151,7 @@ public class BrandPopularizePositionController {
     @RequestMapping("destroy")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-top-spot-brand-destroy")
+    @ServiceRegister(name = "online-mc-top-spot-brand-destroy")
     public JSONObject deleteBrandPosition(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         JSONObject json = new JSONObject();
@@ -175,6 +177,7 @@ public class BrandPopularizePositionController {
             }
             BrandPopularizePositionPojo position = new BrandPopularizePositionPojo(sid, brandId, spuId, orders);
             int count = brandPopularizePositionService.deleteBrandPosition(position, modifier);
+            //noinspection Duplicates
             if (count == 1) {
                 json.put("success", true);
             } else if (count == -1) {

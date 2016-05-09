@@ -1,15 +1,12 @@
 package com.wfj.search.online.web.service.impl;
 
-import com.wfj.platform.util.httpclient.HttpRequestException;
-import com.wfj.platform.util.httpclient.HttpRequester;
 import com.wfj.search.online.web.service.IHtmlCommonPartService;
+import com.wfj.search.utils.http.OkHttpOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 import static com.wfj.search.online.common.constant.CacheableAware.VALUE_KEY_SEARCH_WEB_HTML_COMMON_PART;
 
@@ -22,14 +19,15 @@ import static com.wfj.search.online.common.constant.CacheableAware.VALUE_KEY_SEA
 @Service
 public class HtmlCommonPartService implements IHtmlCommonPartService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    @Autowired
+    private OkHttpOperator okHttpOperator;
 
     @Override
     @Cacheable(VALUE_KEY_SEARCH_WEB_HTML_COMMON_PART)
     public String htmlContent(String url) {
         try {
-            String content = HttpRequester.getSimpleHttpRequester().httpGetString(url);
-            return content == null ? "" : content;
-        } catch (IOException | HttpRequestException | URISyntaxException e) {
+            return this.okHttpOperator.getForTextResp(url);
+        } catch (Exception e) {
             logger.error("获取公共Html块失败,{}", url, e);
             return "";
         }

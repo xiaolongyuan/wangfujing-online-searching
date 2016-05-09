@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop"
@@ -21,6 +20,7 @@
         <property name="locations">
             <list>
                 <value>classpath:pcm.properties</value>
+                <value>classpath:redis.properties</value>
             </list>
         </property>
         <property name="fileEncoding" value="UTF-8"/>
@@ -31,28 +31,56 @@
 
     <tx:annotation-driven/>
 
-    <bean id="clusterClient" class="com.wfj.platform.cache.lettuce.util.RedisClusterClientFactory" destroy-method="shutdown">
-        <constructor-arg name="redisURIs">
-            <list>
-                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="7000"/>
-                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="7001"/>
-                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="7002"/>
-                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="7003"/>
-                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="7004"/>
-                <bean class="com.lambdaworks.redis.RedisURI" p:host="10.6.2.55" p:port="7006"/>
-            </list>
+    <bean id="clusterConfig" class="org.springframework.data.redis.connection.RedisClusterConfiguration">
+        <constructor-arg name="propertySource">
+            <bean class="org.springframework.core.env.MapPropertySource">
+                <constructor-arg name="name" value="redis.properties"/>
+                <constructor-arg name="source">
+                    <map>
+                        <entry key="spring.redis.cluster.nodes" value="${spring.redis.cluster.nodes}"/>
+                        <entry key="spring.redis.cluster.max-redirects" value="${spring.redis.cluster.max-redirects}"/>
+                    </map>
+                </constructor-arg>
+            </bean>
         </constructor-arg>
     </bean>
-
-    <bean id="clusterConnection" factory-bean="clusterClient" factory-method="connectCluster" destroy-method="close"/>
-
-    <bean id="cacheManager" class="com.wfj.platform.cache.lettuce.cluster.LettuceClusterCache2Manager">
-        <constructor-arg ref="clusterConnection"/>
-        <property name="prefix" value="com.wfj.search"/>
+    <bean id="connectionFactory" class="org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory">
+        <constructor-arg name="clusterConfig" ref="clusterConfig"/>
+        <property name="password" value="${spring.redis.cluster.password}"/>
     </bean>
-
-    <bean id="stringRedisKeyGenerator" class="com.wfj.platform.util.cache.SimpleParamStringKeyGenerator"/>
-
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+        <constructor-arg name="connectionFactory" ref="connectionFactory"/>
+        <property name="valueSerializer">
+            <bean class="org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer"/>
+        </property>
+    </bean>
+    <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+        <constructor-arg name="redisOperations" ref="redisTemplate"/>
+        <property name="defaultExpiration" value="180"/>
+        <property name="expires">
+            <map key-type="java.lang.String" value-type="java.lang.Long">
+                <!-- 黑名单缓存24小时 -->
+                <entry key="WFJ_ONLINE_INDEX_BLACKLIST" value="86400"/>
+                <!-- 品牌详细信息缓存24小时 -->
+                <entry key="WFJ_SEARCH_ONLINE_PCM_BRAND" value="86400"/>
+                <!-- 分类详细信息缓存24小时 -->
+                <entry key="WFJ_SEARCH_ONLINE_PCM_CATEGORY" value="86400"/>
+                <!-- SKU缓存24小时 -->
+                <entry key="WFJ_SEARCH_ONLINE_PCM_SKU" value="86400"/>
+                <!-- SPU缓存24小时 -->
+                <entry key="WFJ_SEARCH_ONLINE_PCM_SPU" value="86400"/>
+                <!-- 人工加权缓存24小时 -->
+                <entry key="WFJ_ONLINE_INDEX_V_MANUAL_BOOSTS" value="86400"/>
+                <!-- 品牌置顶坑位缓存24小时 -->
+                <entry key="WFJ_ONLINE_INDEX_BRAND_TOP_SPOTS" value="86400"/>
+                <!-- 分类置顶坑位缓存24小时 -->
+                <entry key="VALUE_KEY_CATEGORY_TOP_SPOTS" value="86400"/>
+            </map>
+        </property>
+        <property name="loadRemoteCachesOnStartup" value="true"/>
+        <property name="usePrefix" value="true"/>
+    </bean>
+    <bean id="stringRedisKeyGenerator" class="com.wfj.search.utils.cache.SimpleParamStringKeyGenerator"/>
     <cache:annotation-driven key-generator="stringRedisKeyGenerator" cache-manager="cacheManager"/>
 
     <context:component-scan base-package="com.wfj.search.online.index.iao.impl"/>

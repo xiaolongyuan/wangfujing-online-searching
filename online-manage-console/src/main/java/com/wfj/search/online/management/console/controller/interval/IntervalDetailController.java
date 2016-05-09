@@ -1,11 +1,11 @@
 package com.wfj.search.online.management.console.controller.interval;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.common.pojo.interval.IntervalDetailPojo;
 import com.wfj.search.online.management.console.service.interval.IIntervalDetailService;
 import com.wfj.search.util.web.record.WebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ public class IntervalDetailController {
     @RequestMapping("/list/{contentSid}")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-interval-detail-list")
+    @ServiceRegister(name = "online-mc-interval-detail-list")
     public JSONObject intervalDetailList(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet,
             @PathVariable("contentSid") String contentSid) {
@@ -100,7 +100,7 @@ public class IntervalDetailController {
     @RequestMapping("create")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-interval-detail-create")
+    @ServiceRegister(name = "online-mc-interval-detail-create")
     public JSONObject addIntervalDetail(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
@@ -139,7 +139,7 @@ public class IntervalDetailController {
     @RequestMapping("update")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-interval-detail-update")
+    @ServiceRegister(name = "online-mc-interval-detail-update")
     public JSONObject updateIntervalDetail(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
@@ -178,7 +178,7 @@ public class IntervalDetailController {
     @RequestMapping("destroy")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-interval-detail-destroy")
+    @ServiceRegister(name = "online-mc-interval-detail-destroy")
     public JSONObject deleteIntervalDetail(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         JSONObject json = new JSONObject();

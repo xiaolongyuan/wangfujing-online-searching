@@ -1,7 +1,6 @@
 package com.wfj.search.online.index.operation;
 
 import com.google.common.collect.Sets;
-import com.wfj.platform.util.analysis.Timer;
 import com.wfj.search.online.common.pojo.ItemPojo;
 import com.wfj.search.online.common.pojo.Page;
 import com.wfj.search.online.common.pojo.SkuPojo;
@@ -10,12 +9,14 @@ import com.wfj.search.online.index.iao.RequestException;
 import com.wfj.search.online.index.service.IIndexConfigService;
 import com.wfj.search.online.index.util.ExecutorServiceFactory;
 import com.wfj.search.util.record.pojo.Operation;
+import com.wfj.search.utils.timer.Timer;
+import com.wfj.search.utils.timer.TimerStop;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.CompletionService;
@@ -149,7 +150,9 @@ public class SkuSpuCacheWarmUpOperation implements IOperation<Void> {
             }
             stop = timer.stop();
             logger.debug("warm-up {} spus, cost {}", skuSum.get(), stop.toString());
-            Duration duration = Duration.between(timer.getStartTime(), timer.lastStop().getStopTime());
+            TimerStop lastStop = timer.lastStop();
+            assert lastStop != null;
+            Duration duration = new Duration(timer.getStartTime().toDateTime(), lastStop.getStopTime().toDateTime());
             logger.info("warm-up sku&spu cost {}", duration.toString());
             return null;
         } finally {

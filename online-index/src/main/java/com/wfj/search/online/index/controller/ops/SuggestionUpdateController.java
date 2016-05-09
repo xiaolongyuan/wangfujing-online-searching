@@ -1,14 +1,14 @@
 package com.wfj.search.online.index.controller.ops;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.coordinating.CoordinatingTask;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.index.coordinating.SuggestionUpdateTaskDescription;
 import com.wfj.search.online.index.operation.IOperation;
 import com.wfj.search.util.record.pojo.Operation;
 import com.wfj.search.util.record.util.OperationHolderKt;
 import com.wfj.search.util.web.record.WebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.coordinating.CoordinatingTask;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ public class SuggestionUpdateController {
     private String instanceName;
 
     @RequestMapping("/fresh")
-    @ServiceRegister(value = "online-freshSuggestion")
+    @ServiceRegister(name = "online-freshSuggestion")
     @WebOperation
     @JsonSignVerify
     public JSONObject freshSuggestion(@RequestBody(required = false) String message,

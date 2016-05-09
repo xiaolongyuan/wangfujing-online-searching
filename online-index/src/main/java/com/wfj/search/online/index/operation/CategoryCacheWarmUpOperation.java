@@ -1,17 +1,18 @@
 package com.wfj.search.online.index.operation;
 
-import com.wfj.platform.util.analysis.Timer;
 import com.wfj.search.online.index.iao.IPcmRequester;
 import com.wfj.search.online.index.iao.RequestException;
 import com.wfj.search.online.index.service.IIndexConfigService;
 import com.wfj.search.online.index.util.ExecutorServiceFactory;
 import com.wfj.search.util.record.pojo.Operation;
+import com.wfj.search.utils.timer.Timer;
+import com.wfj.search.utils.timer.TimerStop;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
@@ -45,7 +46,9 @@ public class CategoryCacheWarmUpOperation implements IOperation<Void> {
             AtomicLong sum = new AtomicLong(0);
             this.warmUpSubCategories(cid, sum);
             timer.stop();
-            Duration duration = Duration.between(timer.getStartTime(), timer.lastStop().getStopTime());
+            TimerStop lastStop = timer.lastStop();
+            assert lastStop != null;
+            Duration duration = new Duration(timer.getStartTime().toDateTime(), lastStop.getStopTime().toDateTime());
             logger.info("warm-up {} categories finish, cost {}", sum.get(), duration.toString());
             return null;
         } finally {

@@ -1,11 +1,11 @@
 package com.wfj.search.online.management.console.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.common.pojo.HotWordPojo;
 import com.wfj.search.online.management.console.service.HotWordService;
 import com.wfj.search.util.web.record.WebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class HotWordController {
     @RequestMapping("read")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-hot-word-read")
+    @ServiceRegister(name = "online-mc-hot-word-read")
     public JSONObject read(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("RequestBody is {}, RequestParam is {}", message, messageGet);
@@ -96,7 +96,7 @@ public class HotWordController {
     @RequestMapping("get")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-hot-word-get")
+    @ServiceRegister(name = "online-mc-hot-word-get")
     public JSONObject get(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("RequestBody is {}, RequestParam is {}", message, messageGet);
@@ -132,7 +132,7 @@ public class HotWordController {
     @RequestMapping("create")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-hot-word-create")
+    @ServiceRegister(name = "online-mc-hot-word-create")
     public JSONObject create(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("RequestBody is {}, RequestParam is {}", message, messageGet);
@@ -184,7 +184,7 @@ public class HotWordController {
     @RequestMapping("destroy")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-hot-word-destory")
+    @ServiceRegister(name = "online-mc-hot-word-destory")
     public JSONObject destroy(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("RequestBody is {}, RequestParam is {}", message, messageGet);
@@ -239,7 +239,7 @@ public class HotWordController {
     @RequestMapping("update")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-hot-word-update")
+    @ServiceRegister(name = "online-mc-hot-word-update")
     public JSONObject update(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("RequestBody is {}, RequestParam is {}", message, messageGet);
@@ -300,7 +300,7 @@ public class HotWordController {
     @RequestMapping("enabled")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-hot-word-enabled")
+    @ServiceRegister(name = "online-mc-hot-word-enabled")
     public JSONObject enabled(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("RequestBody is {}, RequestParam is {}", message, messageGet);
@@ -351,7 +351,7 @@ public class HotWordController {
     @RequestMapping("disabled")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-hot-word-disabled")
+    @ServiceRegister(name = "online-mc-hot-word-disabled")
     public JSONObject disabled(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("RequestBody is {}, RequestParam is {}", message, messageGet);

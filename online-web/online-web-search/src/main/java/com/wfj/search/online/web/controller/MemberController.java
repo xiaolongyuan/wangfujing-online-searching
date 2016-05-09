@@ -127,7 +127,7 @@ public class MemberController implements ServletContextAware {
     @RequestMapping(value = "/concern")
     @ResponseBody
     public JSONObject concern(@CookieValue(value = "ticket", required = false) String ticket,
-            @RequestParam(value = "sid", required = true) String sid,
+            @RequestParam(value = "sid") String sid,
             @RequestParam(value = "type", defaultValue = "0") Integer type) {
         JSONObject json = new JSONObject();
         Long memberSid = null;

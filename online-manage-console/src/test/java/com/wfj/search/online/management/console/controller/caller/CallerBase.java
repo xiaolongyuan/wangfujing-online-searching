@@ -2,13 +2,14 @@ package com.wfj.search.online.management.console.controller.caller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.discovery.SpringMvcServiceProvider;
 import com.wfj.search.utils.signature.json.rsa.JsonSigner;
 import com.wfj.search.utils.signature.json.rsa.StandardizingUtil;
 import com.wfj.search.utils.signature.ras.KeyUtils;
+import com.wfj.search.utils.zookeeper.discovery.SpringWebMvcServiceProvider;
 import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
@@ -46,7 +47,7 @@ abstract class CallerBase implements ResourceLoaderAware {
 
     public abstract String getPrivateKeyFile();
 
-    public abstract SpringMvcServiceProvider getServiceProvider();
+    public abstract SpringWebMvcServiceProvider getServiceProvider();
 
     private void loadPrivateKey() throws IOException, InvalidKeySpecException {
         this.privateKey = KeyUtils.base64String2RSAPrivateKey(IOUtils.toString(
@@ -74,7 +75,10 @@ abstract class CallerBase implements ResourceLoaderAware {
 
     void testTemplate(String serviceName, JSON messageBody, String username) {
         try {
-            String url = this.getServiceProvider().provideServiceAddress(serviceName);
+            String url = this.getServiceProvider().provideServiceAddress(serviceName).orNull();
+            if (StringUtils.isBlank(url)) {
+                throw new IllegalStateException("无法获取" + serviceName + "地址");
+            }
             String resp = requestWithSignature(url, messageBody, username);
             assertNotNull(resp);
             JSONObject res = JSONObject.parseObject(resp);

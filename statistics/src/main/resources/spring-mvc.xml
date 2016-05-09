@@ -39,11 +39,7 @@
         <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
         <property name="defaultViews">
             <list>
-                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
-                    <property name="objectMapper">
-                        <bean class="com.wfj.platform.util.jackson2.Jackson2JsonViewObjectMapperFactoryBean"/>
-                    </property>
-                </bean>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
             </list>
         </property>
         <property name="viewResolvers">

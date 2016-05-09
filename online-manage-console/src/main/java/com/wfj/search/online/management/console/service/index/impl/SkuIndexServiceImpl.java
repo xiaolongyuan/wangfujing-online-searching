@@ -1,9 +1,10 @@
 package com.wfj.search.online.management.console.service.index.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.discovery.SpringMvcServiceProvider;
 import com.wfj.search.online.management.console.service.index.ISkuIndexService;
+import com.wfj.search.utils.zookeeper.discovery.SpringWebMvcServiceProvider;
 import okhttp3.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class SkuIndexServiceImpl implements ISkuIndexService {
     private static final Logger logger = LoggerFactory.getLogger(SkuIndexServiceImpl.class);
     @Autowired
-    private SpringMvcServiceProvider springMvcServiceProvider;
+    private SpringWebMvcServiceProvider springMvcServiceProvider;
     private OkHttpClient okHttpClient = new OkHttpClient.Builder().readTimeout(30, TimeUnit.SECONDS).build();
     private MediaType mediaTypeJson = MediaType.parse("application/json; charset=utf-8");
 
@@ -30,8 +31,8 @@ public class SkuIndexServiceImpl implements ISkuIndexService {
     public JSONObject refreshItems(String message) {
         String url;
         try {
-            url = springMvcServiceProvider.provideServiceAddress("online-ops-indexSku");
-            if (url == null) {
+            url = springMvcServiceProvider.provideServiceAddress("online-ops-indexSku").orNull();
+            if (StringUtils.isBlank(url)) {
                 throw new RuntimeException("根据sku刷新专柜商品服务未发现！");
             }
             RequestBody requestBody = RequestBody.create(mediaTypeJson, message);
@@ -57,8 +58,8 @@ public class SkuIndexServiceImpl implements ISkuIndexService {
     public JSONObject removeItems(String message) {
         String url;
         try {
-            url = springMvcServiceProvider.provideServiceAddress("online-ops-removeSku");
-            if (url == null) {
+            url = springMvcServiceProvider.provideServiceAddress("online-ops-removeSku").orNull();
+            if (StringUtils.isBlank(url)) {
                 throw new RuntimeException("根据sku移除专柜商品服务未发现！");
             }
             RequestBody requestBody = RequestBody.create(mediaTypeJson, message);

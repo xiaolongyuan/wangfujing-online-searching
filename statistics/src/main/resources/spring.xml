@@ -73,33 +73,11 @@
 
     <jee:jndi-lookup jndi-name="service/address" id="instanceAddress" expected-type="java.lang.String"/>
     <jee:jndi-lookup jndi-name="service/instance" id="instanceName" expected-type="java.lang.String"/>
-    <bean id="registerClientFactory" class="com.wfj.platform.util.zookeeper.ZookeeperClientFactory">
-        <property name="zkAddresses" value="${monitor.zkAddresses}"/>
+    <bean id="zkClientFactory" class="com.wfj.search.utils.zookeeper.CuratorClientFactory">
+        <constructor-arg name="connectString" value="${monitor.zkAddresses}"/>
     </bean>
-    <bean id="registerClient" factory-bean="registerClientFactory"
+    <bean id="zkClient" factory-bean="zkClientFactory"
           factory-method="createClient" destroy-method="close"/>
-    <bean id="statusProvider"
-          class="com.wfj.platform.util.zookeeper.monitor.register.CommonInstanceStatusProvider"/>
-    <bean id="appInstanceRegister"
-          class="com.wfj.platform.util.zookeeper.monitor.register.AppInstanceRegister">
-        <constructor-arg name="client" ref="registerClient"/>
-        <property name="appName" value="${monitor.register.appName}"/>
-        <property name="instanceName" ref="instanceName"/>
-        <property name="namespace" value="${monitor.register.namespace}"/>
-        <property name="statusProvider" ref="statusProvider"/>
-    </bean>
-    <bean id="instanceStatusUpdateRegisterJob"
-          class="com.wfj.platform.util.zookeeper.monitor.register.InstanceStatusUpdateRegisterJobDescription">
-        <property name="appInstanceRegister" ref="appInstanceRegister"/>
-    </bean>
-    <bean id="serviceDiscoveryRegisterJob"
-          class="com.wfj.platform.util.zookeeper.discovery.SpringMvcServiceDiscoveryRegisterJobDescription"
-          init-method="register" destroy-method="close">
-        <property name="instanceAddress" ref="instanceAddress"/>
-        <property name="statusProvider" ref="statusProvider"/>
-        <property name="basePath" value="${discovery.basePath}"/>
-        <property name="client" ref="registerClient"/>
-    </bean>
 
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 

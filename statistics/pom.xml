@@ -20,13 +20,21 @@
             <artifactId>es-client-factory</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>curator-client-factory</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>curator-spring-mvc-simple-discovery</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>simple-system-info</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.wfj.search</groupId>
             <artifactId>online-common</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.wfj.platform</groupId>
-            <artifactId>zk-util</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>

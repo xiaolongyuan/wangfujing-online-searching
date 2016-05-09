@@ -1,7 +1,7 @@
 package com.wfj.search.online.management.console.controller;
 
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.management.console.service.ICacheService;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class SearchingCacheController {
     private ICacheService cacheService;
 
     @RequestMapping("/clear-all-searching-cache")
-    @ServiceRegister("online-mc-search-cache-clear-all")
+    @ServiceRegister(name = "online-mc-search-cache-clear-all")
     public JSONObject clearAllSearchingCache(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("request body is {}, request parameter is {}", message, messageGet);

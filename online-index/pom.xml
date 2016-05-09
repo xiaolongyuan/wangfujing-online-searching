@@ -40,6 +40,34 @@
             <artifactId>background-operation-record-aspect</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>curator-client-factory</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>curator-spring-mvc-simple-discovery</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>curator-distributed-coordinating-task</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>batch-runnable</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>simple-system-info</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>string-cache-key-generator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>timer</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.wfj.search</groupId>
             <artifactId>online-common</artifactId>
             <version>${project.version}</version>
@@ -48,14 +76,6 @@
             <groupId>com.wfj.search</groupId>
             <artifactId>online-web-common</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.wfj.platform</groupId>
-            <artifactId>platform-base-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.wfj.platform</groupId>
-            <artifactId>zk-util</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -180,7 +200,6 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>logging-interceptor</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

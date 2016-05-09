@@ -55,11 +55,7 @@
         <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
         <property name="defaultViews">
             <list>
-                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
-                    <property name="objectMapper">
-                        <bean class="com.wfj.platform.util.jackson2.Jackson2JsonViewObjectMapperFactoryBean"/>
-                    </property>
-                </bean>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
             </list>
         </property>
         <property name="viewResolvers">
@@ -128,16 +124,20 @@
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
+    <bean id="springWebMvcServiceScanner" class="com.wfj.search.utils.zookeeper.discovery.SpringWebMvcServiceScanner"/>
+    <bean id="register" class="com.wfj.search.utils.zookeeper.discovery.SpringWebMvcServiceRegister">
+        <constructor-arg name="springWebMvcServiceScanner" ref="springWebMvcServiceScanner"/>
+        <constructor-arg name="nodeHost" ref="instanceHost"/>
+        <constructor-arg name="servicePort" ref="servicePort"/>
+        <constructor-arg name="zkClient" ref="zkClient"/>
+        <constructor-arg name="basePath" value="${discovery.basePath}"/>
+    </bean>
     <bean id="serviceDiscoveryRegisterJob"
-          class="com.wfj.platform.util.zookeeper.discovery.SpringMvcServiceDiscoveryRegisterJobDescription"
-          init-method="register" destroy-method="close">
-        <property name="instanceAddress" ref="instanceAddress"/>
-        <property name="statusProvider" ref="statusProvider"/>
-        <property name="basePath" value="${discovery.basePath}"/>
-        <property name="client" ref="registerClient"/>
+          class="com.wfj.search.utils.zookeeper.discovery.SpringWebMvcServiceRegisterJob">
+        <constructor-arg name="register" ref="register"/>
     </bean>
     <task:scheduled-tasks scheduler="scheduler">
-        <task:scheduled ref="serviceDiscoveryRegisterJob" method="freshRegister" initial-delay="4000"
+        <task:scheduled ref="serviceDiscoveryRegisterJob" method="work" initial-delay="4000"
                         fixed-delay="30000"/>
     </task:scheduled-tasks>
 </beans>

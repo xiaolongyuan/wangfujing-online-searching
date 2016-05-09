@@ -3,7 +3,6 @@ package com.wfj.search.online.index.controller.mq;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.common.pojo.CategoryPojo;
 import com.wfj.search.online.index.iao.IndexException;
 import com.wfj.search.online.index.pojo.failure.Failure;
@@ -14,6 +13,7 @@ import com.wfj.search.util.record.pojo.Operation;
 import com.wfj.search.util.record.util.OperationHolderKt;
 import com.wfj.search.util.web.record.MqWebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ public class CategoryMqController {
     private IIndexService indexService;
 
     @RequestMapping(value = "/indexCategoriesAndItems", method = RequestMethod.POST)
-    @ServiceRegister(value = "online-mq-indexCategories")
+    @ServiceRegister(name = "online-mq-indexCategories")
     @MqWebOperation
     @JsonSignVerify
     public JSONObject indexItems(@RequestBody String message) {

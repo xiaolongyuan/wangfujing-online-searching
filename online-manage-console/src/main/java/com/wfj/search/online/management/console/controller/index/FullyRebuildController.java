@@ -1,10 +1,10 @@
 package com.wfj.search.online.management.console.controller.index;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.management.console.service.index.IFullyRebuildService;
 import com.wfj.search.util.web.record.WebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class FullyRebuildController {
     @RequestMapping("/fully-rebuild-es")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-index-fully-rebuild-es")
+    @ServiceRegister(name = "online-mc-index-fully-rebuild-es")
     public JSONObject refreshEsData(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("request body is {}, request parameter is {}", message, messageGet);
@@ -67,7 +67,7 @@ public class FullyRebuildController {
     @RequestMapping("/fully-rebuild-index")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-index-fully-rebuild")
+    @ServiceRegister(name = "online-mc-index-fully-rebuild")
     public JSONObject refreshItems(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("RequestBody is {}", message);

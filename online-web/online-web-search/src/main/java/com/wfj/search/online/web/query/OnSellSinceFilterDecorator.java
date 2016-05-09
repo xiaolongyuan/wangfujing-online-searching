@@ -1,7 +1,7 @@
 package com.wfj.search.online.web.query;
 
-import com.wfj.platform.util.DateUtils;
 import com.wfj.search.online.web.common.pojo.SearchParams;
+import com.wfj.search.online.web.util.DateUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +20,7 @@ public class OnSellSinceFilterDecorator implements QueryDecorator {
     public void decorator(SolrQuery query, SearchParams params) {
         Date dateFrom = params.getDateFrom();
         Date dateTo = params.getDateTo();
+        //noinspection Duplicates
         if (dateFrom != null || dateTo != null) {
             try {
                 String dateFromStr = (dateFrom != null) ? DateUtils.mjd2UtcStr(dateFrom) : "*";

@@ -1,10 +1,10 @@
 package com.wfj.search.online.management.console.controller.operation;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.management.console.service.operation.IOperationPublicKeyService;
 import com.wfj.search.util.web.record.WebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class OperationPublicKeyController {
     @WebOperation
     @JsonSignVerify
     @RequestMapping("/clear")
-    @ServiceRegister("online-mc-operation-public-key-cache-clear")
+    @ServiceRegister(name = "online-mc-operation-public-key-cache-clear")
     public JSONObject clear(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("request body is {}; request parameter is {}", message, messageGet);

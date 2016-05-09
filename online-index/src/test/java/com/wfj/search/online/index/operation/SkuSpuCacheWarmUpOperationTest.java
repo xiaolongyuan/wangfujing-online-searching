@@ -1,7 +1,8 @@
 package com.wfj.search.online.index.operation;
 
-import com.wfj.platform.util.analysis.Timer;
 import com.wfj.search.util.record.pojo.Operation;
+import com.wfj.search.utils.timer.Timer;
+import org.joda.time.Duration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +16,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.sql.Timestamp;
-import java.time.Duration;
 
 /**
  * <p>create at 16-4-25</p>

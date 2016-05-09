@@ -3,7 +3,6 @@ package com.wfj.search.online.index.controller.mq;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.common.pojo.ItemPojo;
 import com.wfj.search.online.index.iao.IndexException;
 import com.wfj.search.online.index.service.IEsService;
@@ -13,6 +12,7 @@ import com.wfj.search.util.record.pojo.Operation;
 import com.wfj.search.util.record.util.OperationHolderKt;
 import com.wfj.search.util.web.record.MqWebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class ItemMqController {
     private IIndexService indexService;
 
     @RequestMapping(value = "/indexItems", method = RequestMethod.POST)
-    @ServiceRegister(value = "online-mq-indexItems")
+    @ServiceRegister(name = "online-mq-indexItems")
     @MqWebOperation
     @JsonSignVerify
     public JSONObject indexItems(@RequestBody String message) {
@@ -109,7 +109,7 @@ public class ItemMqController {
     }
 
     @RequestMapping(value = "/removeItems", method = RequestMethod.POST)
-    @ServiceRegister(value = "online-mq-removeItems")
+    @ServiceRegister(name = "online-mq-removeItems")
     @MqWebOperation
     @JsonSignVerify
     public JSONObject removeItems(@RequestBody String message) {

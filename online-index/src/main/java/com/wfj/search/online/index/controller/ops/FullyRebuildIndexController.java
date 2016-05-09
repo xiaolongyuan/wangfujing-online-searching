@@ -1,14 +1,14 @@
 package com.wfj.search.online.index.controller.ops;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.coordinating.CoordinatingTask;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.index.coordinating.FullyRebuildIndexTaskDescription;
 import com.wfj.search.online.index.operation.IOperation;
 import com.wfj.search.util.record.pojo.Operation;
 import com.wfj.search.util.record.util.OperationHolderKt;
 import com.wfj.search.util.web.record.WebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.coordinating.CoordinatingTask;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class FullyRebuildIndexController {
     private String instanceName;
 
     @RequestMapping("/ops/fullyRebuildIndex")
-    @ServiceRegister(value = "online-fullyRebuildIndex")
+    @ServiceRegister(name = "online-fullyRebuildIndex")
     @WebOperation
     @JsonSignVerify
     public JSONObject fullyRebuildIndexManually(@RequestBody(required = false) String message,
@@ -75,7 +75,7 @@ public class FullyRebuildIndexController {
     }
 
     @RequestMapping("/ops/fullyRebuildIndexFromEs")
-    @ServiceRegister(value = "online-fullyRebuildIndexFromEs")
+    @ServiceRegister(name = "online-fullyRebuildIndexFromEs")
     @WebOperation
     @JsonSignVerify
     public JSONObject fullyRebuildIndexManuallyFromEs(@RequestBody(required = false) String message,

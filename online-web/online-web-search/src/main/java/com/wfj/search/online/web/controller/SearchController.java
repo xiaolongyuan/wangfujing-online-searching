@@ -1,6 +1,5 @@
 package com.wfj.search.online.web.controller;
 
-import com.wfj.platform.util.concurrent.BatchRunnables;
 import com.wfj.search.online.common.RuntimeTrackingException;
 import com.wfj.search.online.common.TrackingException;
 import com.wfj.search.online.web.common.pojo.SearchParams;
@@ -11,6 +10,7 @@ import com.wfj.search.online.web.service.ISearchConfigService;
 import com.wfj.search.online.web.service.ISearchParamService;
 import com.wfj.search.online.web.service.ISearchService;
 import com.wfj.search.segment.SegmentService;
+import com.wfj.search.utils.concurrent.BatchRunnables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,6 +143,7 @@ public class SearchController {
             @PathVariable("currentPage") Integer currentPage,
             HttpServletRequest request) {
         SearchParams searchParams;
+        //noinspection Duplicates
         try {
             searchParams = this.searchParamService
                     .restoreParams(inputQuery, rows, cat1, cat2, cat3, brandIds, price, standardIds, colors, attrs,

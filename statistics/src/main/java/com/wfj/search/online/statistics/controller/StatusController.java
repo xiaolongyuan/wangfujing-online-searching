@@ -1,6 +1,6 @@
 package com.wfj.search.online.statistics.controller;
 
-import com.wfj.platform.util.analysis.SystemInfo;
+import com.wfj.search.utils.status.SystemInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

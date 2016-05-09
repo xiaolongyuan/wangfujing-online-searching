@@ -1,10 +1,10 @@
 package com.wfj.search.online.web.query;
 
 import com.google.common.collect.Lists;
-import com.wfj.platform.util.DateUtils;
 import com.wfj.search.online.web.common.pojo.*;
 import com.wfj.search.online.web.controller.ResourceNotFoundException;
 import com.wfj.search.online.web.service.ISearchConfigService;
+import com.wfj.search.online.web.util.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.params.DisMaxParams;
@@ -125,6 +125,7 @@ public class BaseMainQueryDecorator implements QueryDecorator {
         /* 上市时间限制 */
         Date dateFrom = searchParams.getDateFrom();
         Date dateTo = searchParams.getDateTo();
+        //noinspection Duplicates
         if (dateFrom != null || dateTo != null) {
             try {
                 String dateFromStr = (dateFrom != null) ? DateUtils.mjd2UtcStr(dateFrom) : "*";

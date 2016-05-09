@@ -1,7 +1,6 @@
 package com.wfj.search.online.index.controller.ops;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.index.iao.IndexException;
 import com.wfj.search.online.index.pojo.failure.Failure;
 import com.wfj.search.online.index.service.IEsService;
@@ -11,6 +10,7 @@ import com.wfj.search.util.record.pojo.Operation;
 import com.wfj.search.util.record.util.OperationHolderKt;
 import com.wfj.search.util.web.record.WebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ public class SkuOpsController {
     private IIndexService indexService;
 
     @RequestMapping("/indexItems")
-    @ServiceRegister(value = "online-ops-indexSku")
+    @ServiceRegister(name = "online-ops-indexSku")
     @WebOperation
     @JsonSignVerify
     public JSONObject indexItems(@RequestBody(required = false) String message,
@@ -57,6 +57,7 @@ public class SkuOpsController {
         Operation operation = OperationHolderKt.getOperation();
         result.put("asynchronous", false);
         String skuId;
+        //noinspection Duplicates
         try {
             JSONObject messageBody = MessageBodyChooser.getJsonObject(message, messageGet);
             skuId = Validate.notBlank(messageBody.getString("skuId"), "SKU编码为空").trim();
@@ -101,7 +102,7 @@ public class SkuOpsController {
     }
 
     @RequestMapping("/removeItems")
-    @ServiceRegister(value = "online-ops-removeSku")
+    @ServiceRegister(name = "online-ops-removeSku")
     @WebOperation
     @JsonSignVerify
     public JSONObject removeItems(@RequestBody(required = false) String message,
@@ -114,6 +115,7 @@ public class SkuOpsController {
         JSONObject result = new JSONObject();
         result.put("asynchronous", false);
         String skuId;
+        //noinspection Duplicates
         try {
             JSONObject messageBody = MessageBodyChooser.getJsonObject(message, messageGet);
             skuId = Validate.notBlank(messageBody.getString("skuId"), "SKU编码为空").trim();
@@ -137,6 +139,7 @@ public class SkuOpsController {
             exception = e;
             msg = "删除索引失败";
         }
+        //noinspection Duplicates
         if (exception != null) {
             logger.error(msg, exception);
             result.put("success", false);

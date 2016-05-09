@@ -1,7 +1,6 @@
 package com.wfj.search.online.index.service.impl;
 
 import com.google.common.collect.Lists;
-import com.wfj.platform.util.concurrent.BatchRunnables;
 import com.wfj.search.online.common.pojo.CommentPojo;
 import com.wfj.search.online.common.pojo.ItemPojo;
 import com.wfj.search.online.common.pojo.OnlineRetryNotePojo;
@@ -17,6 +16,7 @@ import com.wfj.search.online.index.pojo.failure.NoFailure;
 import com.wfj.search.online.index.service.*;
 import com.wfj.search.online.index.util.ExecutorServiceFactory;
 import com.wfj.search.online.index.util.PojoUtils;
+import com.wfj.search.utils.concurrent.BatchRunnables;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +43,7 @@ import static com.wfj.search.online.index.pojo.RetryResultCollector.*;
 @Component("retryService")
 public class RetryServiceImpl implements IRetryService {
     private static final Logger logger = LoggerFactory.getLogger(RetryServiceImpl.class);
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private RetryNoteMapper retryNoteMapper;
     @Autowired
@@ -255,6 +256,7 @@ public class RetryServiceImpl implements IRetryService {
                 }
             });
         }
+        //noinspection Duplicates
         try {
             batchRunnables.execute();
         } catch (InterruptedException e) {
@@ -305,6 +307,7 @@ public class RetryServiceImpl implements IRetryService {
                 }
             });
         }
+        //noinspection Duplicates
         try {
             batchRunnables.execute();
         } catch (InterruptedException e) {

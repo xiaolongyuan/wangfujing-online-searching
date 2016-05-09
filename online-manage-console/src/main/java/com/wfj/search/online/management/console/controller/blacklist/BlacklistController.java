@@ -1,11 +1,11 @@
 package com.wfj.search.online.management.console.controller.blacklist;
 
 import com.alibaba.fastjson.JSONObject;
-import com.wfj.platform.util.zookeeper.discovery.ServiceRegister;
 import com.wfj.search.online.common.pojo.blacklist.BlacklistPojo;
 import com.wfj.search.online.management.console.service.blacklist.IBlackListService;
 import com.wfj.search.util.web.record.WebOperation;
 import com.wfj.search.utils.web.signature.verify.JsonSignVerify;
+import com.wfj.search.utils.zookeeper.discovery.ServiceRegister;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +38,7 @@ public class BlacklistController {
     @RequestMapping("read")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-blacklist-read")
+    @ServiceRegister(name = "online-mc-blacklist-read")
     public JSONObject getBlackList(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         logger.debug("RequestBody is {}", message);
@@ -94,7 +94,7 @@ public class BlacklistController {
     @RequestMapping("create")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-blacklist-create")
+    @ServiceRegister(name = "online-mc-blacklist-create")
     public JSONObject create(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
@@ -141,7 +141,7 @@ public class BlacklistController {
     @RequestMapping("delete")
     @WebOperation
     @JsonSignVerify
-    @ServiceRegister("online-mc-blacklist-delete")
+    @ServiceRegister(name = "online-mc-blacklist-delete")
     public JSONObject delete(@RequestBody(required = false) String message,
             @RequestParam(value = "message", required = false) String messageGet) {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();

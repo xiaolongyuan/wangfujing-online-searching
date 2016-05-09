@@ -131,30 +131,17 @@
         <property name="loadRemoteCachesOnStartup" value="true"/>
         <property name="usePrefix" value="true"/>
     </bean>
-    <bean id="stringRedisKeyGenerator" class="com.wfj.platform.util.cache.SimpleParamStringKeyGenerator"/>
+    <bean id="stringRedisKeyGenerator" class="com.wfj.search.utils.cache.SimpleParamStringKeyGenerator"/>
     <cache:annotation-driven key-generator="stringRedisKeyGenerator" cache-manager="cacheManager"/>
 
-    <jee:jndi-lookup jndi-name="service/address" id="instanceAddress" expected-type="java.lang.String"/>
+    <jee:jndi-lookup jndi-name="service/host" id="instanceHost" expected-type="java.lang.String"/>
+    <jee:jndi-lookup jndi-name="service/port" id="servicePort" expected-type="java.lang.Integer"/>
     <jee:jndi-lookup jndi-name="service/instance" id="instanceName" expected-type="java.lang.String"/>
-    <bean id="registerClientFactory" class="com.wfj.platform.util.zookeeper.ZookeeperClientFactory">
-        <property name="zkAddresses" value="${monitor.zkAddresses}"/>
+    <bean id="registerClientFactory" class="com.wfj.search.utils.zookeeper.CuratorClientFactory">
+        <constructor-arg name="connectString" value="${monitor.zkAddresses}"/>
     </bean>
-    <bean id="registerClient" factory-bean="registerClientFactory"
+    <bean id="zkClient" factory-bean="registerClientFactory"
           factory-method="createClient" destroy-method="close" init-method="start"/>
-    <bean id="statusProvider"
-          class="com.wfj.platform.util.zookeeper.monitor.register.CommonInstanceStatusProvider"/>
-    <bean id="appInstanceRegister"
-          class="com.wfj.platform.util.zookeeper.monitor.register.AppInstanceRegister">
-        <constructor-arg name="client" ref="registerClient"/>
-        <property name="appName" value="${monitor.register.appName}"/>
-        <property name="instanceName" ref="instanceName"/>
-        <property name="namespace" value="${monitor.register.namespace}"/>
-        <property name="statusProvider" ref="statusProvider"/>
-    </bean>
-    <bean id="instanceStatusUpdateRegisterJobDescription"
-          class="com.wfj.platform.util.zookeeper.monitor.register.InstanceStatusUpdateRegisterJobDescription">
-        <property name="appInstanceRegister" ref="appInstanceRegister"/>
-    </bean>
 
     <bean id="esClient" class="com.wfj.search.utils.es.EsClientFactory">
         <constructor-arg name="transportAddressList" value="${es.transportAddressList}"/>
@@ -179,7 +166,7 @@
         <property name="sidGenerator">
             <bean class="com.wfj.search.util.record.zookeeper.ZkCounterSidGenerator">
                 <property name="versionNoCounterPath" value="${operation.versionNoCounterPath}"/>
-                <property name="zkClient" ref="registerClient"/>
+                <property name="zkClient" ref="zkClient"/>
             </bean>
         </property>
     </bean>
@@ -210,8 +197,6 @@
     <bean id="skuSpuCacheWarmUpWarmJob" class="com.wfj.search.online.index.cron.SkuSpuCacheWarmUpWarmJob"/>
     <task:scheduler id="scheduler" pool-size="10"/>
     <task:scheduled-tasks scheduler="scheduler">
-        <task:scheduled ref="instanceStatusUpdateRegisterJobDescription" method="work" initial-delay="1000"
-                        fixed-delay="30000"/>
         <task:scheduled ref="indexFullyRebuildJob" method="fullyRebuildIndex" cron="0 0 2 * * *"/>
         <task:scheduled ref="spellRebuildJob" method="rebuildSpell" initial-delay="60000" fixed-delay="900000"/>
         <task:scheduled ref="retrySaveJob" method="retrySaveItem" initial-delay="4000" fixed-delay="900000"/>

@@ -1,8 +1,8 @@
 package com.wfj.search.online.index.coordinating;
 
-import com.wfj.platform.util.zookeeper.coordinating.CoordinatingTaskDescription;
 import com.wfj.search.online.index.operation.IOperation;
 import com.wfj.search.util.record.pojo.Operation;
+import com.wfj.search.utils.zookeeper.coordinating.CoordinatingTaskDescription;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

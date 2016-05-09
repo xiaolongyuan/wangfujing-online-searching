@@ -2,7 +2,6 @@ package com.wfj.search.online.web.service.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.wfj.platform.util.concurrent.BatchRunnables;
 import com.wfj.search.online.common.RuntimeTrackingException;
 import com.wfj.search.online.common.TrackingException;
 import com.wfj.search.online.web.common.pojo.CategoryDisplayPojo;
@@ -16,6 +15,7 @@ import com.wfj.search.online.web.query.BaseMainQueryDecorator;
 import com.wfj.search.online.web.searchTask.*;
 import com.wfj.search.online.web.service.ISearchConfigService;
 import com.wfj.search.online.web.service.ISearchService;
+import com.wfj.search.utils.concurrent.BatchRunnables;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.slf4j.Logger;

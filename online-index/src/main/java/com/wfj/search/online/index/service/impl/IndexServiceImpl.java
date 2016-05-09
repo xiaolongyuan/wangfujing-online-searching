@@ -1,7 +1,6 @@
 package com.wfj.search.online.index.service.impl;
 
 import com.google.common.collect.Lists;
-import com.wfj.platform.util.analysis.Timer;
 import com.wfj.search.online.index.es.ItemEsIao;
 import com.wfj.search.online.index.es.ScrollPage;
 import com.wfj.search.online.index.iao.IItemIAO;
@@ -15,13 +14,15 @@ import com.wfj.search.online.index.pojo.failure.FailureType;
 import com.wfj.search.online.index.pojo.failure.MultiFailure;
 import com.wfj.search.online.index.service.IIndexService;
 import com.wfj.search.online.index.service.IRetryService;
+import com.wfj.search.utils.timer.Timer;
+import com.wfj.search.utils.timer.TimerStop;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -97,8 +98,10 @@ public class IndexServiceImpl implements IIndexService {
             }
         }
         timer.stop();
+        TimerStop lastStop = timer.lastStop();
+        assert lastStop != null;
         logger.debug("es -> solr , coast {}",
-                Duration.between(timer.getStartTime(), timer.lastStop().getStopTime()).toString());
+                new Duration(timer.getStartTime().toDateTime(), lastStop.getStopTime().toDateTime()).toString());
         try {
             this.itemIAO.removeExpired(version);
         } catch (IndexException e) {

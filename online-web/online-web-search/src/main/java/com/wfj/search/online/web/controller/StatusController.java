@@ -1,6 +1,6 @@
 package com.wfj.search.online.web.controller;
 
-import com.wfj.platform.util.analysis.SystemInfo;
+import com.wfj.search.utils.status.SystemInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,16 +20,21 @@ public class StatusController {
     @Qualifier("instanceName")
     private String instanceName;
     @Autowired
-    @Qualifier("instanceAddress")
-    private String instanceAddress;
+    @Qualifier("instanceHost")
+    private String instanceHost;
+    @Autowired
+    @Qualifier("servicePort")
+    private Integer servicePort;
     @Value("${monitor.register.appName}")
     private String appName;
 
+    @SuppressWarnings("Duplicates")
     @RequestMapping("/status")
     public String status(Model model) {
         model.addAttribute("appName", appName);
         model.addAttribute("instanceName", instanceName);
-        model.addAttribute("instanceAddress", instanceAddress);
+        model.addAttribute("instanceHost", instanceHost);
+        model.addAttribute("servicePort", servicePort);
         model.addAttribute("system", SystemInfo.getSystemInfo());
         model.addAttribute("jvm", SystemInfo.getJvmInfo());
         return "jsonView"; // no view's name should match this.
