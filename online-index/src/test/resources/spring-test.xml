@@ -153,7 +153,7 @@
     <!-- 定义切面开始 { -->
     <bean id="elasticSearchRecorder" class="com.wfj.search.util.record.elasticsearch.ElasticSearchRecorder">
         <property name="esClient" ref="esClient"/>
-        <property name="index" value="${es.index}"/>
+        <property name="index" value="${es.operation.index}"/>
         <property name="sidGenerator">
             <bean class="com.wfj.search.util.record.zookeeper.ZkCounterSidGenerator">
                 <property name="versionNoCounterPath" value="${operation.versionNoCounterPath}"/>
