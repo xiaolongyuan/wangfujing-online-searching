@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -54,8 +53,8 @@ public class NewProductsAlwaysFacetAttrsSearchTask extends NewProductsAlwaysFace
         try {
             propertyIdFFC = this.itemIAO.facetField(query, "propertyIds_" + channel);
         } catch (SolrSearchException e) {
-            logger.error("facet属性失败, 0x530014", e);
-            throw new RuntimeTrackingException(new TrackingException(e, "0x530014"));
+            logger.error("facet属性失败, 0x530061", e);
+            throw new RuntimeTrackingException(new TrackingException(e, "0x530061"));
         }
         propertyIdFFC.stream().map(FacetField.Count::getName)
                 .filter(propertyId -> StringUtils.isNotBlank(propertyId) && !"0".equals(propertyId))
@@ -66,15 +65,15 @@ public class NewProductsAlwaysFacetAttrsSearchTask extends NewProductsAlwaysFace
                             properties.add(propertyDisplayPojo);
                         }
                     } catch (Exception e) {
-                        logger.error("从ES恢复属性[{}]失败, 0x530015", propertyId, e);
-                        throw new RuntimeTrackingException(new TrackingException(e, "0x530015"));
+                        logger.error("从ES恢复属性[{}]失败, 0x530062", propertyId, e);
+                        throw new RuntimeTrackingException(new TrackingException(e, "0x530062"));
                     }
                 });
         try {
             propertyValueIdFFCs = this.itemIAO.facetPropertyValueIds(query, properties, channel);
         } catch (SolrSearchException e) {
-            logger.error("facet属性失败, 0x530016", e);
-            throw new RuntimeTrackingException(new TrackingException(e, "0x530016"));
+            logger.error("facet属性失败, 0x530063", e);
+            throw new RuntimeTrackingException(new TrackingException(e, "0x530063"));
         }
         for (String propertyId : propertyValueIdFFCs.keySet()) {
             List<FacetField.Count> counts = propertyValueIdFFCs.get(propertyId);
@@ -93,20 +92,16 @@ public class NewProductsAlwaysFacetAttrsSearchTask extends NewProductsAlwaysFace
                                 values.add(propertyValueDisplayPojo);
                             }
                         } catch (Exception e) {
-                            logger.error("从ES恢复属性值[{}]失败, 0x530017", propertyValueId, e);
-                            throw new RuntimeTrackingException(new TrackingException(e, "0x530017"));
+                            logger.error("从ES恢复属性值[{}]失败, 0x530064", propertyValueId, e);
+                            throw new RuntimeTrackingException(new TrackingException(e, "0x530064"));
                         }
                     });
             if (values.size() > 0) {
                 propertyValues.put(propertyId, values);
             }
         }
-        properties.sort(new Comparator<PropertyDisplayPojo>() {
-            @Override
-            public int compare(PropertyDisplayPojo o1, PropertyDisplayPojo o2) {
-                return o1.getPropertyOrder() - o2.getPropertyOrder();
-            }
-        });
+        properties.sort((o1, o2) -> o1.getPropertyOrder() - o2.getPropertyOrder());
+        //noinspection Duplicates
         for (PropertyDisplayPojo property : properties) {
             List<PropertyValueDisplayPojo> pvList = propertyValues.get(property.getId());
             if (pvList == null || pvList.size() < 1) {

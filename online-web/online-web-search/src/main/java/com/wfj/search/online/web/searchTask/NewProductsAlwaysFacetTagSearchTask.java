@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -57,13 +56,13 @@ public class NewProductsAlwaysFacetTagSearchTask extends NewProductsAlwaysFacetS
                                 tags.add(tagDisplayPojo);
                             }
                         } catch (Exception e) {
-                            logger.error("从ES恢复标签[{}]失败, 0x530029", tagId, e);
-                            throw new RuntimeTrackingException(new TrackingException(e, "0x530029"));
+                            logger.error("从ES恢复标签[{}]失败, 0x530088", tagId, e);
+                            throw new RuntimeTrackingException(new TrackingException(e, "0x530088"));
                         }
                     });
         } catch (SolrSearchException e) {
-            logger.error("facet标签失败, 0x530028", e);
-            throw new RuntimeTrackingException(new TrackingException(e, "0x530028"));
+            logger.error("facet标签失败, 0x530087", e);
+            throw new RuntimeTrackingException(new TrackingException(e, "0x530087"));
         }
         Map<String, Long> counts = Maps.newHashMap();
         for (FacetField.Count count : idFFC) {
@@ -75,12 +74,7 @@ public class NewProductsAlwaysFacetTagSearchTask extends NewProductsAlwaysFacetS
             tag.setFacetCount(count == null ? 0 : count.intValue());
         });
         availableTags.addAll(tags);
-        availableTags.sort(new Comparator<TagDisplayPojo>() {
-            @Override
-            public int compare(TagDisplayPojo o1, TagDisplayPojo o2) {
-                return o2.getFacetCount() - o1.getFacetCount();
-            }
-        });
+        availableTags.sort((o1, o2) -> o2.getFacetCount() - o1.getFacetCount());
         logger.debug("##doSearch##baseQuery after {}: {}", getClass().getSimpleName(), baseQuery);
         String afterQuery = baseQuery.toString();
         if (!afterQuery.equals(beforeQuery)) {

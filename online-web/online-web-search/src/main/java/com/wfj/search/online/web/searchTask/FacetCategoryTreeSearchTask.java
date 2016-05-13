@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -93,12 +92,7 @@ public class FacetCategoryTreeSearchTask implements SearchTask {
     }
 
     private void sortCategories(List<CategoryDisplayPojo> categories) {
-        Collections.sort(categories, new Comparator<CategoryDisplayPojo>() {
-            @Override
-            public int compare(CategoryDisplayPojo o1, CategoryDisplayPojo o2) {
-                return o1.getOrder() - o2.getOrder();
-            }
-        });
+        Collections.sort(categories, (o1, o2) -> o1.getOrder() - o2.getOrder());
         for (CategoryDisplayPojo category : categories) {
             sortCategories(category.getChildren());
         }

@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -57,13 +56,13 @@ public class NewProductsAlwaysFacetStandardSearchTask extends NewProductsAlwaysF
                                 standards.add(standardDisplayPojo);
                             }
                         } catch (Exception e) {
-                            logger.error("从ES恢复规格[{}]失败, 0x530027", standardId, e);
-                            throw new RuntimeTrackingException(new TrackingException(e, "0x530027"));
+                            logger.error("从ES恢复规格[{}]失败, 0x530084", standardId, e);
+                            throw new RuntimeTrackingException(new TrackingException(e, "0x530084"));
                         }
                     });
         } catch (SolrSearchException e) {
-            logger.error("facet规格失败, 0x530026", e);
-            throw new RuntimeTrackingException(new TrackingException(e, "0x530026"));
+            logger.error("facet规格失败, 0x530083", e);
+            throw new RuntimeTrackingException(new TrackingException(e, "0x530083"));
         }
         Map<String, Long> counts = Maps.newHashMap();
         for (FacetField.Count count : standardIdFFC) {
@@ -76,12 +75,7 @@ public class NewProductsAlwaysFacetStandardSearchTask extends NewProductsAlwaysF
             standard.setFacetCount(count == null ? 0 : count.intValue());
         });
         availableStandards.addAll(standards);
-        availableStandards.sort(new Comparator<StandardDisplayPojo>() {
-            @Override
-            public int compare(StandardDisplayPojo o1, StandardDisplayPojo o2) {
-                return o2.getFacetCount() - o1.getFacetCount();
-            }
-        });
+        availableStandards.sort((o1, o2) -> o2.getFacetCount() - o1.getFacetCount());
         logger.debug("##doSearch##baseQuery after {}: {}", getClass().getSimpleName(), baseQuery);
         String afterQuery = baseQuery.toString();
         if (!afterQuery.equals(beforeQuery)) {

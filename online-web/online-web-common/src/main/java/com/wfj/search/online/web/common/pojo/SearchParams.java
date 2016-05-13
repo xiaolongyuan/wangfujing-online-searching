@@ -41,6 +41,10 @@ public class SearchParams {
     private String channel;
     private boolean facetBrandCategories;
 
+    private String gp;
+    private String gpTitle;
+    private List<String> gpItemIds = Collections.synchronizedList(Lists.newArrayList());
+
     public String getInputQuery() {
         return inputQuery;
     }
@@ -180,6 +184,32 @@ public class SearchParams {
         this.facetBrandCategories = facetBrandCategories;
     }
 
+    public String getGp() {
+        return gp;
+    }
+
+    public void setGp(String gp) {
+        this.gp = gp;
+    }
+
+    @SuppressWarnings("unused")
+    public String getGpTitle() {
+        return gpTitle;
+    }
+
+    public void setGpTitle(String gpTitle) {
+        this.gpTitle = gpTitle;
+    }
+
+    public List<String> getGpItemIds() {
+        return gpItemIds;
+    }
+
+    @SuppressWarnings("unused")
+    public void setGpItemIds(List<String> gpItemIds) {
+        this.gpItemIds = gpItemIds;
+    }
+
     @JsonIgnore
     @SuppressWarnings("unused")
     public boolean isQueryOnly() {
@@ -204,6 +234,7 @@ public class SearchParams {
         if (!selectedTags.getSelected().isEmpty()) {
             return false;
         }
+        //noinspection RedundantIfStatement
         if (currentPage > 1) {
             return false;
         }
@@ -232,6 +263,9 @@ public class SearchParams {
         copy.setDateFrom(this.getDateFrom());
         copy.setDateTo(this.getDateTo());
         copy.setFacetBrandCategories(this.isFacetBrandCategories());
+        copy.setGp(this.getGp());
+        copy.setGpTitle(this.getGpTitle());
+        copy.getGpItemIds().addAll(this.getGpItemIds());
         return copy;
     }
 
@@ -349,9 +383,10 @@ public class SearchParams {
                 + "_" + this.isBrand()
                 + "_" + this.getRows()
                 + "_" + this.getChannel()
-                + ((dateFrom == null) ? "" : "_" + dateFrom.getTime())
-                + ((dateTo == null ) ? "" : "_" + dateTo.getTime())
-                + this.isFacetBrandCategories();
+                + "_" + ((dateFrom == null) ? "" : dateFrom.getTime())
+                + "_" + ((dateTo == null ) ? "" : dateTo.getTime())
+                + "_" + this.isFacetBrandCategories()
+                + "_" + this.getGp();
     }
 
     @SuppressWarnings("unused")

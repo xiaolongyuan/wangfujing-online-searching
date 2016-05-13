@@ -48,6 +48,7 @@ public class ListController {
             @PathVariable("currentPage") Integer currentPage,
             HttpServletRequest request) {
         SearchParams searchParams;
+        //noinspection Duplicates
         try {
             searchParams = this.searchParamService
                     .restoreParams(null, rows, cat1, cat2, cat3, brandIds, price, standardIds, colors, attrs,

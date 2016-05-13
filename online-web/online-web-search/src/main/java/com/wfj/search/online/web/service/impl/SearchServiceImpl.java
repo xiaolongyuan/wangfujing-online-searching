@@ -26,7 +26,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -52,9 +51,10 @@ public class SearchServiceImpl implements ISearchService {
     private final List<SearchTask> searchTasks = Collections.synchronizedList(Lists.newArrayList());
     private final List<SearchTask> listTasks = Collections.synchronizedList(Lists.newArrayList());
     private final List<SearchTask> brandListTasks = Collections.synchronizedList(Lists.newArrayList());
-    private final List<SearchTask> newProductsListTasks = Collections.synchronizedList(new ArrayList<>());
-    private final List<SearchTask> listAllCategoriesTasks = Collections.synchronizedList(new ArrayList<>());
-    private final List<SearchTask> listAvailableBrandsTasks = Collections.synchronizedList(new ArrayList<>());
+    private final List<SearchTask> newProductsListTasks = Collections.synchronizedList(Lists.newArrayList());
+    private final List<SearchTask> gpTasks = Collections.synchronizedList(Lists.newArrayList());
+    private final List<SearchTask> listAllCategoriesTasks = Collections.synchronizedList(Lists.newArrayList());
+    private final List<SearchTask> listAvailableBrandsTasks = Collections.synchronizedList(Lists.newArrayList());
     @Autowired
     private SortParamRestorer sortParamRestorer;
     @Autowired
@@ -92,25 +92,37 @@ public class SearchServiceImpl implements ISearchService {
     @Autowired
     private NewProductsAlwaysFacetBrandSearchTask newProductsAlwaysFacetBrandSearchTask;
     @Autowired
+    private AlwaysFacetBrandSearchTask alwaysFacetBrandSearchTask;
+    @Autowired
     private BrandAlwaysFacetPriceRangeSearchTask brandAlwaysFacetPriceRangeSearchTask;
     @Autowired
     private NewProductsAlwaysFacetPriceRangeSearchTask newProductsAlwaysFacetPriceRangeSearchTask;
+    @Autowired
+    private AlwaysFacetPriceRangeSearchTask alwaysFacetPriceRangeSearchTask;
     @Autowired
     private BrandAlwaysFacetStandardSearchTask brandAlwaysFacetStandardSearchTask;
     @Autowired
     private NewProductsAlwaysFacetStandardSearchTask newProductsAlwaysFacetStandardSearchTask;
     @Autowired
+    private AlwaysFacetStandardSearchTask alwaysFacetStandardSearchTask;
+    @Autowired
     private BrandAlwaysFacetColorSearchTask brandAlwaysFacetColorSearchTask;
     @Autowired
     private NewProductsAlwaysFacetColorSearchTask newProductsAlwaysFacetColorSearchTask;
+    @Autowired
+    private AlwaysFacetColorSearchTask alwaysFacetColorSearchTask;
     @Autowired
     private BrandAlwaysFacetAttrsSearchTask brandAlwaysFacetAttrsSearchTask;
     @Autowired
     private NewProductsAlwaysFacetAttrsSearchTask newProductsAlwaysFacetAttrsSearchTask;
     @Autowired
+    private AlwaysFacetAttrsSearchTask alwaysFacetAttrsSearchTask;
+    @Autowired
     private BrandAlwaysFacetTagSearchTask brandAlwaysFacetTagSearchTask;
     @Autowired
     private NewProductsAlwaysFacetTagSearchTask newProductsAlwaysFacetTagSearchTask;
+    @Autowired
+    private AlwaysFacetTagSearchTask alwaysFacetTagSearchTask;
     @Autowired
     private BrandListMainQuerySearchTask brandListMainQuerySearchTask;
     @Autowired
@@ -166,6 +178,16 @@ public class SearchServiceImpl implements ISearchService {
         this.newProductsListTasks.add(this.newProductsAlwaysFacetTagSearchTask);
         this.newProductsListTasks.add(this.mainQuerySearchTask);
         this.newProductsListTasks.add(this.sortsSearchTask);
+        // gp tasks
+        this.gpTasks.add(this.justQFacetCategoryTreeSearchTask);
+        this.gpTasks.add(this.alwaysFacetBrandSearchTask);
+        this.gpTasks.add(this.alwaysFacetPriceRangeSearchTask);
+        this.gpTasks.add(this.alwaysFacetStandardSearchTask);
+        this.gpTasks.add(this.alwaysFacetColorSearchTask);
+        this.gpTasks.add(this.alwaysFacetAttrsSearchTask);
+        this.gpTasks.add(this.alwaysFacetTagSearchTask);
+        this.gpTasks.add(this.mainQuerySearchTask);
+        this.gpTasks.add(this.sortsSearchTask);
         // list all categories tasks
         this.listAllCategoriesTasks.add(this.justQFacetCategoryTreeSearchTask);
         // list available brands tasks
@@ -268,6 +290,12 @@ public class SearchServiceImpl implements ISearchService {
     @Cacheable(value = VALUE_KEY_SEARCH_WEB_DO_SEARCH, unless = "#result.successList.size() == 0")
     public SearchResult doNewProductsList(SearchParams searchParams) throws TrackingException {
         return this.searchTemplate(searchParams, "/new-products", () -> SearchServiceImpl.this.newProductsListTasks);
+    }
+
+    @Override
+    @Cacheable(value = VALUE_KEY_SEARCH_WEB_DO_SEARCH, unless = "#result.successList.size() == 0")
+    public SearchResult doGpSearch(SearchParams searchParams) throws TrackingException {
+        return this.searchTemplate(searchParams, "/gpDisplay", () -> SearchServiceImpl.this.gpTasks);
     }
 
     @Override

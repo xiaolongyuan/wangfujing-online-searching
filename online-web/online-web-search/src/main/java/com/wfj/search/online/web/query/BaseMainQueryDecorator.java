@@ -68,8 +68,8 @@ public class BaseMainQueryDecorator implements QueryDecorator {
         query
                 .set(GroupParams.GROUP, true)
                 .set(GroupParams.GROUP_FIELD, "spuId")
-                        // group返回数据数量，默认为1。根据spuId分组，恢复spu数据只取第一个item数据，所以最少返回1条即可。
-                        // .set(GroupParams.GROUP_LIMIT, 1000)
+                // group返回数据数量，默认为1。根据spuId分组，恢复spu数据只取第一个item数据，所以最少返回1条即可。
+                // .set(GroupParams.GROUP_LIMIT, 1000)
                 .set(GroupParams.GROUP_TOTAL_COUNT, true)
                 .set(GroupParams.GROUP_FACET, true)
                 .set(GroupParams.GROUP_TRUNCATE, true);
@@ -133,6 +133,10 @@ public class BaseMainQueryDecorator implements QueryDecorator {
                 query.addFilterQuery("onSellSince:[" + dateFromStr + " TO " + dateToStr + "]");
             } catch (ParseException ignored) {
             }
+        }
+        if (searchParams.getGpItemIds() != null && !searchParams.getGpItemIds().isEmpty()) {
+            query.addFilterQuery(
+                    "{!q.op=OR}itemId:(" + StringUtils.join(searchParams.getGpItemIds().iterator(), ' ') + ")");
         }
     }
 }

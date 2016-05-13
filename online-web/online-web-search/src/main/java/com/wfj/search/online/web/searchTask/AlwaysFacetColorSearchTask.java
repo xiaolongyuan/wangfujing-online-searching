@@ -27,8 +27,8 @@ import java.util.Map;
  * @author liufl
  * @since 1.0.0
  */
-@Component("newProductsAlwaysFacetColorSearchTask")
-public class NewProductsAlwaysFacetColorSearchTask extends NewProductsAlwaysFacetSearchTaskBase implements SearchTask {
+@Component("alwaysFacetColorSearchTask")
+public class AlwaysFacetColorSearchTask extends NewProductsAlwaysFacetSearchTaskBase implements SearchTask {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private IItemIAO itemIAO;
@@ -56,13 +56,13 @@ public class NewProductsAlwaysFacetColorSearchTask extends NewProductsAlwaysFace
                                 colors.add(colorDisplayPojo);
                             }
                         } catch (Exception e) {
-                            logger.error("从ES恢复色系[{}]失败, 0x530072", colorId, e);
-                            throw new RuntimeTrackingException(new TrackingException(e, "0x530072"));
+                            logger.error("从ES恢复色系[{}]失败, 0x530074", colorId, e);
+                            throw new RuntimeTrackingException(new TrackingException(e, "0x530074"));
                         }
                     });
         } catch (SolrSearchException e) {
-            logger.error("facet颜色失败, 0x530071", e);
-            throw new RuntimeTrackingException(new TrackingException(e, "0x530071"));
+            logger.error("facet颜色失败, 0x530073", e);
+            throw new RuntimeTrackingException(new TrackingException(e, "0x530073"));
         }
         Map<String, Long> counts = Maps.newHashMap();
         for (FacetField.Count count : colorAliasFFC) {

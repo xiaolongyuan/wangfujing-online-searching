@@ -27,9 +27,9 @@ import java.util.Map;
  * @author liuxh
  * @since 1.0.0
  */
-@Component("newProductsAlwaysFacetBrandSearchTask")
-public class NewProductsAlwaysFacetBrandSearchTask extends NewProductsAlwaysFacetSearchTaskBase implements SearchTask {
-    private static final Logger logger = LoggerFactory.getLogger(NewProductsAlwaysFacetBrandSearchTask.class);
+@Component("alwaysFacetBrandSearchTask")
+public class AlwaysFacetBrandSearchTask implements SearchTask {
+    private static final Logger logger = LoggerFactory.getLogger(AlwaysFacetBrandSearchTask.class);
     @Autowired
     private IItemIAO itemIAO;
     @Autowired
@@ -39,7 +39,7 @@ public class NewProductsAlwaysFacetBrandSearchTask extends NewProductsAlwaysFace
     public void doSearch(SearchResult searchResult, SolrQuery baseQuery) {
         logger.debug("##doSearch##baseQuery before {}: {}", getClass().getSimpleName(), baseQuery);
         String beforeQuery = baseQuery.toString();
-        SolrQuery query = baseFacetUseQuery(baseQuery);
+        SolrQuery query = baseQuery.getCopy();
         final List<BrandDisplayPojo> brands = Collections.synchronizedList(Lists.newArrayList());
         List<FacetField.Count> brandIdFFC;
         try {
@@ -53,13 +53,13 @@ public class NewProductsAlwaysFacetBrandSearchTask extends NewProductsAlwaysFace
                                 brands.add(brandDisplayPojo);
                             }
                         } catch (Exception e) {
-                            logger.error("从ES恢复品牌[{}]失败, 0x530019", brandId, e);
-                            throw new RuntimeTrackingException(new TrackingException(e, "0x530019"));
+                            logger.error("从ES恢复品牌[{}]失败, 0x530070", brandId, e);
+                            throw new RuntimeTrackingException(new TrackingException(e, "0x530070"));
                         }
                     });
         } catch (SolrSearchException e) {
-            logger.error("facet品牌失败, 0x530018", e);
-            throw new RuntimeTrackingException(new TrackingException(e, "0x530018"));
+            logger.error("facet品牌失败, 0x530069", e);
+            throw new RuntimeTrackingException(new TrackingException(e, "0x530069"));
         }
         Map<String, Long> counts = Maps.newHashMap();
         for (FacetField.Count count : brandIdFFC) {

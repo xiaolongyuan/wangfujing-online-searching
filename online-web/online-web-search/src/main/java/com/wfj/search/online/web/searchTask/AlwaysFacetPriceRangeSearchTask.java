@@ -24,8 +24,8 @@ import java.util.List;
  * @author liuxh
  * @since 1.0.0
  */
-@Component("newProductsAlwaysFacetPriceRangeSearchTask")
-public class NewProductsAlwaysFacetPriceRangeSearchTask extends NewProductsAlwaysFacetSearchTaskBase implements SearchTask {
+@Component("alwaysFacetPriceRangeSearchTask")
+public class AlwaysFacetPriceRangeSearchTask extends NewProductsAlwaysFacetSearchTaskBase implements SearchTask {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private IRangeRuleService rangeRuleService;
@@ -45,8 +45,8 @@ public class NewProductsAlwaysFacetPriceRangeSearchTask extends NewProductsAlway
         try {
             rules = this.rangeRuleService.listRangeRules(channel);
         } catch (Exception e) {
-            logger.error("加载排序规则失败, 0x530075", e);
-            throw new RuntimeTrackingException(new TrackingException(e, "0x530075"));
+            logger.error("加载排序规则失败, 0x530079", e);
+            throw new RuntimeTrackingException(new TrackingException(e, "0x530079"));
         }
         IntervalContentPojo rule = null;
         for (IntervalContentPojo _rule : rules) {
@@ -56,8 +56,8 @@ public class NewProductsAlwaysFacetPriceRangeSearchTask extends NewProductsAlway
             }
         }
         if (rule == null) {
-            logger.error("价格区间配置有问题, 0x530076");
-            throw new RuntimeTrackingException(new TrackingException("0x530076"));
+            logger.error("价格区间配置有问题, 0x530080");
+            throw new RuntimeTrackingException(new TrackingException("0x530080"));
         }
         doFacetPriceRange(query, searchResult, rule);
         logger.debug("##doSearch##baseQuery after {}: {}", getClass().getSimpleName(), baseQuery);
@@ -72,16 +72,16 @@ public class NewProductsAlwaysFacetPriceRangeSearchTask extends NewProductsAlway
         try {
             ruleDetails = this.rangeRuleService.listRangeRuleDetails(rule.getSid());
         } catch (Exception e) {
-            logger.error("加载排序规则[{}]明细失败, 0x530077", rule.getSid(), e);
-            throw new RuntimeTrackingException(new TrackingException(e, "0x530077"));
+            logger.error("加载排序规则[{}]明细失败, 0x530081", rule.getSid(), e);
+            throw new RuntimeTrackingException(new TrackingException(e, "0x530081"));
         }
         List<RangeDisplayPojo> availableRanges;
         try {
             availableRanges = this.itemIAO.facetPriceRange(query, rule, ruleDetails);
         } catch (SolrSearchException e) {
             String msg = "facet" + rule.getShowText() + "区间失败";
-            logger.error(msg + ", 0x530078", e);
-            throw new RuntimeTrackingException(new TrackingException(e, "0x530078"));
+            logger.error(msg + ", 0x530082", e);
+            throw new RuntimeTrackingException(new TrackingException(e, "0x530082"));
         }
         if (availableRanges != null && availableRanges.size() > 0) {
             searchResult.getFilters().getAvailableRanges().getAvailables().addAll(availableRanges);

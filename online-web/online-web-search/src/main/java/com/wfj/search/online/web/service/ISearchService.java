@@ -48,6 +48,8 @@ public interface ISearchService {
      */
     SearchResult doNewProductsList(SearchParams searchParams) throws TrackingException;
 
+    SearchResult doGpSearch(SearchParams searchParams) throws TrackingException;
+
     PagedResult<SpuDisplayPojo> simpleSearch(String value, int fetch, String channel) throws TrackingException;
 
     SearchResult doListAllCategories(SearchParams params) throws TrackingException;

@@ -30,8 +30,8 @@ import java.util.Map;
  * @author liufl
  * @since 1.0.0
  */
-@Component("brandAlwaysFacetAttrsSearchTask")
-public class BrandAlwaysFacetAttrsSearchTask extends BrandAlwaysFacetSearchTaskBase implements SearchTask {
+@Component("alwaysFacetAttrsSearchTask")
+public class AlwaysFacetAttrsSearchTask implements SearchTask {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private IItemIAO itemIAO;
@@ -44,7 +44,7 @@ public class BrandAlwaysFacetAttrsSearchTask extends BrandAlwaysFacetSearchTaskB
     public void doSearch(SearchResult searchResult, SolrQuery baseQuery) {
         logger.debug("##doSearch##baseQuery before {}: {}", getClass().getSimpleName(), baseQuery);
         String beforeQuery = baseQuery.toString();
-        SolrQuery query = baseFacetUseQuery(baseQuery);
+        SolrQuery query = baseQuery.getCopy();
         List<FacetField.Count> propertyIdFFC;
         Map<String, List<FacetField.Count>> propertyValueIdFFCs;
         List<PropertyDisplayPojo> properties = Collections.synchronizedList(Lists.newArrayList());
@@ -53,8 +53,8 @@ public class BrandAlwaysFacetAttrsSearchTask extends BrandAlwaysFacetSearchTaskB
         try {
             propertyIdFFC = this.itemIAO.facetField(query, "propertyIds_" + channel);
         } catch (SolrSearchException e) {
-            logger.error("facet属性失败, 0x530014", e);
-            throw new RuntimeTrackingException(new TrackingException(e, "0x530014"));
+            logger.error("facet属性失败, 0x530065", e);
+            throw new RuntimeTrackingException(new TrackingException(e, "0x530065"));
         }
         propertyIdFFC.stream().map(FacetField.Count::getName)
                 .filter(propertyId -> StringUtils.isNotBlank(propertyId) && !"0".equals(propertyId))
@@ -65,15 +65,15 @@ public class BrandAlwaysFacetAttrsSearchTask extends BrandAlwaysFacetSearchTaskB
                             properties.add(propertyDisplayPojo);
                         }
                     } catch (Exception e) {
-                        logger.error("从ES恢复属性[{}]失败, 0x530015", propertyId, e);
-                        throw new RuntimeTrackingException(new TrackingException(e, "0x530015"));
+                        logger.error("从ES恢复属性[{}]失败, 0x530066", propertyId, e);
+                        throw new RuntimeTrackingException(new TrackingException(e, "0x530066"));
                     }
                 });
         try {
             propertyValueIdFFCs = this.itemIAO.facetPropertyValueIds(query, properties, channel);
         } catch (SolrSearchException e) {
-            logger.error("facet属性失败, 0x530016", e);
-            throw new RuntimeTrackingException(new TrackingException(e, "0x530016"));
+            logger.error("facet属性失败, 0x530067", e);
+            throw new RuntimeTrackingException(new TrackingException(e, "0x530067"));
         }
         for (String propertyId : propertyValueIdFFCs.keySet()) {
             List<FacetField.Count> counts = propertyValueIdFFCs.get(propertyId);
@@ -92,8 +92,8 @@ public class BrandAlwaysFacetAttrsSearchTask extends BrandAlwaysFacetSearchTaskB
                                 values.add(propertyValueDisplayPojo);
                             }
                         } catch (Exception e) {
-                            logger.error("从ES恢复属性值[{}]失败, 0x530017", propertyValueId, e);
-                            throw new RuntimeTrackingException(new TrackingException(e, "0x530017"));
+                            logger.error("从ES恢复属性值[{}]失败, 0x530068", propertyValueId, e);
+                            throw new RuntimeTrackingException(new TrackingException(e, "0x530068"));
                         }
                     });
             if (values.size() > 0) {
