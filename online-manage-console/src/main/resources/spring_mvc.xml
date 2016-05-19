@@ -125,7 +125,8 @@
     </context:component-scan>
 
     <bean id="springWebMvcServiceScanner" class="com.wfj.search.utils.zookeeper.discovery.SpringWebMvcServiceScanner"/>
-    <bean id="register" class="com.wfj.search.utils.zookeeper.discovery.SpringWebMvcServiceRegister">
+    <bean id="register" class="com.wfj.search.utils.zookeeper.discovery.SpringWebMvcServiceRegister"
+          init-method="register">
         <constructor-arg name="springWebMvcServiceScanner" ref="springWebMvcServiceScanner"/>
         <constructor-arg name="nodeHost" ref="instanceHost"/>
         <constructor-arg name="servicePort" ref="servicePort"/>
