@@ -16,7 +16,7 @@
     "confirmed": {
       "type": "boolean"
     },
-    "deleted": {
+    "delete": {
       "type": "boolean"
     }
   }

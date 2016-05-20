@@ -43,7 +43,7 @@ public class GpEsIaoImpl implements GpEsIao {
                 .setSearchType(SearchType.DEFAULT)
                 .setQuery(QueryBuilders.boolQuery()
                         .must(QueryBuilders.termQuery("confirmed", true))
-                        .must(QueryBuilders.termQuery("deleted", false)))
+                        .must(QueryBuilders.termQuery("delete", false)))
                 .setSize(fetch).setFrom(start).get();
         SearchHit[] hits = response.getHits().getHits();
         List<Gp> gps = Lists.newArrayListWithExpectedSize(hits.length);
