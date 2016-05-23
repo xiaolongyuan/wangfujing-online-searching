@@ -72,6 +72,14 @@ public class IndexServiceImpl implements IIndexService {
                 break;
             }
             list.forEach(item -> item.setOperationSid(version));
+            list = list.stream().map(item -> {
+                if (item.getUpTime() == null) {
+                    multiFailure.addFailure(
+                            new Failure(DataType.item, FailureType.save2Index, item.getItemId(), "上架时间为空", null));
+                    return null;
+                }
+                return item;
+            }).filter(item -> item != null).collect(Collectors.toList());
             int size = list.size();
             try {
                 this.itemIAO.saveItems(list);
