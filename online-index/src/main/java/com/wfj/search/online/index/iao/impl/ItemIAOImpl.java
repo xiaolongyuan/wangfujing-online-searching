@@ -19,6 +19,8 @@ import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.DisMaxParams;
 import org.apache.solr.common.params.GroupParams;
 import org.apache.solr.common.params.SpellingParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -31,7 +33,6 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 /**
  * <br/>create at 15-7-21
@@ -42,6 +43,7 @@ import java.util.stream.Collectors;
 @Component("itemIAO")
 public class ItemIAOImpl implements IItemIAO {
     private static final String COLLECTION_NAME = CollectionNames.ITEM_COLLECTION_NAME;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private SolrClient solrClient;
     @Qualifier("boostStrategy")
@@ -60,6 +62,8 @@ public class ItemIAOImpl implements IItemIAO {
                 Thread.currentThread(), tracker);
         CompletionService<Void> completionService = new ExecutorCompletionService<>(threadPool);
         final List<SolrInputDocument> docs = Collections.synchronizedList(Lists.newArrayListWithExpectedSize(items.size()));
+        logger.debug("plan to index {} items", items.size());
+        logger.debug("boost items, items count: {}", items.size());
         for (ItemIndexPojo item : items) {
             completionService.submit(() -> docs.add(boostStrategy.boost(solrClient, item)), null);
         }
@@ -71,9 +75,12 @@ public class ItemIAOImpl implements IItemIAO {
             Throwable throwable = tracker.get();
             throw new IndexException(e.toString(), throwable);
         }
+        logger.debug("{} items, {} docs", items.size(), docs.size());
         try {
             if (!docs.isEmpty()) {
                 this.solrClient.add(COLLECTION_NAME, docs);
+            } else {
+                logger.debug("nothing to index");
             }
         } catch (SolrServerException | IOException e) {
             throw new IndexException(e);
