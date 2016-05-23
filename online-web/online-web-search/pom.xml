@@ -54,6 +54,10 @@
             <artifactId>ok-http-util</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.wfj.search-utils</groupId>
+            <artifactId>spring-cache-redis-error-handler</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.wfj.search</groupId>
             <artifactId>online-common</artifactId>
             <version>${project.version}</version>

@@ -132,7 +132,9 @@
         <property name="usePrefix" value="true"/>
     </bean>
     <bean id="stringRedisKeyGenerator" class="com.wfj.search.utils.cache.SimpleParamStringKeyGenerator"/>
-    <cache:annotation-driven key-generator="stringRedisKeyGenerator" cache-manager="cacheManager"/>
+    <bean id="skipCacheErrorHandler" class="com.wfj.search.utils.cache.error.SkipCacheErrorHandler"/>
+    <cache:annotation-driven key-generator="stringRedisKeyGenerator" cache-manager="cacheManager"
+                             error-handler="skipCacheErrorHandler"/>
 
     <jee:jndi-lookup jndi-name="service/host" id="instanceHost" expected-type="java.lang.String"/>
     <jee:jndi-lookup jndi-name="service/port" id="servicePort" expected-type="java.lang.Integer"/>
