@@ -41,6 +41,11 @@
         <appender-ref ref="stdout"/>
     </logger>
 
+    <logger name="com.lambdaworks" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
     <root level="DEBUG">
         <appender-ref ref="stdout"/>
     </root>
