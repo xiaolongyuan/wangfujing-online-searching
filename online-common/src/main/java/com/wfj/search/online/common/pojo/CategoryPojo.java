@@ -127,18 +127,18 @@ public class CategoryPojo {
     }
 
     /**
-     * 分类等级
+     * 分类等级 1 虚分类 非1 展示分类
      *
-     * @return 分类等级
+     * @return 分类等级 1 虚分类 非1 展示分类
      */
     public int getLevel() {
         return level;
     }
 
     /**
-     * 分类等级
+     * 分类等级 1 虚分类 非1 展示分类
      *
-     * @param level 分类等级
+     * @param level 分类等级 1 虚分类 非1 展示分类
      */
     public void setLevel(int level) {
         this.level = level;

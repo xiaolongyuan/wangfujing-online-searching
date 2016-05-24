@@ -388,9 +388,8 @@ public class PojoUtils {
         index.setLevel(category.getLevel());
         index.setOrder(category.getOrder());
         index.setChannel(category.getChannel());
-        String parentCategoryId = category.getParentCategoryId();
-        if (StringUtils.isNotBlank(parentCategoryId) && !"0".equals(parentCategoryId.trim())) {
-            CategoryPojo parent = pcmRequester.getCategoryInfo(parentCategoryId);
+        if (category.getLevel() != 1) {
+            CategoryPojo parent = pcmRequester.getCategoryInfo(category.getParentCategoryId());
             index.setParent(toIndexPojo(parent, pcmRequester));
         }
         return index;

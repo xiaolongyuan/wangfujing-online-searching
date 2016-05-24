@@ -1,7 +1,6 @@
 package com.wfj.search.online.index.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.apache.solr.client.solrj.beans.Field;
 
 /**
  * 索引用商品分类POJO
@@ -12,25 +11,15 @@ import org.apache.solr.client.solrj.beans.Field;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CategoryIndexPojo {
-    @Field("categoryId")
     private String categoryId;
-    @Field("categoryName")
     private String categoryName;
-    @Field("leafLevel")
     private boolean leafLevel;
-    @Field("selfBuilt")
     private boolean selfBuilt;
-    @Field("rootCategoryId")
     private String rootCategoryId;
-    @Field("parentCategoryId")
     private String parentCategoryId;
-    @Field("level")
-    private int level;
-    @Field("order")
+    private int level; // 1 虚分类 非1 展示分类
     private int order;
-    @Field("channel")
     private String channel;
-    @Field("operationSid")
     private Long operationSid;
 
     private CategoryIndexPojo parent;
@@ -147,16 +136,17 @@ public class CategoryIndexPojo {
     }
 
     /**
-     * 分类层级
+     * 分类层级 1 虚分类 非1 展示分类
      *
      * @return 分类层级
      */
+    @SuppressWarnings("unused")
     public int getLevel() {
         return level;
     }
 
     /**
-     * 分类层级
+     * 分类层级 1 虚分类 非1 展示分类
      *
      * @param level 分类层级
      */

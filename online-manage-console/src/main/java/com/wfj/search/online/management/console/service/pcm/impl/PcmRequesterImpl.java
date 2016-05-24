@@ -7,6 +7,7 @@ import com.wfj.search.online.common.pojo.CategoryPojo;
 import com.wfj.search.online.management.console.service.pcm.IPcmRequester;
 import okhttp3.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -155,15 +156,17 @@ public class PcmRequesterImpl implements IPcmRequester {
             if (success != null && success) {
                 CategoryPojo categoryPOJO = new CategoryPojo();
                 JSONObject categoryInfo = jsonObjectGet.getJSONObject("item");
-                categoryPOJO.setCategoryId(categoryInfo.getString("categoryId"));
-                categoryPOJO.setCategoryName(categoryInfo.getString("categoryName"));
-                categoryPOJO.setLeafLevel(categoryInfo.getBoolean("leafLevel"));
+                categoryPOJO.setCategoryId(Validate.notBlank(categoryInfo.getString("categoryId"), "分类编码为空").trim());
+                categoryPOJO
+                        .setCategoryName(Validate.notBlank(categoryInfo.getString("categoryName"), "分类名称为空").trim());
+                categoryPOJO.setLeafLevel(Validate.notNull(categoryInfo.getBoolean("leafLevel"), "是否叶子级分类标记为空"));
                 categoryPOJO.setSelfBuilt(categoryInfo.getBoolean("selfBuilt"));
-                categoryPOJO.setRootCategoryId(categoryInfo.getString("rootCategoryId"));
+                categoryPOJO.setRootCategoryId(
+                        Validate.notBlank(categoryInfo.getString("rootCategoryId"), "根分类编码为空").trim());
                 categoryPOJO.setParentCategoryId(categoryInfo.getString("parentCategoryId"));
-                categoryPOJO.setLevel(categoryInfo.getInteger("level"));
-                categoryPOJO.setOrder(categoryInfo.getInteger("order"));
-                categoryPOJO.setChannel(categoryInfo.getString("channel"));
+                categoryPOJO.setLevel(Validate.notNull(categoryInfo.getInteger("level"), "分类Level为空"));
+                categoryPOJO.setOrder(Validate.notNull(categoryInfo.getInteger("order"), "同级分类序号为空"));
+                categoryPOJO.setChannel(Validate.notBlank(categoryInfo.getString("channel"), "分类所属销售渠道编码为空").trim());
                 return Optional.of(categoryPOJO);
             }
         } catch (Exception e) {
