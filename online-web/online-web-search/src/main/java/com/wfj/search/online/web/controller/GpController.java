@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -52,6 +53,41 @@ public class GpController {
         } catch (Exception e) {
             logger.error("搜索异常, 0x530091", e);
             request.setAttribute("errorCode", "0x530091");
+            throw e;
+        }
+        return "gpDisplay";
+    }
+
+    @RequestMapping("/gpDisplay/{cat1}-{cat2}-{cat3}-{brandIds}-{price}-{standardIds}-{colors}-{attrs}-{tagIds}-{sortId}-{currentPage}-0")
+    public String gpDisplay(Model model,
+            @PathVariable("cat1") String cat1,
+            @PathVariable("cat2") String cat2,
+            @PathVariable("cat3") String cat3,
+            @PathVariable("brandIds") String brandIds,
+            @PathVariable("price") String price,
+            @PathVariable("standardIds") String standardIds,
+            @PathVariable("colors") String colors,
+            @PathVariable("attrs") String attrs,
+            @PathVariable("tagIds") String tagIds,
+            @PathVariable("sortId") String sortId,
+            @PathVariable("currentPage") Integer currentPage,
+            @RequestParam(value = "fetch", required = false) Integer rows,
+            @RequestParam("gp") String gp,
+            HttpServletRequest request) {
+        SearchParams searchParams = this.searchParamService
+                .restoreParams(null, rows, cat1, cat2, cat3, brandIds, price, standardIds, colors, attrs, tagIds,
+                        sortId, currentPage, null);
+        this.restoreGpParams(searchParams, gp);
+        try {
+            SearchResult searchResult = this.searchService.doGpSearch(searchParams);
+            model.addAttribute("success", true);
+            model.addAttribute("result", searchResult);
+        } catch (TrackingException e) {
+            request.setAttribute("errorCode", e.getErrorCode());
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            logger.error("搜索异常, 0x530091", e);
+            request.setAttribute("errorCode", "GC0088");
             throw e;
         }
         return "gpDisplay";

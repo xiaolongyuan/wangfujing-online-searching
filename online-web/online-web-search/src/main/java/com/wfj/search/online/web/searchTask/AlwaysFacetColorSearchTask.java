@@ -28,7 +28,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 @Component("alwaysFacetColorSearchTask")
-public class AlwaysFacetColorSearchTask extends NewProductsAlwaysFacetSearchTaskBase implements SearchTask {
+public class AlwaysFacetColorSearchTask implements SearchTask {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private IItemIAO itemIAO;
@@ -39,7 +39,7 @@ public class AlwaysFacetColorSearchTask extends NewProductsAlwaysFacetSearchTask
     public void doSearch(SearchResult searchResult, SolrQuery baseQuery) {
         logger.debug("##doSearch##baseQuery before {}: {}", getClass().getSimpleName(), baseQuery);
         String beforeQuery = baseQuery.toString();
-        SolrQuery query = baseFacetUseQuery(baseQuery);
+        SolrQuery query = baseQuery.getCopy();
         List<FacetField.Count> colorAliasFFC;
         List<ColorDisplayPojo> colors = Collections.synchronizedList(Lists.newArrayList());
         try {

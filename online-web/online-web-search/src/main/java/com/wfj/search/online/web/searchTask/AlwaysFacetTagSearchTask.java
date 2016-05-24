@@ -28,7 +28,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 @Component("alwaysFacetTagSearchTask")
-public class AlwaysFacetTagSearchTask extends NewProductsAlwaysFacetSearchTaskBase implements SearchTask {
+public class AlwaysFacetTagSearchTask implements SearchTask {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private IItemIAO itemIAO;
@@ -39,7 +39,7 @@ public class AlwaysFacetTagSearchTask extends NewProductsAlwaysFacetSearchTaskBa
     public void doSearch(SearchResult searchResult, SolrQuery baseQuery) {
         logger.debug("##doSearch##baseQuery before {}: {}", getClass().getSimpleName(), baseQuery);
         String beforeQuery = baseQuery.toString();
-        SolrQuery query = baseFacetUseQuery(baseQuery);
+        SolrQuery query = baseQuery.getCopy();
         List<TagDisplayPojo> tags = Collections.synchronizedList(Lists.newArrayList());
         List<FacetField.Count> idFFC;
         try {

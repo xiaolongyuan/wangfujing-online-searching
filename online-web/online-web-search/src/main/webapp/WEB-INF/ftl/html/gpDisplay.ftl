@@ -83,8 +83,8 @@ ${navigationContent}
                                 <#if result.params.selectedCategories?size gt 0>
                                     <div class="gray-btn">
                                         <#assign firstCat=result.params.selectedCategories[0]>
-                                        <#assign condIndex=firstCat.url?lastIndexOf("/")>
-                                        <a href="${context.contextPath}${firstCat.url?substring(0, condIndex)}${firstCat.url?substring(condIndex)?replace(firstCat.id, "0")}.html">不限</a>
+                                        <#assign condIndex=firstCat.url?last_index_of("/")>
+                                        <a href="${context.contextPath}${firstCat.url?substring(0, condIndex)}${firstCat.url?substring(condIndex)?replace(firstCat.id, "0")}.html?gp=${result.params.gp}">不限</a>
                                     </div>
                                 <#else>
                                     <div class="gray-btn">不限</div>
@@ -106,7 +106,7 @@ ${navigationContent}
                                                     <li class="on"><a>${leafCat.display}</a></li>
                                                 <#else>
                                                     <li>
-                                                        <a href="${context.contextPath}${leafCat.url}.html">${leafCat.display}</a>
+                                                        <a href="${context.contextPath}${leafCat.url}.html?gp=${result.params.gp}">${leafCat.display}</a>
                                                     </li>
                                                 </#if>
                                             </#list>
@@ -122,7 +122,7 @@ ${navigationContent}
                             <td align="center">
                                 <#if result.params.selectedBrands.selected?size gt 0>
                                     <div class="gray-btn">
-                                        <a href="${context.contextPath}${result.params.selectedBrands.url}.html">不限</a>
+                                        <a href="${context.contextPath}${result.params.selectedBrands.url}.html?gp=${result.params.gp}">不限</a>
                                     </div>
                                 <#else>
                                     <div class="gray-btn">不限</div>
@@ -142,7 +142,7 @@ ${navigationContent}
                                             <li class="on"><a>${brand.display}</a></li>
                                         <#else>
                                             <li>
-                                                <a href="${context.contextPath}${brand.url}.html">${brand.display}</a>
+                                                <a href="${context.contextPath}${brand.url}.html?gp=${result.params.gp}">${brand.display}</a>
                                             </li>
                                         </#if>
                                     </#list>
@@ -157,7 +157,7 @@ ${navigationContent}
                                 <#if result.params.selectedRange??>
                                     <#assign sr=result.params.selectedRange.min + "_" + result.params.selectedRange.max>
                                     <div class="gray-btn"><a
-                                            href="${context.contextPath}${result.params.selectedRange.url}.html">不限</a>
+                                            href="${context.contextPath}${result.params.selectedRange.url}.html?gp=${result.params.gp}">不限</a>
                                     </div>
                                 <#else>
                                     <#assign sr="">
@@ -170,7 +170,7 @@ ${navigationContent}
                                         <#if sr == price.min + "_" + price.max>
                                             <li class="on"><a>${price.display}</a></li>
                                         <#else>
-                                            <li><a href="${context.contextPath}${price.url}.html">${price.display}</a>
+                                            <li><a href="${context.contextPath}${price.url}.html?gp=${result.params.gp}">${price.display}</a>
                                             </li>
                                         </#if>
                                     </#list>
@@ -184,7 +184,7 @@ ${navigationContent}
                             <td align="center">
                                 <#if result.params.selectedColors.selected?size gt 0>
                                     <div class="gray-btn"><a
-                                            href="${context.contextPath}${result.params.selectedColors.url}.html">不限</a>
+                                            href="${context.contextPath}${result.params.selectedColors.url}.html?gp=${result.params.gp}">不限</a>
                                     </div>
                                 <#else>
                                     <div class="gray-btn">不限</div>
@@ -203,7 +203,7 @@ ${navigationContent}
                                         <#if _c>
                                             <li class="on"><a>${color.display}</a></li>
                                         <#else>
-                                            <li><a href="${context.contextPath}${color.url}.html">${color.display}</a>
+                                            <li><a href="${context.contextPath}${color.url}.html?gp=${result.params.gp}">${color.display}</a>
                                             </li>
                                         </#if>
                                     </#list>
@@ -225,7 +225,7 @@ ${navigationContent}
                                         </#if>
                                     </#list>
                                     <#if _sp??>
-                                        <div class="gray-btn"><a href="${context.contextPath}${_sp.url}.html">不限</a>
+                                        <div class="gray-btn"><a href="${context.contextPath}${_sp.url}.html?gp=${result.params.gp}">不限</a>
                                         </div>
                                     <#else>
                                         <div class="gray-btn">不限</div>
@@ -246,7 +246,7 @@ ${navigationContent}
                                             <#if _c>
                                                 <li class="on"><a>${pv.display}</a></li>
                                             <#else>
-                                                <li><a href="${context.contextPath}${pv.url}.html">${pv.display}</a>
+                                                <li><a href="${context.contextPath}${pv.url}.html?gp=${result.params.gp}">${pv.display}</a>
                                                 </li>
                                             </#if>
                                         </#list>
@@ -292,7 +292,7 @@ ${navigationContent}
                                 </#if>
                             </#if>
                             <div class="item<#if _on> on</#if>"><a
-                                    href="${context.contextPath}${sortUrl}.html">${sort.display}${_arr}</a>
+                                    href="${context.contextPath}${sortUrl}.html?gp=${result.params.gp}">${sort.display}${_arr}</a>
                             </div>
                         </#list>
                         </div>
@@ -410,26 +410,26 @@ ${navigationContent}
                                 <a href="" class="page-btn next page-disabled">上一页</a>
                             </#if>
                             <#if result.pagination.currentPage gt 1>
-                                <a href="${context.contextPath}${result.pagination.prePage.url}.html"
+                                <a href="${context.contextPath}${result.pagination.prePage.url}.html?gp=${result.params.gp}"
                                    class="page-btn next">上一页</a>
                             </#if>
                             <#if result.pagination.currentPage gt 4>
-                                <a href="${context.contextPath}${result.pagination.firstPage.url}.html">1</a> ...
+                                <a href="${context.contextPath}${result.pagination.firstPage.url}.html?gp=${result.params.gp}">1</a> ...
                             </#if>
                             <#list result.pagination.pages as page>
                                 <#if result.pagination.currentPage == page.pageNum >
                                     <a class="current">${page.display}</a>
                                 </#if>
                                 <#if result.pagination.currentPage != page.pageNum >
-                                    <a href="${context.contextPath}${page.url}.html">${page.display}</a>
+                                    <a href="${context.contextPath}${page.url}.html?gp=${result.params.gp}">${page.display}</a>
                                 </#if>
                             </#list>
                             <#if result.pagination.currentPage lt result.pagination.totalPage - 3>
                                 ... <a
-                                    href="${context.contextPath}${result.pagination.lastPage.url}.html">${result.pagination.lastPage.pageNum}</a>
+                                    href="${context.contextPath}${result.pagination.lastPage.url}.html?gp=${result.params.gp}">${result.pagination.lastPage.pageNum}</a>
                             </#if>
                             <#if result.pagination.currentPage lt result.pagination.totalPage>
-                                <a href="${context.contextPath}${result.pagination.postPage.url}.html"
+                                <a href="${context.contextPath}${result.pagination.postPage.url}.html?gp=${result.params.gp}"
                                    class="page-btn next">下一页</a>
                             </#if>
                             <#if result.pagination.currentPage == result.pagination.totalPage>

@@ -36,6 +36,41 @@
         <appender-ref ref="stdout"/>
     </logger>
 
+    <logger name="org.apache.commons.beanutils" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="com.lambdaworks" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.apache.kafka.clients" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="freemarker.cache" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.springframework" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="com.wfj.netty" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="com.wfj.search.online.web.view" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="stdout"/>
+    </logger>
+
     <root level="DEBUG">
         <appender-ref ref="stdout"/>
     </root>

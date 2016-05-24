@@ -25,7 +25,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Component("alwaysFacetPriceRangeSearchTask")
-public class AlwaysFacetPriceRangeSearchTask extends NewProductsAlwaysFacetSearchTaskBase implements SearchTask {
+public class AlwaysFacetPriceRangeSearchTask implements SearchTask {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private IRangeRuleService rangeRuleService;
@@ -36,7 +36,7 @@ public class AlwaysFacetPriceRangeSearchTask extends NewProductsAlwaysFacetSearc
     public void doSearch(SearchResult searchResult, SolrQuery baseQuery) {
         logger.debug("##doSearch##baseQuery before {}: {}", getClass().getSimpleName(), baseQuery);
         String beforeQuery = baseQuery.toString();
-        SolrQuery query = baseFacetUseQuery(baseQuery);
+        SolrQuery query = baseQuery.getCopy();
         // 线上区间facet
         assert searchResult != null;
         assert searchResult.getParams() != null;
