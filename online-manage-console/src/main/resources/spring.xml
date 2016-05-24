@@ -35,6 +35,12 @@
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
     </bean>
 
+    <bean id="okHttpClientFactory" class="com.wfj.search.utils.http.OkHttpClientFactory"/>
+    <bean id="okHttpClient" factory-bean="okHttpClientFactory" factory-method="getOkHttpClient"/>
+    <bean id="okHttpOperator" class="com.wfj.search.utils.http.OkHttpOperator">
+        <constructor-arg name="okHttpClient" ref="okHttpClient"/>
+    </bean>
+
     <bean id="dbDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <!-- 基本属性 url、user、password -->
         <property name="url" value="${mysql.address}"/>
