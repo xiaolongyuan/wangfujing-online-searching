@@ -64,6 +64,8 @@ public class SearchServiceImpl implements ISearchService {
     @Autowired
     private JustQFacetCategoryTreeSearchTask justQFacetCategoryTreeSearchTask;
     @Autowired
+    private GpFacetCategoryTreeSearchTask gpFacetCategoryTreeSearchTask;
+    @Autowired
     private FacetCategoryTreeSearchTask facetCategoryTreeSearchTask;
     @Autowired
     private BrandFacetCategoryTreeSearchTask brandFacetCategoryTreeSearchTask;
@@ -92,8 +94,6 @@ public class SearchServiceImpl implements ISearchService {
     @Autowired
     private NewProductsAlwaysFacetBrandSearchTask newProductsAlwaysFacetBrandSearchTask;
     @Autowired
-    private AlwaysFacetBrandSearchTask alwaysFacetBrandSearchTask;
-    @Autowired
     private BrandAlwaysFacetPriceRangeSearchTask brandAlwaysFacetPriceRangeSearchTask;
     @Autowired
     private NewProductsAlwaysFacetPriceRangeSearchTask newProductsAlwaysFacetPriceRangeSearchTask;
@@ -104,25 +104,17 @@ public class SearchServiceImpl implements ISearchService {
     @Autowired
     private NewProductsAlwaysFacetStandardSearchTask newProductsAlwaysFacetStandardSearchTask;
     @Autowired
-    private AlwaysFacetStandardSearchTask alwaysFacetStandardSearchTask;
-    @Autowired
     private BrandAlwaysFacetColorSearchTask brandAlwaysFacetColorSearchTask;
     @Autowired
     private NewProductsAlwaysFacetColorSearchTask newProductsAlwaysFacetColorSearchTask;
-    @Autowired
-    private AlwaysFacetColorSearchTask alwaysFacetColorSearchTask;
     @Autowired
     private BrandAlwaysFacetAttrsSearchTask brandAlwaysFacetAttrsSearchTask;
     @Autowired
     private NewProductsAlwaysFacetAttrsSearchTask newProductsAlwaysFacetAttrsSearchTask;
     @Autowired
-    private AlwaysFacetAttrsSearchTask alwaysFacetAttrsSearchTask;
-    @Autowired
     private BrandAlwaysFacetTagSearchTask brandAlwaysFacetTagSearchTask;
     @Autowired
     private NewProductsAlwaysFacetTagSearchTask newProductsAlwaysFacetTagSearchTask;
-    @Autowired
-    private AlwaysFacetTagSearchTask alwaysFacetTagSearchTask;
     @Autowired
     private BrandListMainQuerySearchTask brandListMainQuerySearchTask;
     @Autowired
@@ -179,13 +171,8 @@ public class SearchServiceImpl implements ISearchService {
         this.newProductsListTasks.add(this.mainQuerySearchTask);
         this.newProductsListTasks.add(this.sortsSearchTask);
         // gp tasks
-        this.gpTasks.add(this.justQFacetCategoryTreeSearchTask);
-        this.gpTasks.add(this.alwaysFacetBrandSearchTask);
+        this.gpTasks.add(this.gpFacetCategoryTreeSearchTask);
         this.gpTasks.add(this.alwaysFacetPriceRangeSearchTask);
-        this.gpTasks.add(this.alwaysFacetStandardSearchTask);
-        this.gpTasks.add(this.alwaysFacetColorSearchTask);
-        this.gpTasks.add(this.alwaysFacetAttrsSearchTask);
-        this.gpTasks.add(this.alwaysFacetTagSearchTask);
         this.gpTasks.add(this.mainQuerySearchTask);
         this.gpTasks.add(this.sortsSearchTask);
         // list all categories tasks

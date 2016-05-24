@@ -1,5 +1,6 @@
 package com.wfj.search.online.index.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.solr.client.solrj.beans.Field;
 
 /**
@@ -9,6 +10,7 @@ import org.apache.solr.client.solrj.beans.Field;
  * @author liufl
  * @since 1.0.0
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CategoryIndexPojo {
     @Field("categoryId")
     private String categoryId;

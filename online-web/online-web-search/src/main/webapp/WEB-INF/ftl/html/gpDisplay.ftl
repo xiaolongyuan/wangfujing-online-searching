@@ -30,7 +30,6 @@
 <!--[if IE 8]>         <html class="ie8" lang="zh-CN"> <![endif]-->
 <!--[if gt IE 8]><!-->
 <html lang="zh-CN"> <!--<![endif]-->
-
 <head>
     <meta charset="UTF-8">
     <meta property="qc:admins" content="2410213673671676521676375"/>
@@ -59,6 +58,37 @@ ${navigationContent}
                 <div class="hd">
                     <h2 class="tit-name">${result.params.gpTitle}</h2>
                 </div>
+            <#list result.filters.queryMatchedCategoryTree as rootCategory>
+                <div class="hd">
+                    <h2 class="tit-name">${rootCategory.display}<span>(${rootCategory.facetCount})</span></h2>
+
+                    <div class="bd">
+                        <#list rootCategory.children as _2ndCategory>
+                            <#assign _c = false>
+                            <#if result.params.selectedCategories?size gt 1>
+                                <#assign _c = result.params.selectedCategories[1].id == _2ndCategory.id>
+                            <#elseif rootCategory_index == 0>
+                                <#assign _c = true>
+                            </#if>
+                            <div class="item<#if _c> on</#if>">
+                                <div class="b-name">
+                                    <span>${_2ndCategory.display}(${_2ndCategory.facetCount})</span>
+                                    <b class="fr"><#if _c>-<#else>+</#if></b>
+                                </div>
+                                <div class="b-names">
+                                    <ul class="clearfix">
+                                        <#list _2ndCategory.children as _3rdCategory>
+                                            <li>
+                                                <a href="${context.contextPath}${_3rdCategory.url}.html?gp=${result.params.gp}">${_3rdCategory.display}
+                                                    <span>(${_3rdCategory.facetCount})</span></a></li>
+                                        </#list>
+                                    </ul>
+                                </div>
+                            </div>
+                        </#list>
+                    </div>
+                </div>
+            </#list>
             </div>
             <div class="brand-main">
                 <div class="p20 goods-filter">
@@ -68,54 +98,6 @@ ${navigationContent}
                             <col class="w10">
                             <col class="w75">
                         </colgroup>
-                    <#assign leafCatsCount=0>
-                    <#list result.filters.queryMatchedCategoryTree as rootCat>
-                        <#list rootCat.children as l2Cat>
-                            <#list l2Cat.children as leafCat>
-                                <#assign leafCatsCount = leafCatsCount + 1>
-                            </#list>
-                        </#list>
-                    </#list>
-                    <#if leafCatsCount gt condLimit>
-                        <tr>
-                            <td align="right">类型：</td>
-                            <td align="center">
-                                <#if result.params.selectedCategories?size gt 0>
-                                    <div class="gray-btn">
-                                        <#assign firstCat=result.params.selectedCategories[0]>
-                                        <#assign condIndex=firstCat.url?last_index_of("/")>
-                                        <a href="${context.contextPath}${firstCat.url?substring(0, condIndex)}${firstCat.url?substring(condIndex)?replace(firstCat.id, "0")}.html?gp=${result.params.gp}">不限</a>
-                                    </div>
-                                <#else>
-                                    <div class="gray-btn">不限</div>
-                                </#if>
-                            </td>
-                            <td>
-                                <ul class="goodsList">
-                                    <#list result.filters.queryMatchedCategoryTree as l1Cat>
-                                        <#list l1Cat.children as l2Cat>
-                                            <#list l2Cat.children as leafCat>
-                                                <#assign _c = false>
-                                                <#list result.params.selectedCategories as selectCat>
-                                                    <#if selectCat.id = leafCat.id>
-                                                        <#assign _c = true>
-                                                        <#break>
-                                                    </#if>
-                                                </#list>
-                                                <#if _c>
-                                                    <li class="on"><a>${leafCat.display}</a></li>
-                                                <#else>
-                                                    <li>
-                                                        <a href="${context.contextPath}${leafCat.url}.html?gp=${result.params.gp}">${leafCat.display}</a>
-                                                    </li>
-                                                </#if>
-                                            </#list>
-                                        </#list>
-                                    </#list>
-                                </ul>
-                            </td>
-                        </tr>
-                    </#if>
                     <#if result.filters.availableBrands.availables?size gt condLimit>
                         <tr>
                             <td align="right">品牌：</td>
@@ -170,7 +152,8 @@ ${navigationContent}
                                         <#if sr == price.min + "_" + price.max>
                                             <li class="on"><a>${price.display}</a></li>
                                         <#else>
-                                            <li><a href="${context.contextPath}${price.url}.html?gp=${result.params.gp}">${price.display}</a>
+                                            <li>
+                                                <a href="${context.contextPath}${price.url}.html?gp=${result.params.gp}">${price.display}</a>
                                             </li>
                                         </#if>
                                     </#list>
@@ -203,7 +186,8 @@ ${navigationContent}
                                         <#if _c>
                                             <li class="on"><a>${color.display}</a></li>
                                         <#else>
-                                            <li><a href="${context.contextPath}${color.url}.html?gp=${result.params.gp}">${color.display}</a>
+                                            <li>
+                                                <a href="${context.contextPath}${color.url}.html?gp=${result.params.gp}">${color.display}</a>
                                             </li>
                                         </#if>
                                     </#list>
@@ -225,7 +209,8 @@ ${navigationContent}
                                         </#if>
                                     </#list>
                                     <#if _sp??>
-                                        <div class="gray-btn"><a href="${context.contextPath}${_sp.url}.html?gp=${result.params.gp}">不限</a>
+                                        <div class="gray-btn"><a
+                                                href="${context.contextPath}${_sp.url}.html?gp=${result.params.gp}">不限</a>
                                         </div>
                                     <#else>
                                         <div class="gray-btn">不限</div>
@@ -246,7 +231,8 @@ ${navigationContent}
                                             <#if _c>
                                                 <li class="on"><a>${pv.display}</a></li>
                                             <#else>
-                                                <li><a href="${context.contextPath}${pv.url}.html?gp=${result.params.gp}">${pv.display}</a>
+                                                <li>
+                                                    <a href="${context.contextPath}${pv.url}.html?gp=${result.params.gp}">${pv.display}</a>
                                                 </li>
                                             </#if>
                                         </#list>
@@ -414,7 +400,8 @@ ${navigationContent}
                                    class="page-btn next">上一页</a>
                             </#if>
                             <#if result.pagination.currentPage gt 4>
-                                <a href="${context.contextPath}${result.pagination.firstPage.url}.html?gp=${result.params.gp}">1</a> ...
+                                <a href="${context.contextPath}${result.pagination.firstPage.url}.html?gp=${result.params.gp}">1</a>
+                                ...
                             </#if>
                             <#list result.pagination.pages as page>
                                 <#if result.pagination.currentPage == page.pageNum >
