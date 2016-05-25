@@ -376,6 +376,13 @@ public class PojoUtils {
         return index;
     }
 
+    /**
+     * 转换为索引POJO并递归父级分类且不会有虚分类
+     * @param category 当前子级分类
+     * @param pcmRequester PCM 请求器
+     * @return 索引POJO，包换父级（不虚）
+     * @throws RequestException PCM请求失败
+     */
     public static CategoryIndexPojo toIndexPojo(CategoryPojo category, IPcmRequester pcmRequester)
             throws RequestException {
         CategoryIndexPojo index = new CategoryIndexPojo();

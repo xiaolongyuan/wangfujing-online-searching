@@ -638,17 +638,23 @@ public class EsServiceImpl implements IEsService {
             Iterable<CategoryIndexPojo> savedCategories;
             savedCategories = this.categoryEsIao.multiGet(categoryIds);
             for (CategoryIndexPojo savedCategory : savedCategories) {
-                categoryIndexPojoMap.put(savedCategory.getCategoryId(), savedCategory);
-                String parentCid = savedCategory.getParentCategoryId();
-                while (parentCid != null && !"".equals(parentCid.trim()) && !"0".equals(parentCid.trim())) {
-                    CategoryIndexPojo parent;
-                    parent = this.categoryEsIao.get(parentCid);
-                    if (parent == null) {
-                        categoryIds.add(parentCid);
-                        parentCid = null;
-                    } else {
-                        categoryIndexPojoMap.put(parentCid, parent);
-                        parentCid = parent.getParentCategoryId();
+                if (savedCategory.getLevel() != 1) { // 不能是虚分类（应该不会有虚分类）
+                    categoryIndexPojoMap.put(savedCategory.getCategoryId(), savedCategory);
+                    String parentCid = savedCategory.getParentCategoryId();
+                    while (parentCid != null && !"".equals(parentCid.trim()) && !"0"
+                            .equals(parentCid.trim())) { // 有父级（即使是虚分类）
+                        CategoryIndexPojo parent;
+                        parent = this.categoryEsIao.get(parentCid);
+                        if (parent == null) { // ES中未保存（可能是虚分类）
+                            categoryIds.add(parentCid);
+                            parentCid = null; // 相当于break;
+                        } else {
+                            if (parent.getLevel() == 1) {
+                                parentCid = null; // 虚分类了，结束
+                            }
+                            categoryIndexPojoMap.put(parentCid, parent);
+                            parentCid = parent.getParentCategoryId();
+                        }
                     }
                 }
             }
@@ -659,10 +665,10 @@ public class EsServiceImpl implements IEsService {
                     CategoryIndexPojo categoryIndexPojo;
                     try {
                         CategoryPojo categoryPojo = this.pcmRequester.getCategoryInfo(categoryId);
-                        categoryIndexPojo = PojoUtils.toIndexPojo(categoryPojo, this.pcmRequester);
-                        String parentCategoryId = categoryIndexPojo.getParentCategoryId();
-                        if (StringUtils.isBlank(parentCategoryId) || "0".equals(parentCategoryId.trim())) {
+                        if (categoryPojo.getLevel() == 1) { // 虚分类
                             categoryIndexPojo = null;
+                        } else {
+                            categoryIndexPojo = PojoUtils.toIndexPojo(categoryPojo, this.pcmRequester);
                         }
                     } catch (RequestException e) {
                         String msg = "SPU[spuId:" + spuId + "]获取分类[categoryId:" + categoryId
@@ -672,11 +678,8 @@ public class EsServiceImpl implements IEsService {
                                 .of(new Failure(DataType.category, FailureType.requestError, categoryId, msg, e));
                     }
                     while (categoryIndexPojo != null) {
-                        String parentCategoryId = categoryIndexPojo.getParentCategoryId();
-                        if (StringUtils.isNotBlank(parentCategoryId) && !"0".equals(parentCategoryId.trim())) {
-                            newCategoryIndexPojoMap.put(categoryIndexPojo.getCategoryId(), categoryIndexPojo);
-                            categoryIndexPojoMap.put(categoryIndexPojo.getCategoryId(), categoryIndexPojo);
-                        }
+                        newCategoryIndexPojoMap.put(categoryIndexPojo.getCategoryId(), categoryIndexPojo);
+                        categoryIndexPojoMap.put(categoryIndexPojo.getCategoryId(), categoryIndexPojo);
                         categoryIndexPojo = categoryIndexPojo.getParent();
                     }
                 }
