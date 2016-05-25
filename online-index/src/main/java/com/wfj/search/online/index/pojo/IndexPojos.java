@@ -126,8 +126,7 @@ public class IndexPojos {
                         spuCategories = Maps.newHashMap();
                         spuCategoriesOfChannels.put(channel, spuCategories);
                     }
-                    String parentCategoryId = cat.getParentCategoryId();
-                    if (StringUtils.isNotBlank(parentCategoryId) && !"0".equals(parentCategoryId)) {
+                    if (cat.getLevel() != 1) { // 不是虚分类
                         spuCategories.put(cid, cat);
                     }
                     cid = categoryPojo.getParentCategoryId();
