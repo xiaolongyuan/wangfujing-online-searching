@@ -52,7 +52,7 @@
         <dependency.fastjson.version>1.2.8</dependency.fastjson.version>
         <dependency.mybatis.version>3.3.0</dependency.mybatis.version>
         <dependency.mybatis-spring.version>1.2.2</dependency.mybatis-spring.version>
-        <dependency.mysql.version>5.1.35</dependency.mysql.version>
+        <dependency.mysql.version>8.0.16</dependency.mysql.version>
         <dependency.spring.version>4.2.5.RELEASE</dependency.spring.version>
         <dependency.spring-security.version>4.0.4.RELEASE</dependency.spring-security.version>
         <dependency.spring-data-redis.version>1.7.1.RELEASE</dependency.spring-data-redis.version>
