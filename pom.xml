@@ -59,7 +59,7 @@
         <dependency.freemarker.version>2.3.22</dependency.freemarker.version>
         <dependency.solr.version>5.3.0</dependency.solr.version>
         <dependency.lettuce.version>3.4.1.Final</dependency.lettuce.version>
-        <dependency.commons-io.version>2.4</dependency.commons-io.version>
+        <dependency.commons-io.version>2.7</dependency.commons-io.version>
         <dependency.commons-lang3.version>3.4</dependency.commons-lang3.version>
         <dependency.lucene.version>5.3.0</dependency.lucene.version>
         <dependency.zookeeper.version>3.4.6</dependency.zookeeper.version>
