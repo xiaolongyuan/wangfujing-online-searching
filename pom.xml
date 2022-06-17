@@ -49,7 +49,7 @@
         <dependency.druid.version>1.0.18</dependency.druid.version>
         <dependency.jackson.version>2.6.2</dependency.jackson.version>
         <dependency.json-lib.version>2.4</dependency.json-lib.version>
-        <dependency.fastjson.version>1.2.8</dependency.fastjson.version>
+        <dependency.fastjson.version>1.2.83</dependency.fastjson.version>
         <dependency.mybatis.version>3.3.0</dependency.mybatis.version>
         <dependency.mybatis-spring.version>1.2.2</dependency.mybatis-spring.version>
         <dependency.mysql.version>5.1.35</dependency.mysql.version>
