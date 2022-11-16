@@ -47,7 +47,7 @@
         <dependency.standard-taglib.version>1.1.2</dependency.standard-taglib.version>
         <dependency.jstl.version>1.2</dependency.jstl.version>
         <dependency.druid.version>1.0.18</dependency.druid.version>
-        <dependency.jackson.version>2.6.2</dependency.jackson.version>
+        <dependency.jackson.version>2.12.7.1</dependency.jackson.version>
         <dependency.json-lib.version>2.4</dependency.json-lib.version>
         <dependency.fastjson.version>1.2.8</dependency.fastjson.version>
         <dependency.mybatis.version>3.3.0</dependency.mybatis.version>
